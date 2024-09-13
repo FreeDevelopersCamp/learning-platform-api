@@ -6,6 +6,12 @@ import { Module } from '@nestjs/common';
 import { UserModule } from './controllers/user/user.module';
 
 @Module({
-  imports: [MenuModule, LookupModule, SettingModule, TenancyModule, UserModule],
+  imports: [
+    MenuModule,
+    LookupModule,
+    SettingModule,
+    TenancyModule.forRoot(),
+    UserModule,
+  ],
 })
 export class CoreModule {}

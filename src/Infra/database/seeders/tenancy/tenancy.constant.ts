@@ -5,7 +5,7 @@ export const tenancyConstant = {
     username: '',
     password: '',
     database: 'administrator',
-    url: 'mongodb+srv://baraalsedih:Bis@158963@cluster0.cwy0zf2.mongodb.net/?',
+    url: 'mongodb+srv://baraalsedih:Bis%40158963@cluster0.cwy0zf2.mongodb.net/FreeSoftwareCamp?retryWrites=true&w=majority&appName=FreeSoftwareCamp',
   },
   trader: {
     name: 'admin',
