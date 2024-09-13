@@ -1,3 +1,4 @@
+import { LearnModule } from './modules/learn/learn.module';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AutomapperModule } from '@automapper/nestjs';
 import { ConfigModule } from '@nestjs/config';
@@ -13,6 +14,7 @@ import { AppController } from './app.controller';
 
 @Module({
   imports: [
+    LearnModule,
     ConfigModule.forRoot({
       cache: true,
       isGlobal: true,
