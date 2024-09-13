@@ -2,6 +2,11 @@ export const roles: any = {
   name: 'roles',
   items: [
     {
+      id: '0',
+      label: 'Owner',
+      order: 0,
+    },
+    {
       id: '1',
       label: 'Admin',
       order: 1,
@@ -25,6 +30,11 @@ export const roles: any = {
       id: '5',
       label: 'Content Manager',
       order: 5,
+    },
+    {
+      id: '6',
+      label: 'Account Manager',
+      order: 6,
     },
   ],
 };

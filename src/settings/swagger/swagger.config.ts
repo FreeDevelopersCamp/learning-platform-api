@@ -15,7 +15,7 @@ const bearerOptions: SecuritySchemeObject = {
 };
 
 const swaggerConfig = new DocumentBuilder()
-  .setTitle('Trade-Flow API Management')
+  .setTitle('FreeDevelopersCamp API Management')
   .setVersion('1.0')
   .addBearerAuth(bearerOptions, 'authorization')
   .addGlobalParameters({
