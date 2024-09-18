@@ -21,38 +21,33 @@ export class CourseService {
   }
 
   async list(): Promise<ResourceCourseDto[]> {
-    return this._mapper.mapArray(
-      await this._repo.findAll(),
-      Course,
-      ResourceCourseDto,
-    );
+    const courses = await this._repo.findAll();
+    return Promise.all(courses.map((course) => this.toDto(course)));
   }
 
   async getById(id: string): Promise<ResourceCourseDto> {
-    return this._mapper.map(
-      await this._repo.findOne(id),
-      Course,
-      ResourceCourseDto,
-    );
+    return this.toDto(await this._repo.findOne(id));
   }
 
   async create(dto: CreateCourseDto): Promise<ResourceCourseDto> {
-    return this._mapper.map(
-      await this._repo.create(new this._courseModel(dto)),
-      Course,
-      ResourceCourseDto,
-    );
+    return this.toDto(await this._repo.create(new this._courseModel(dto)));
   }
 
   async update(dto: UpdateCourseDto): Promise<ResourceCourseDto> {
-    return this._mapper.map(
-      await this._repo.update(new this._courseModel(dto)),
-      Course,
-      ResourceCourseDto,
-    );
+    return this.toDto(await this._repo.update(new this._courseModel(dto)));
   }
 
   async delete(id: string): Promise<boolean> {
     return await this._repo.delete(id);
+  }
+
+  private async toDto(entity: Course): Promise<ResourceCourseDto> {
+    const entityDto = new ResourceCourseDto();
+    entityDto._id = entity._id.toString();
+    entityDto.name = entity.name;
+    entityDto.description = entity.description;
+    entityDto.resources = entity.resources;
+    entityDto.tips = entity.tips;
+    return entityDto;
   }
 }

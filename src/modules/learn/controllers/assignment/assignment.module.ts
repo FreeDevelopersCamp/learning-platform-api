@@ -11,5 +11,6 @@ import { AssignmentProfile } from '../../entity/assignment/assignment.mapper';
     AssignmentModels.assignment,
     AssignmentProfile,
   ],
+  exports: [AssignmentService, AssignmentModule, AssignmentModels.assignment],
 })
 export class AssignmentModule {}

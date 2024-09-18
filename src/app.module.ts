@@ -11,6 +11,7 @@ import { TenantsMiddleware } from './common/middlewares/tenants.middleware';
 import { classes } from '@automapper/classes';
 import { AuthenticationModule } from './modules/authentication/controllers/authentication.module';
 import { AppController } from './app.controller';
+import { SchemaValidation } from './common/pipes/schema-validation.pipe';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { AppController } from './app.controller';
       useClass: MongoRepository,
     },
     ObjectIdValidationPipe,
+    SchemaValidation,
   ],
 })
 export class AppModule implements NestModule {

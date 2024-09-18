@@ -11,7 +11,6 @@ import {
 import { ProjectService } from '../../services/project/project.service';
 import { ObjectIdValidationPipe } from 'src/common/pipes/object-id-validation.pipe';
 import { ApiBearerAuth, ApiTags, ApiResponse } from '@nestjs/swagger';
-import { SchemaValidation } from 'src/common/pipes/schema-validation.pipe';
 import { CreateProjectDto } from '../../dto/project/create.project';
 import { UpdateProjectDto } from '../../dto/project/update.project';
 import { ResourceProjectDto } from '../../dto/project/resource.project';
@@ -44,8 +43,6 @@ export class ProjectController {
   }
 
   @Post()
-  @UsePipes(new SchemaValidation())
-  @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'project created information',
     isArray: false,
@@ -56,8 +53,6 @@ export class ProjectController {
   }
 
   @Patch()
-  @UsePipes(new ObjectIdValidationPipe(), new SchemaValidation())
-  @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'project updated information',
     isArray: false,
@@ -68,7 +63,6 @@ export class ProjectController {
   }
 
   @Delete('/:id')
-  @UsePipes(new ObjectIdValidationPipe())
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',

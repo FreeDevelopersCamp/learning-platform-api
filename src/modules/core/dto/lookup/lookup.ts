@@ -39,7 +39,7 @@ export class LookupItemDto {
   @AutoMap()
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ default: ParentLookupDto })
+  @ApiProperty({ default: ParentLookupDto, required: false })
   parent: ParentLookupDto;
 }
 

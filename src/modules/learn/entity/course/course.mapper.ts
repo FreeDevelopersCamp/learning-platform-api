@@ -1,4 +1,10 @@
-import { Mapper, createMap, forMember, mapFrom } from '@automapper/core';
+import {
+  Mapper,
+  createMap,
+  forMember,
+  mapFrom,
+  ignore,
+} from '@automapper/core';
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { Course } from './Course.schema';
 import { CourseDto } from '../../dto/course/course';
@@ -25,6 +31,24 @@ export class CourseProfile extends AutomapperProfile {
           (dest) => dest._id,
           mapFrom((src) => new Types.ObjectId(src._id)),
         ),
+        forMember(
+          (dest) => dest.name,
+          mapFrom((src) => src.name),
+        ),
+        forMember(
+          (dest) => dest.description,
+          mapFrom((src) => src.description),
+        ),
+        // forMember(
+        //   (dest) => dest.tips,
+        //   mapFrom((src) => src.tips),
+        // ),
+        // forMember(
+        //   (dest) => dest.resources,
+        //   mapFrom((src) => src.resources),
+        // ),
+        forMember((dest) => dest.resources, ignore()),
+        forMember((dest) => dest.tips, ignore()),
       );
       createMap(
         mapper,
@@ -34,6 +58,24 @@ export class CourseProfile extends AutomapperProfile {
           (dest) => dest._id,
           mapFrom((src) => src._id.toString()),
         ),
+        forMember(
+          (dest) => dest.name,
+          mapFrom((src) => src.name),
+        ),
+        forMember(
+          (dest) => dest.description,
+          mapFrom((src) => src.description),
+        ),
+        // forMember(
+        //   (dest) => dest.tips,
+        //   mapFrom((src) => src.tips),
+        // ),
+        // forMember(
+        //   (dest) => dest.resources,
+        //   mapFrom((src) => src.resources),
+        // ),
+        forMember((dest) => dest.resources, ignore()),
+        forMember((dest) => dest.tips, ignore()),
       );
 
       createMap(mapper, ResourceCourseDto, CourseDto);

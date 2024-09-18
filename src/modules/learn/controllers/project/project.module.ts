@@ -7,5 +7,6 @@ import { ProjectProfile } from '../../entity/project/project.mapper';
 @Module({
   controllers: [ProjectController],
   providers: [ProjectService, ProjectModels.project, ProjectProfile],
+  exports: [ProjectService, ProjectModule, ProjectModels.project],
 })
 export class ProjectModule {}
