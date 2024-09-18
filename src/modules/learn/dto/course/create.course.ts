@@ -1,3 +1,3 @@
-import { CourseDto } from "./course";
+import { CourseDto } from './course';
 
 export class CreateCourseDto extends CourseDto {}

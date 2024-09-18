@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNumber } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class MenuDto {
   @AutoMap()
@@ -10,22 +10,13 @@ export class MenuDto {
 
   @AutoMap()
   @IsString()
-  @ApiProperty({ required: true, default: '' })
+  @ApiProperty({ required: false, default: '' })
   icon: string;
 
   @AutoMap()
   @IsString()
   @ApiProperty({ required: true, default: '' })
   url: string;
-
-  @AutoMap()
-  @IsNumber()
-  @ApiProperty({ required: true, default: 0 })
-  order: number;
-
-  @AutoMap()
-  @ApiProperty({ required: true, default: [] })
-  roles: string[];
 
   @AutoMap()
   @ApiProperty({ required: true, default: true })

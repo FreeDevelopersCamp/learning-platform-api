@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { IsNumber, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 import { BaseEntity } from 'src/utils/entities/base.entity';
 
 @Schema({ autoCreate: false })
@@ -12,22 +12,13 @@ export class Menu extends BaseEntity {
 
   @AutoMap()
   @IsString()
-  @Prop({ required: true })
+  @Prop({ required: false })
   icon: string;
 
   @AutoMap()
   @IsString()
   @Prop({ required: true })
   url: string;
-
-  @AutoMap()
-  @IsNumber()
-  @Prop({ required: true })
-  order: number;
-
-  @AutoMap()
-  @Prop({ required: true })
-  roles: string[];
 
   @AutoMap()
   @Prop({ required: true })

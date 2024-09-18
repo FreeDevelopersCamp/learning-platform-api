@@ -56,4 +56,3 @@ export class LibraryService {
     return await this._repo.delete(id);
   }
 }
-

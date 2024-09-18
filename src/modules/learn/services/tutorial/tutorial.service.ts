@@ -56,4 +56,3 @@ export class TutorialService {
     return await this._repo.delete(id);
   }
 }
-

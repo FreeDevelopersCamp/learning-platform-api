@@ -9,7 +9,6 @@ import { CreateTenancyDto } from '../../dto/tenancy/create.tenancy';
 import { ResourceTenancyDto } from '../../dto/tenancy/resource.tenancy';
 import { Tenancy } from '../../entity/tenancy/tenancy.schema';
 import { LookupService } from '../lookup/lookup.service';
-import { dummyUsers } from '../user/dummy.users.constants';
 import { AuthenticationService } from 'src/modules/authentication/service/authentication.service';
 
 @Injectable()
@@ -60,10 +59,6 @@ export class TenancyService {
       await this._auth.setConnection(tenant),
       await this._auth.register(dto.user),
     ]);
-
-    dummyUsers.forEach(async (user: any) => {
-      await this._auth.register(user);
-    });
 
     return createResult;
   }

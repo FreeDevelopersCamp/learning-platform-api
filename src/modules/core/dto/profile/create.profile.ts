@@ -1,3 +1,3 @@
-import { ProfileDto } from "./profile";
+import { ProfileDto } from './profile';
 
 export class CreateProfileDto extends ProfileDto {}

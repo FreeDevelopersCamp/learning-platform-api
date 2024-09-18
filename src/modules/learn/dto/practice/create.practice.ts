@@ -1,3 +1,3 @@
-import { PracticeDto } from "./practice";
+import { PracticeDto } from './practice';
 
 export class CreatePracticeDto extends PracticeDto {}

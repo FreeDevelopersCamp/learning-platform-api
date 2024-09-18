@@ -5,13 +5,7 @@ import { ProgressModels } from '../../entity/progress/progress.model.provider';
 import { ProgressProfile } from '../../entity/progress/progress.mapper';
 
 @Module({
-  controllers: [
-    ProgressController
-  ],
-  providers: [
-    ProgressService,
-    ProgressModels.progress,
-    ProgressProfile
-  ]
+  controllers: [ProgressController],
+  providers: [ProgressService, ProgressModels.progress, ProgressProfile],
 })
 export class ProgressModule {}

@@ -1,3 +1,3 @@
-import { TrackDto } from "./track";
+import { TrackDto } from './track';
 
 export class CreateTrackDto extends TrackDto {}

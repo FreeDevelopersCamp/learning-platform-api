@@ -56,4 +56,3 @@ export class ProfileService {
     return await this._repo.delete(id);
   }
 }
-

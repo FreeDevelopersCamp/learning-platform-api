@@ -5,13 +5,7 @@ import { ProjectModels } from '../../entity/project/project.model.provider';
 import { ProjectProfile } from '../../entity/project/project.mapper';
 
 @Module({
-  controllers: [
-    ProjectController
-  ],
-  providers: [
-    ProjectService,
-    ProjectModels.project,
-    ProjectProfile
-  ]
+  controllers: [ProjectController],
+  providers: [ProjectService, ProjectModels.project, ProjectProfile],
 })
 export class ProjectModule {}

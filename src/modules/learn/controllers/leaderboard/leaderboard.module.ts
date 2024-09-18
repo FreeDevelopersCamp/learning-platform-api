@@ -5,13 +5,11 @@ import { LeaderboardModels } from '../../entity/leaderboard/leaderboard.model.pr
 import { LeaderboardProfile } from '../../entity/leaderboard/leaderboard.mapper';
 
 @Module({
-  controllers: [
-    LeaderboardController
-  ],
+  controllers: [LeaderboardController],
   providers: [
     LeaderboardService,
     LeaderboardModels.leaderboard,
-    LeaderboardProfile
-  ]
+    LeaderboardProfile,
+  ],
 })
 export class LeaderboardModule {}

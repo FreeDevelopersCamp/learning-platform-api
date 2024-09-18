@@ -5,13 +5,7 @@ import { TrackModels } from '../../entity/track/track.model.provider';
 import { TrackProfile } from '../../entity/track/track.mapper';
 
 @Module({
-  controllers: [
-    TrackController
-  ],
-  providers: [
-    TrackService,
-    TrackModels.track,
-    TrackProfile
-  ]
+  controllers: [TrackController],
+  providers: [TrackService, TrackModels.track, TrackProfile],
 })
 export class TrackModule {}

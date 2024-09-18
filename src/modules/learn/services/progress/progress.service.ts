@@ -56,4 +56,3 @@ export class ProgressService {
     return await this._repo.delete(id);
   }
 }
-

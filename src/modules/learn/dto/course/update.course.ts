@@ -1,9 +1,9 @@
-import { CourseDto } from "./course";
-import { AutoMap } from "@automapper/classes";
-import { ApiProperty } from "@nestjs/swagger";
+import { CourseDto } from './course';
+import { AutoMap } from '@automapper/classes';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateCourseDto extends CourseDto {
-    @ApiProperty({ default: '' })
-    @AutoMap()
-    _id: string;
+  @ApiProperty({ default: '' })
+  @AutoMap()
+  _id: string;
 }

@@ -1,3 +1,3 @@
-import { LeaderboardDto } from "./leaderboard";
+import { LeaderboardDto } from './leaderboard';
 
 export class CreateLeaderboardDto extends LeaderboardDto {}

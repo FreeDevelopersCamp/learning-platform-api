@@ -1,5 +1,5 @@
-import { Mapper, createMap, forMember, mapFrom } from "@automapper/core";
-import { AutomapperProfile, InjectMapper } from "@automapper/nestjs";
+import { Mapper, createMap, forMember, mapFrom } from '@automapper/core';
+import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { Progress } from './Progress.schema';
 import { ProgressDto } from '../../dto/progress/progress';
 import { ResourceProgressDto } from '../../dto/progress/resource.progress';
@@ -8,42 +8,42 @@ import { UpdateProgressDto } from '../../dto/progress/update.progress';
 import { Types } from 'mongoose';
 
 export class ProgressProfile extends AutomapperProfile {
-    constructor(@InjectMapper() mapper: Mapper) {
-        super(mapper);
-      }
-    
-      override get profile() {
-        return (mapper) => {
-          createMap(mapper, ProgressDto, Progress);
-          createMap(mapper, Progress, ProgressDto);
+  constructor(@InjectMapper() mapper: Mapper) {
+    super(mapper);
+  }
 
-          createMap(
-            mapper,
-            ResourceProgressDto,
-            Progress,
-            forMember(
-              (dest) => dest._id,
-              mapFrom((src) => new Types.ObjectId(src._id)),
-            ),
-          );
-          createMap(
-            mapper,
-            Progress,
-            ResourceProgressDto,
-            forMember(
-              (dest) => dest._id,
-              mapFrom((src) => src._id.toString()),
-            ),
-          );
+  override get profile() {
+    return (mapper) => {
+      createMap(mapper, ProgressDto, Progress);
+      createMap(mapper, Progress, ProgressDto);
 
-          createMap(mapper, ResourceProgressDto, ProgressDto);
-          createMap(mapper, ProgressDto, ResourceProgressDto);
-    
-          createMap(mapper, ResourceProgressDto, CreateProgressDto);
-          createMap(mapper, CreateProgressDto, ResourceProgressDto);
-    
-          createMap(mapper, ResourceProgressDto, UpdateProgressDto);
-          createMap(mapper, UpdateProgressDto, ResourceProgressDto);
-        };
-      }
+      createMap(
+        mapper,
+        ResourceProgressDto,
+        Progress,
+        forMember(
+          (dest) => dest._id,
+          mapFrom((src) => new Types.ObjectId(src._id)),
+        ),
+      );
+      createMap(
+        mapper,
+        Progress,
+        ResourceProgressDto,
+        forMember(
+          (dest) => dest._id,
+          mapFrom((src) => src._id.toString()),
+        ),
+      );
+
+      createMap(mapper, ResourceProgressDto, ProgressDto);
+      createMap(mapper, ProgressDto, ResourceProgressDto);
+
+      createMap(mapper, ResourceProgressDto, CreateProgressDto);
+      createMap(mapper, CreateProgressDto, ResourceProgressDto);
+
+      createMap(mapper, ResourceProgressDto, UpdateProgressDto);
+      createMap(mapper, UpdateProgressDto, ResourceProgressDto);
+    };
+  }
 }

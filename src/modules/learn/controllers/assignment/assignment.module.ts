@@ -5,13 +5,11 @@ import { AssignmentModels } from '../../entity/assignment/assignment.model.provi
 import { AssignmentProfile } from '../../entity/assignment/assignment.mapper';
 
 @Module({
-  controllers: [
-    AssignmentController
-  ],
+  controllers: [AssignmentController],
   providers: [
     AssignmentService,
     AssignmentModels.assignment,
-    AssignmentProfile
-  ]
+    AssignmentProfile,
+  ],
 })
 export class AssignmentModule {}

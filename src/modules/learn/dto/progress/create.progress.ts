@@ -1,3 +1,3 @@
-import { ProgressDto } from "./progress";
+import { ProgressDto } from './progress';
 
 export class CreateProgressDto extends ProgressDto {}

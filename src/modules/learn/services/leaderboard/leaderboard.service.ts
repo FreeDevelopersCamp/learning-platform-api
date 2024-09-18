@@ -56,4 +56,3 @@ export class LeaderboardService {
     return await this._repo.delete(id);
   }
 }
-

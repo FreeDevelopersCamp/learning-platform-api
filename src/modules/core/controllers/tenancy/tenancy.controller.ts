@@ -12,7 +12,6 @@ import {
 import { TenancyService } from '../../services/tenancy/tenancy.service';
 import { ObjectIdValidationPipe } from 'src/common/pipes/object-id-validation.pipe';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { SchemaValidation } from 'src/common/pipes/schema-validation.pipe';
 import { CreateTenancyDto } from '../../dto/tenancy/create.tenancy';
 import { ResourceTenancyDto } from '../../dto/tenancy/resource.tenancy';
 import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
@@ -62,7 +61,6 @@ export class TenancyController {
   }
 
   @Post()
-  @UsePipes(new SchemaValidation())
   @Roles([AllowRoles.admin])
   @ApiResponse({
     description: 'Created tenancy information',
@@ -74,7 +72,6 @@ export class TenancyController {
   }
 
   @Patch()
-  @UsePipes(new ObjectIdValidationPipe(), new SchemaValidation())
   @Roles([AllowRoles.admin])
   @ApiResponse({
     description: 'Updated tenancy information',

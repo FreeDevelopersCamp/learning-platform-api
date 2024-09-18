@@ -26,10 +26,6 @@ export class MenuProfile extends AutomapperProfile {
           mapFrom((src) => new Types.ObjectId(src._id)),
         ),
         forMember(
-          (dest) => dest.roles,
-          mapFrom((src) => src.roles.map((role) => role)),
-        ),
-        forMember(
           (dest) => dest.subMenu,
           mapFrom((src) => src.subMenu),
         ),
@@ -43,10 +39,6 @@ export class MenuProfile extends AutomapperProfile {
           mapFrom((src) => src._id.toString()),
         ),
         forMember(
-          (dest) => dest.roles,
-          mapFrom((src) => src.roles.map((role) => role)),
-        ),
-        forMember(
           (dest) => dest.subMenu,
           mapFrom((src) => src.subMenu),
         ),
@@ -57,10 +49,6 @@ export class MenuProfile extends AutomapperProfile {
         ResourceMenuDto,
         MenuDto,
         forMember(
-          (dest) => dest.roles,
-          mapFrom((src) => src.roles.map((role) => role)),
-        ),
-        forMember(
           (dest) => dest.subMenu,
           mapFrom((src) => src.subMenu),
         ),
@@ -68,11 +56,6 @@ export class MenuProfile extends AutomapperProfile {
       createMap(
         mapper,
         MenuDto,
-        ResourceMenuDto,
-        forMember(
-          (dest) => dest.roles,
-          mapFrom((src) => src.roles.map((role) => role)),
-        ),
         forMember(
           (dest) => dest.subMenu,
           mapFrom((src) => src.subMenu),

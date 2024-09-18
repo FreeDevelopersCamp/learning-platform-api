@@ -1,3 +1,5 @@
+import { RoadmapModule } from './controllers/roadmap/roadmap.module';
+import { CategoryModule } from './controllers/category/category.module';
 import { CourseModule } from './controllers/course/course.module';
 import { ProgressModule } from './controllers/progress/progress.module';
 import { TrackModule } from './controllers/track/track.module';
@@ -11,7 +13,9 @@ import { Module } from '@nestjs/common';
 import { CertificationModule } from './controllers/certification/certification.module';
 
 @Module({
-    imports: [
+  imports: [
+    RoadmapModule,
+    CategoryModule,
     CourseModule,
     ProgressModule,
     TrackModule,
@@ -21,7 +25,7 @@ import { CertificationModule } from './controllers/certification/certification.m
     ProjectModule,
     TutorialModule,
     PracticeModule,
-        CertificationModule,
-    ],
+    CertificationModule,
+  ],
 })
 export class LearnModule {}

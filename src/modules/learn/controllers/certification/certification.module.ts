@@ -5,13 +5,11 @@ import { CertificationModels } from '../../entity/certification/certification.mo
 import { CertificationProfile } from '../../entity/certification/certification.mapper';
 
 @Module({
-  controllers: [
-    CertificationController
-  ],
+  controllers: [CertificationController],
   providers: [
     CertificationService,
     CertificationModels.certification,
-    CertificationProfile
-  ]
+    CertificationProfile,
+  ],
 })
 export class CertificationModule {}

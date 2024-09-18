@@ -56,4 +56,3 @@ export class PracticeService {
     return await this._repo.delete(id);
   }
 }
-

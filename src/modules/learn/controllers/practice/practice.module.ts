@@ -5,13 +5,7 @@ import { PracticeModels } from '../../entity/practice/practice.model.provider';
 import { PracticeProfile } from '../../entity/practice/practice.mapper';
 
 @Module({
-  controllers: [
-    PracticeController
-  ],
-  providers: [
-    PracticeService,
-    PracticeModels.practice,
-    PracticeProfile
-  ]
+  controllers: [PracticeController],
+  providers: [PracticeService, PracticeModels.practice, PracticeProfile],
 })
 export class PracticeModule {}

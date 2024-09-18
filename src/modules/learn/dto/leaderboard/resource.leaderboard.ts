@@ -1,9 +1,9 @@
-import { LeaderboardDto } from "./leaderboard";
-import { AutoMap } from "@automapper/classes";
-import { ApiProperty } from "@nestjs/swagger";
+import { LeaderboardDto } from './leaderboard';
+import { AutoMap } from '@automapper/classes';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class ResourceLeaderboardDto extends LeaderboardDto {
-    @ApiProperty({ default: '' })
-    @AutoMap()
-    _id: string;
+  @ApiProperty({ default: '' })
+  @AutoMap()
+  _id: string;
 }

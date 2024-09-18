@@ -56,4 +56,3 @@ export class ProjectService {
     return await this._repo.delete(id);
   }
 }
-

@@ -5,13 +5,7 @@ import { CourseModels } from '../../entity/course/course.model.provider';
 import { CourseProfile } from '../../entity/course/course.mapper';
 
 @Module({
-  controllers: [
-    CourseController
-  ],
-  providers: [
-    CourseService,
-    CourseModels.course,
-    CourseProfile
-  ]
+  controllers: [CourseController],
+  providers: [CourseService, CourseModels.course, CourseProfile],
 })
 export class CourseModule {}

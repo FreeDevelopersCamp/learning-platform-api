@@ -14,7 +14,8 @@ export class CertificationService {
   private readonly _repo: IMongoRepository<Certification>;
 
   constructor(
-    @Inject('CERTIFICATION_MODEL') private _certificationModel: Model<Certification>,
+    @Inject('CERTIFICATION_MODEL')
+    private _certificationModel: Model<Certification>,
     @InjectMapper() private readonly _mapper: Mapper,
   ) {
     this._repo = new MongoRepository<Certification>(_certificationModel);
@@ -56,4 +57,3 @@ export class CertificationService {
     return await this._repo.delete(id);
   }
 }
-
