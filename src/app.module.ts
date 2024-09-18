@@ -1,3 +1,4 @@
+import { LearnModule } from './modules/learn/learn.module';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AutomapperModule } from '@automapper/nestjs';
 import { ConfigModule } from '@nestjs/config';
@@ -10,9 +11,11 @@ import { TenantsMiddleware } from './common/middlewares/tenants.middleware';
 import { classes } from '@automapper/classes';
 import { AuthenticationModule } from './modules/authentication/controllers/authentication.module';
 import { AppController } from './app.controller';
+import { SchemaValidation } from './common/pipes/schema-validation.pipe';
 
 @Module({
   imports: [
+    LearnModule,
     ConfigModule.forRoot({
       cache: true,
       isGlobal: true,
@@ -31,6 +34,7 @@ import { AppController } from './app.controller';
       useClass: MongoRepository,
     },
     ObjectIdValidationPipe,
+    SchemaValidation,
   ],
 })
 export class AppModule implements NestModule {

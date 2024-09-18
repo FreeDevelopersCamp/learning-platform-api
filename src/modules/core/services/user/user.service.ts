@@ -62,6 +62,8 @@ export class UserService {
   async create(dto: CreateUserDto): Promise<ResourceUserDto> {
     const entity = new this._userModel(dto);
     entity.roles = dto.roles.map((a) => a);
+    console.log('Creating user with data:', entity);
+
     const result = await this._userRepo.create(new this._userModel(dto));
     return this._mapper.map(result, User, ResourceUserDto);
   }

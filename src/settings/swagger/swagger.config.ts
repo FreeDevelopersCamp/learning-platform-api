@@ -4,6 +4,7 @@ import { SecuritySchemeObject } from '@nestjs/swagger/dist/interfaces/open-api-s
 import { AppModule } from 'src/app.module';
 import { AuthenticationModule } from 'src/modules/authentication/controllers/authentication.module';
 import { CoreModule } from 'src/modules/core/core.module';
+import { LearnModule } from 'src/modules/learn/learn.module';
 
 const bearerOptions: SecuritySchemeObject = {
   type: 'http',
@@ -15,7 +16,7 @@ const bearerOptions: SecuritySchemeObject = {
 };
 
 const swaggerConfig = new DocumentBuilder()
-  .setTitle('Trade-Flow API Management')
+  .setTitle('FreeDevelopersCamp API Management')
   .setVersion('1.0')
   .addBearerAuth(bearerOptions, 'authorization')
   .addGlobalParameters({
@@ -49,4 +50,10 @@ export const swaggerConfiguration = (app: INestApplication<any>) => {
   });
 
   SwaggerModule.setup('api/v1/app/core', app, coreDocument);
+
+  const learnDocument = SwaggerModule.createDocument(app, swaggerConfig, {
+    include: [LearnModule],
+    deepScanRoutes: true,
+  });
+  SwaggerModule.setup('api/v1/app/learn', app, learnDocument);
 };

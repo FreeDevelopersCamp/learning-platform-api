@@ -72,11 +72,25 @@ export class SessionService {
   }
 
   async isReachMaxAttempts(): Promise<boolean> {
-    const maxLoginAttempts = await this._settingService.getByKey(
-      SystemSettings.maxLoginAttempts,
-    );
+    try {
+      const maxLoginAttemptsSetting = await this._settingService.getByKey(
+        SystemSettings.maxLoginAttempts,
+      );
 
-    return (await this.getLoginAttempts()) >= Number(maxLoginAttempts.value);
+      if (
+        !maxLoginAttemptsSetting ||
+        typeof maxLoginAttemptsSetting.value === 'undefined'
+      ) {
+        return false;
+      }
+
+      const maxLoginAttempts = Number(maxLoginAttemptsSetting.value);
+      const currentAttempts = await this.getLoginAttempts();
+
+      return currentAttempts >= maxLoginAttempts;
+    } catch (error) {
+      throw new Error('Failed to check max login attempts');
+    }
   }
 
   async checkIfCanRetry(): Promise<boolean> {

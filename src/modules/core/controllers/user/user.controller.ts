@@ -10,8 +10,12 @@ import {
 } from '@nestjs/common';
 import { UserService } from '../../services/user/user.service';
 import { ObjectIdValidationPipe } from 'src/common/pipes/object-id-validation.pipe';
-import { ApiBearerAuth, ApiTags, ApiResponse } from '@nestjs/swagger';
-import { SchemaValidation } from 'src/common/pipes/schema-validation.pipe';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiResponse,
+  ApiExcludeEndpoint,
+} from '@nestjs/swagger';
 import { CreateUserDto } from '../../dto/user/create.user';
 import { UpdateUserDto } from '../../dto/user/update.user';
 import { ResourceUserDto } from '../../dto/user/resource.user';
@@ -44,8 +48,7 @@ export class UserController {
   }
 
   @Post()
-  @UsePipes(new SchemaValidation())
-  @UsePipes(new ObjectIdValidationPipe())
+  @ApiExcludeEndpoint()
   @ApiResponse({
     description: 'user created information',
     isArray: false,
@@ -56,8 +59,6 @@ export class UserController {
   }
 
   @Patch()
-  @UsePipes(new ObjectIdValidationPipe(), new SchemaValidation())
-  @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'user updated information',
     isArray: false,
@@ -68,7 +69,6 @@ export class UserController {
   }
 
   @Delete('/:id')
-  @UsePipes(new ObjectIdValidationPipe())
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',

@@ -13,7 +13,6 @@ import {
 import { MenuService } from '../../services/menu/menu.service';
 import { ObjectIdValidationPipe } from 'src/common/pipes/object-id-validation.pipe';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { SchemaValidation } from 'src/common/pipes/schema-validation.pipe';
 import { CreateMenuDto } from '../../dto/menu/create.menu';
 import { UpdateMenuDto } from '../../dto/menu/update.menu';
 import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
@@ -56,6 +55,7 @@ export class MenuController {
   @Get('/:id')
   @UseGuards(RolesGuard)
   @Roles([AllowRoles.admin])
+  @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Menu information',
     isArray: false,
@@ -66,7 +66,6 @@ export class MenuController {
   }
 
   @Post()
-  @UsePipes(new SchemaValidation())
   @UseGuards(RolesGuard)
   @Roles([AllowRoles.admin])
   @ApiResponse({
@@ -79,7 +78,6 @@ export class MenuController {
   }
 
   @Patch()
-  @UsePipes(new ObjectIdValidationPipe(), new SchemaValidation())
   @UseGuards(RolesGuard)
   @Roles([AllowRoles.admin])
   @ApiResponse({

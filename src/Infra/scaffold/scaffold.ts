@@ -104,7 +104,6 @@ const generateControllerContent = (modelName: string) => `import {
   import { ${capitalize(modelName)}Service } from '../../services/${modelName}/${modelName}.service';
   import { ObjectIdValidationPipe } from 'src/common/pipes/object-id-validation.pipe';
   import { ApiBearerAuth, ApiTags, ApiResponse } from '@nestjs/swagger';
-  import { SchemaValidation } from 'src/common/pipes/schema-validation.pipe';
   import { Create${capitalize(modelName)}Dto } from '../../dto/${modelName}/create.${modelName}';
   import { Update${capitalize(modelName)}Dto } from '../../dto/${modelName}/update.${modelName}';
   import { Resource${capitalize(modelName)}Dto } from '../../dto/${modelName}/resource.${modelName}';
@@ -137,8 +136,6 @@ const generateControllerContent = (modelName: string) => `import {
     }
   
     @Post()
-    @UsePipes(new SchemaValidation())
-    @UsePipes(new ObjectIdValidationPipe())
     @ApiResponse({
     description: '${modelName} created information',
     isArray: false,
@@ -149,8 +146,6 @@ const generateControllerContent = (modelName: string) => `import {
     }
   
     @Patch()
-    @UsePipes(new ObjectIdValidationPipe(), new SchemaValidation())
-    @UsePipes(new ObjectIdValidationPipe())
     @ApiResponse({
     description: '${modelName} updated information',
     isArray: false,
@@ -161,7 +156,6 @@ const generateControllerContent = (modelName: string) => `import {
     }
   
     @Delete('/:id')
-    @UsePipes(new ObjectIdValidationPipe())
     @UsePipes(new ObjectIdValidationPipe())
     @ApiResponse({
     description: 'Deleted result',

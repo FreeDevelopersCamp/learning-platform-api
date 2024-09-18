@@ -16,8 +16,4 @@ export class CreateUserDto extends UserDto {
   @IsNotEmpty()
   @ApiProperty({ default: '', required: true, maxLength: 16 })
   password: string;
-
-  @AutoMap()
-  @ApiProperty({ required: true, type: String })
-  companyId: string;
 }
