@@ -1,3 +1,4 @@
+import { TeacherModule } from './controllers/teacher/teacher.module';
 import { ProfileModule } from './controllers/profile/profile.module';
 import { StudentModule } from './controllers/student/student.module';
 import { MenuModule } from './controllers/menu/menu.module';
@@ -9,6 +10,7 @@ import { UserModule } from './controllers/user/user.module';
 
 @Module({
   imports: [
+    TeacherModule,
     ProfileModule,
     StudentModule,
     MenuModule,
