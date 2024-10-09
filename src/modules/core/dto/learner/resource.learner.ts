@@ -1,8 +1,8 @@
-import { StudentDto } from './student';
+import { LearnerDto } from './learner';
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ResourceStudentDto extends StudentDto {
+export class ResourceLearnerDto extends LearnerDto {
   @ApiProperty({ default: '' })
   @AutoMap()
   _id: string;

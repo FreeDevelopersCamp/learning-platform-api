@@ -4,7 +4,7 @@ import { Types } from 'mongoose';
 import { BaseEntity } from 'src/utils/entities/base.entity';
 
 @Schema({ autoCreate: false })
-export class Student extends BaseEntity {
+export class Learner extends BaseEntity {
   @AutoMap()
   userId: Types.ObjectId;
 
@@ -12,4 +12,4 @@ export class Student extends BaseEntity {
   progress: string;
 }
 
-export const StudentSchema = SchemaFactory.createForClass(Student);
+export const LearnerSchema = SchemaFactory.createForClass(Learner);

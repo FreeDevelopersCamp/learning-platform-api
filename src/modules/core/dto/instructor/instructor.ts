@@ -5,7 +5,7 @@ import { IsArray } from 'class-validator';
 import { ResourceCourseDto } from 'src/modules/learn/dto/course/resource.course';
 import { ResourceRoadmapDto } from 'src/modules/learn/dto/roadmap/resource.roadmap';
 
-export class TeacherDto {
+export class InstructorDto {
   @AutoMap()
   @ApiProperty({ required: true })
   user: ResourceUserDto;

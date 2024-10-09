@@ -1,3 +1,5 @@
+import { LearnerModule } from './controllers/learner/learner.module';
+import { InstructorModule } from './controllers/instructor/instructor.module';
 import { TeacherModule } from './controllers/teacher/teacher.module';
 import { ProfileModule } from './controllers/profile/profile.module';
 import { StudentModule } from './controllers/student/student.module';
@@ -10,6 +12,8 @@ import { UserModule } from './controllers/user/user.module';
 
 @Module({
   imports: [
+    LearnerModule,
+    InstructorModule,
     TeacherModule,
     ProfileModule,
     StudentModule,

@@ -31,12 +31,15 @@ export class Roadmap extends BaseEntity {
   @AutoMap()
   @IsArray()
   @Prop({ required: true, type: String })
-  tags: string[]; // beginner frontend ....
+  topic: string; // Python Web Development Machine Learning ....
 
   @AutoMap()
-  @IsArray()
   @Prop({ required: true, type: String })
-  categories: string[]; // official_roadmap AI_generated ....
+  tag: string; // official_roadmap AI_generated ....
+
+  @AutoMap()
+  @Prop({ required: true, type: String })
+  category: string; // Design Development Marketing IT and Software Business English ....
 
   @AutoMap()
   @IsObject()

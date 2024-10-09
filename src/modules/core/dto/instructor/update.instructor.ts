@@ -1,8 +1,8 @@
-import { TeacherDto } from './teacher';
+import { InstructorDto } from './instructor';
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ResourceTeacherDto extends TeacherDto {
+export class UpdateInstructorDto extends InstructorDto {
   @ApiProperty({ default: '' })
   @AutoMap()
   _id: string;
