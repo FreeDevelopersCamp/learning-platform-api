@@ -11,5 +11,6 @@ import { AccountManagerProfile } from '../../entity/AccountManager/AccountManage
     AccountManagerModels.AccountManager,
     AccountManagerProfile,
   ],
+  exports: [AccountManagerService],
 })
 export class AccountManagerModule {}

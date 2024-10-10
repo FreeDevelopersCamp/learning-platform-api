@@ -6,4 +6,8 @@ export class ResourceContentManagerDto extends ContentManagerDto {
   @ApiProperty({ default: '' })
   @AutoMap()
   _id: string;
+
+  @AutoMap()
+  @ApiProperty()
+  status: string; // from lookup
 }

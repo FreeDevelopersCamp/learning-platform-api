@@ -6,4 +6,8 @@ export class ResourceAccountManagerDto extends AccountManagerDto {
   @ApiProperty({ default: '' })
   @AutoMap()
   _id: string;
+
+  @AutoMap()
+  @ApiProperty()
+  status: string; // from lookup
 }

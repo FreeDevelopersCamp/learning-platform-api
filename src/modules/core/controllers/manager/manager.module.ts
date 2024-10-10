@@ -7,5 +7,6 @@ import { ManagerProfile } from '../../entity/manager/manager.mapper';
 @Module({
   controllers: [ManagerController],
   providers: [ManagerService, ManagerModels.manager, ManagerProfile],
+  exports: [ManagerService],
 })
 export class ManagerModule {}

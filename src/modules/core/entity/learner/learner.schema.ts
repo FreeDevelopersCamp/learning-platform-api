@@ -1,14 +1,19 @@
 import { AutoMap } from '@automapper/classes';
-import { Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { BaseEntity } from 'src/utils/entities/base.entity';
 
 @Schema({ autoCreate: false })
 export class Learner extends BaseEntity {
   @AutoMap()
-  userId: Types.ObjectId;
+  @Prop()
+  status: string; // from lookup
 
   @AutoMap()
+  @Prop()
+  userId: string;
+
+  @AutoMap()
+  @Prop()
   progress: string;
 }
 

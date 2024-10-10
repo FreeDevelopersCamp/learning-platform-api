@@ -6,6 +6,10 @@ import { BaseEntity } from 'src/utils/entities/base.entity';
 
 @Schema({ autoCreate: false })
 export class Instructor extends BaseEntity {
+  @AutoMap()
+  @Prop({ default: '1' })
+  status: string; // from lookup
+
   @Prop({ required: true })
   @AutoMap()
   userId: Types.ObjectId;

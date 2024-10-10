@@ -5,7 +5,7 @@ import { BaseEntity } from 'src/utils/entities/base.entity';
 @Schema({ autoCreate: false })
 export class AccountManager extends BaseEntity {
   @AutoMap()
-  @Prop()
+  @Prop({ default: '1' })
   status: string; // from lookup
 
   @AutoMap()

@@ -1,13 +1,9 @@
-import { ManagerDto } from './manager';
+import { OwnerDto } from './owner';
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ResourceManagerDto extends ManagerDto {
+export class UpdateOwnerDto extends OwnerDto {
   @ApiProperty({ default: '' })
   @AutoMap()
   _id: string;
-
-  @AutoMap()
-  @ApiProperty()
-  status: string; // from lookup
 }

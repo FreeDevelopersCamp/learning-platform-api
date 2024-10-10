@@ -3,17 +3,17 @@ export const status: any = {
   items: [
     {
       id: '1',
-      label: 'In Progress',
+      label: 'pending',
       order: 1,
     },
     {
       id: '2',
-      label: 'Approved',
+      label: 'approved',
       order: 2,
     },
     {
       id: '3',
-      label: 'Rejected',
+      label: 'rejected',
       order: 3,
     },
   ],

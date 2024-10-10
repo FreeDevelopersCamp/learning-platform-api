@@ -11,5 +11,6 @@ import { ContentManagerProfile } from '../../entity/ContentManager/ContentManage
     ContentManagerModels.ContentManager,
     ContentManagerProfile,
   ],
+  exports: [ContentManagerService],
 })
 export class ContentManagerModule {}
