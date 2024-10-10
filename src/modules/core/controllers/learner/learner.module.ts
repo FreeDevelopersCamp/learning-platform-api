@@ -7,5 +7,6 @@ import { LearnerProfile } from '../../entity/learner/learner.mapper';
 @Module({
   controllers: [LearnerController],
   providers: [LearnerService, LearnerModels.learner, LearnerProfile],
+  exports: [LearnerService],
 })
 export class LearnerModule {}

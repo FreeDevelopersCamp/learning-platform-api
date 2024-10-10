@@ -1,4 +1,10 @@
-import { Mapper, createMap, forMember, mapFrom } from '@automapper/core';
+import {
+  Mapper,
+  createMap,
+  forMember,
+  ignore,
+  mapFrom,
+} from '@automapper/core';
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { Instructor } from './Instructor.schema';
 import { InstructorDto } from '../../dto/instructor/instructor';
@@ -25,6 +31,7 @@ export class InstructorProfile extends AutomapperProfile {
           (dest) => dest._id,
           mapFrom((src) => new Types.ObjectId(src._id)),
         ),
+        forMember((dest) => dest.userId, ignore()),
       );
       createMap(
         mapper,
@@ -34,6 +41,7 @@ export class InstructorProfile extends AutomapperProfile {
           (dest) => dest._id,
           mapFrom((src) => src._id.toString()),
         ),
+        forMember((dest) => dest.user, ignore()),
       );
 
       createMap(mapper, ResourceInstructorDto, InstructorDto);

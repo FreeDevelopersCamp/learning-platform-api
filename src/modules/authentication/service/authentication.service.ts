@@ -20,6 +20,13 @@ import { SessionService } from '../session/sessions.service';
 import { Session, SessionParams } from '../session/session';
 import { SessionStatus } from '../models/enum/session.status';
 import { LookupService } from 'src/modules/core/services/lookup/lookup.service';
+import { AllowRoles } from '../guards/_constants/roles.constants';
+import { ResourceInstructorDto } from 'src/modules/core/dto/instructor/resource.instructor';
+import { CreateInstructorDto } from 'src/modules/core/dto/instructor/create.instructor';
+import { InstructorService } from 'src/modules/core/services/instructor/instructor.service';
+import { LearnerService } from 'src/modules/core/services/learner/learner.service';
+import { CreateLearnerDto } from 'src/modules/core/dto/learner/create.learner';
+import { ResourceLearnerDto } from 'src/modules/core/dto/learner/resource.learner';
 
 @Injectable()
 export class AuthenticationService {
@@ -30,6 +37,8 @@ export class AuthenticationService {
     private _passwordService: PasswordService,
     private _sessionService: SessionService,
     private _lookupService: LookupService,
+    private _instructorService: InstructorService,
+    private _learnerService: LearnerService,
   ) {}
 
   async setConnection(model: ResourceTenancyDto) {
@@ -213,7 +222,33 @@ export class AuthenticationService {
 
     let user = await this._userService.create(dto);
 
+    if (dto.roles.includes(AllowRoles.instructor)) {
+      await this._createInstructor(user._id);
+    }
+
+    if (dto.roles.includes(AllowRoles.learner)) {
+      await this._createLearner(user._id);
+    }
+
     return user;
+  }
+
+  private async _createInstructor(
+    userId: string,
+  ): Promise<ResourceInstructorDto> {
+    const instructorDto = new CreateInstructorDto();
+
+    instructorDto.userId = userId;
+
+    return await this._instructorService.create(instructorDto);
+  }
+
+  private async _createLearner(userId: string): Promise<ResourceLearnerDto> {
+    const learnerDto = new CreateLearnerDto();
+
+    learnerDto.userId = userId;
+
+    return await this._learnerService.create(learnerDto);
   }
 
   private async _setSession(
