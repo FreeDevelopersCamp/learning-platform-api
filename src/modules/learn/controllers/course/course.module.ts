@@ -7,6 +7,6 @@ import { CourseProfile } from '../../entity/course/course.mapper';
 @Module({
   controllers: [CourseController],
   providers: [CourseService, CourseModels.course, CourseProfile],
-  exports: [CourseModule, CourseService, CourseModels.course],
+  exports: [CourseService, CourseModels.course],
 })
 export class CourseModule {}

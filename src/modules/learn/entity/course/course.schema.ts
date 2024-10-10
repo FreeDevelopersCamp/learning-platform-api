@@ -17,7 +17,12 @@ export class CourseResource {
   @AutoMap()
   @IsString()
   @Prop({ required: true })
-  type: string;
+  type: string; // article video ...
+
+  @AutoMap()
+  @IsString()
+  @Prop({ required: true })
+  category: string; // free or paid resource
 }
 
 @Schema({ autoCreate: false })

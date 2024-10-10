@@ -1,9 +1,9 @@
 export const enum AllowRoles {
-  owner = '0',
-  admin = '1',
-  teacher = '2',
-  student = '3',
+  admin = '0',
+  owner = '1',
+  instructor = '2',
+  learner = '3',
   manager = '4',
-  contentManager = '5',
-  accountManager = '6',
+  accountManager = '5',
+  contentManager = '6',
 }

@@ -22,5 +22,6 @@ import { AssignmentService } from '../../services/assignment/assignment.service'
     ProjectService,
     AssignmentService,
   ],
+  exports: [RoadmapService],
 })
 export class RoadmapModule {}

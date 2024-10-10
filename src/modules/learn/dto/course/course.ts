@@ -16,7 +16,12 @@ export class CourseResourceDto {
   @AutoMap()
   @IsString()
   @ApiProperty({ required: true })
-  type: string;
+  type: string; // article video ...
+
+  @AutoMap()
+  @IsString()
+  @ApiProperty({ required: true })
+  category: string; // free or paid resource
 }
 
 export class CourseDto {

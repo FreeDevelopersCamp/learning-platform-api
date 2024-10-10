@@ -20,6 +20,7 @@ import { SessionService } from '../session/sessions.service';
 import { Session, SessionParams } from '../session/session';
 import { SessionStatus } from '../models/enum/session.status';
 import { LookupService } from 'src/modules/core/services/lookup/lookup.service';
+import { RoleFactory } from '../guards/roles/roleFactory';
 
 @Injectable()
 export class AuthenticationService {
@@ -30,6 +31,7 @@ export class AuthenticationService {
     private _passwordService: PasswordService,
     private _sessionService: SessionService,
     private _lookupService: LookupService,
+    private _roleFactory: RoleFactory,
   ) {}
 
   async setConnection(model: ResourceTenancyDto) {
@@ -213,8 +215,43 @@ export class AuthenticationService {
 
     let user = await this._userService.create(dto);
 
+    // Iterate over roles and use the factory to handle role-specific logic
+    for (const role of dto.roles) {
+      const { service, dto: roleDto } = this._roleFactory.getServiceAndDto(
+        role,
+        user._id,
+      );
+      await service.create(roleDto); // Call the service's create method with the appropriate DTO
+    }
+
     return user;
   }
+
+  // private async _createOwner(userId: string): Promise<ResourceOwnerDto> {
+  //   const ownerDto = new CreateOwnerDto();
+
+  //   ownerDto.userId = userId;
+
+  //   return await this._ownerService.create(ownerDto);
+  // }
+
+  // private async _createInstructor(
+  //   userId: string,
+  // ): Promise<ResourceInstructorDto> {
+  //   const instructorDto = new CreateInstructorDto();
+
+  //   instructorDto.userId = userId;
+
+  //   return await this._instructorService.create(instructorDto);
+  // }
+
+  // private async _createLearner(userId: string): Promise<ResourceLearnerDto> {
+  //   const learnerDto = new CreateLearnerDto();
+
+  //   learnerDto.userId = userId;
+
+  //   return await this._learnerService.create(learnerDto);
+  // }
 
   private async _setSession(
     active: boolean,
