@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { OwnerService } from '../../services/owner/owner.service';
@@ -21,11 +22,12 @@ import { UpdateOwnerDto } from '../../dto/owner/update.owner';
 import { ResourceOwnerDto } from '../../dto/owner/resource.owner';
 import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
 import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
-import { ResourceManagerDto } from '../../dto/manager/resource.manager';
+import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
 
 @ApiBearerAuth('authorization')
 @ApiTags('owner')
 @Controller('owner')
+@UseGuards(RolesGuard)
 export class OwnerController {
   constructor(private readonly _ownerService: OwnerService) {}
 
@@ -84,28 +86,5 @@ export class OwnerController {
   })
   delete(@Param('id') id: string) {
     return this._ownerService.delete(id);
-  }
-
-  @Get('/manager')
-  @Roles([AllowRoles.admin, AllowRoles.owner])
-  @ApiResponse({
-    description: 'List of managers',
-    isArray: true,
-    type: ResourceManagerDto,
-  })
-  listManagers() {
-    return this._ownerService.listManagers();
-  }
-
-  @Patch('/manager/approve')
-  @Roles([AllowRoles.admin, AllowRoles.owner])
-  @UsePipes(new ObjectIdValidationPipe())
-  @ApiResponse({
-    description: 'Manager approved information',
-    isArray: false,
-    type: ResourceManagerDto,
-  })
-  approveManager(@Param('id') id: string) {
-    return this._ownerService.approveManager(id);
   }
 }

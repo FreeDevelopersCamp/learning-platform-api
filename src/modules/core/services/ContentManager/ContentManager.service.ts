@@ -8,6 +8,7 @@ import { ContentManager } from '../../entity/ContentManager/ContentManager.schem
 import { ResourceContentManagerDto } from '../../dto/ContentManager/resource.ContentManager';
 import { CreateContentManagerDto } from '../../dto/ContentManager/create.ContentManager';
 import { UpdateContentManagerDto } from '../../dto/ContentManager/update.ContentManager';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class ContentManagerService {
@@ -17,47 +18,68 @@ export class ContentManagerService {
     @Inject('CONTENTMANAGER_MODEL')
     private _ContentManagerModel: Model<ContentManager>,
     @InjectMapper() private readonly _mapper: Mapper,
+    private readonly _userService: UserService,
   ) {
     this._repo = new MongoRepository<ContentManager>(_ContentManagerModel);
   }
 
   async list(): Promise<ResourceContentManagerDto[]> {
-    return this._mapper.mapArray(
-      await this._repo.findAll(),
-      ContentManager,
-      ResourceContentManagerDto,
+    const entities = await this._repo.findAll();
+    return Promise.all(
+      entities.map(async (entity) => {
+        return await this.getById(entity._id.toString());
+      }),
     );
   }
 
   async getById(id: string): Promise<ResourceContentManagerDto> {
-    return this._mapper.map(
-      await this._repo.findOne(id),
-      ContentManager,
-      ResourceContentManagerDto,
-    );
+    const entity = await this._repo.findOne(id);
+    return this.toDto(entity);
   }
 
   async create(
     dto: CreateContentManagerDto,
   ): Promise<ResourceContentManagerDto> {
-    return this._mapper.map(
-      await this._repo.create(new this._ContentManagerModel(dto)),
-      ContentManager,
-      ResourceContentManagerDto,
-    );
+    const entity = await this._repo.create(new this._ContentManagerModel(dto));
+    return this.getById(entity._id.toString());
   }
 
   async update(
     dto: UpdateContentManagerDto,
   ): Promise<ResourceContentManagerDto> {
-    return this._mapper.map(
-      await this._repo.update(new this._ContentManagerModel(dto)),
-      ContentManager,
-      ResourceContentManagerDto,
-    );
+    const entity = await this._repo.update(new this._ContentManagerModel(dto));
+    return this.getById(entity._id.toString());
   }
 
   async delete(id: string): Promise<boolean> {
+    const entity = await this.getById(id);
+
+    if (entity.user.roles.length === 1) {
+      await this._userService.delete(entity.user._id);
+    }
+
     return await this._repo.delete(id);
+  }
+
+  async approve(id: string): Promise<ResourceContentManagerDto> {
+    const entity = await this.getById(id);
+
+    entity.status = '2';
+    return await this.update(entity);
+  }
+
+  async reject(id: string): Promise<Boolean> {
+    return this.delete(id);
+  }
+
+  private async toDto(
+    entity: ContentManager,
+  ): Promise<ResourceContentManagerDto> {
+    const dto = new ResourceContentManagerDto();
+    dto._id = entity._id.toString();
+    dto.status = entity.status;
+    dto.user = await this._userService.getById(entity.userId);
+
+    return dto;
   }
 }
