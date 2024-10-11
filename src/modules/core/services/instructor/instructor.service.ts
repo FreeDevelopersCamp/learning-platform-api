@@ -27,56 +27,69 @@ export class InstructorService {
   }
 
   async list(): Promise<ResourceInstructorDto[]> {
-    const instructors = await this._repo.findAll();
+    const entities = await this._repo.findAll();
 
-    const instructorsDto = await Promise.all(
-      instructors.map((instructor) => {
-        return this.getById.call(this, instructor._id.toString());
+    return await Promise.all(
+      entities.map((entity) => {
+        return this.getById.call(this, entity._id.toString());
       }),
     );
-
-    return instructorsDto;
   }
 
   async getById(id: string): Promise<ResourceInstructorDto> {
-    const instructor = await this._repo.findOne(id);
-    return this.toDto(instructor);
+    const entity = await this._repo.findOne(id);
+    return this.toDto(entity);
   }
 
   async create(dto: CreateInstructorDto): Promise<ResourceInstructorDto> {
-    const instructor = await this._repo.create(new this._instructorModel(dto));
-    return this.getById(instructor._id.toString());
+    const entity = await this._repo.create(new this._instructorModel(dto));
+    return this.getById(entity._id.toString());
   }
 
   async update(dto: UpdateInstructorDto): Promise<ResourceInstructorDto> {
-    const instructor = await this._repo.create(new this._instructorModel(dto));
-    return this.getById(instructor._id.toString());
+    const entity = await this._repo.create(new this._instructorModel(dto));
+    return this.getById(entity._id.toString());
   }
 
   async delete(id: string): Promise<boolean> {
+    const entity = await this.getById(id);
+
+    if (entity.user.roles.length === 1) {
+      await this._userService.delete(entity.user._id);
+    }
+
     return await this._repo.delete(id);
   }
 
-  private async toDto(instructor: Instructor): Promise<ResourceInstructorDto> {
-    const instructorDto = new ResourceInstructorDto();
-    instructorDto._id = instructor._id.toString();
+  async approve(id: string): Promise<ResourceInstructorDto> {
+    const entity = await this.getById(id);
 
-    instructorDto.user = await this._userService.getById(
-      instructor.userId.toString(),
-    );
+    entity.status = '2';
+    return await this.update(entity);
+  }
 
-    instructorDto.courses = await Promise.all(
-      instructor.courseIds.map(async (course) => {
+  async reject(id: string): Promise<Boolean> {
+    return this.delete(id);
+  }
+
+  private async toDto(entity: Instructor): Promise<ResourceInstructorDto> {
+    const dto = new ResourceInstructorDto();
+    dto._id = entity._id.toString();
+
+    dto.user = await this._userService.getById(entity.userId.toString());
+
+    dto.courses = await Promise.all(
+      entity.courseIds.map(async (course) => {
         return await this._courseService.getById(course._id.toString());
       }),
     );
 
-    instructorDto.roadmaps = await Promise.all(
-      instructor.roadmapIds.map(async (roadmap) => {
+    dto.roadmaps = await Promise.all(
+      entity.roadmapIds.map(async (roadmap) => {
         return await this._roadmapService.getById(roadmap._id.toString());
       }),
     );
 
-    return instructorDto;
+    return dto;
   }
 }

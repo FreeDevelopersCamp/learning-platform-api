@@ -6,18 +6,28 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { LearnerService } from '../../services/learner/learner.service';
 import { ObjectIdValidationPipe } from 'src/common/pipes/object-id-validation.pipe';
-import { ApiBearerAuth, ApiTags, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiResponse,
+  ApiExcludeEndpoint,
+} from '@nestjs/swagger';
 import { CreateLearnerDto } from '../../dto/learner/create.learner';
 import { UpdateLearnerDto } from '../../dto/learner/update.learner';
 import { ResourceLearnerDto } from '../../dto/learner/resource.learner';
+import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
+import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
+import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
 
 @ApiBearerAuth('authorization')
 @ApiTags('learner')
 @Controller('learner')
+@UseGuards(RolesGuard)
 export class LearnerController {
   constructor(private readonly _learnerService: LearnerService) {}
 
@@ -43,6 +53,7 @@ export class LearnerController {
   }
 
   @Post()
+  @ApiExcludeEndpoint()
   @ApiResponse({
     description: 'learner created information',
     isArray: false,
@@ -53,6 +64,7 @@ export class LearnerController {
   }
 
   @Patch()
+  @Roles([AllowRoles.admin, AllowRoles.learner])
   @ApiResponse({
     description: 'learner updated information',
     isArray: false,
@@ -63,6 +75,7 @@ export class LearnerController {
   }
 
   @Delete('/:id')
+  @Roles([AllowRoles.admin, AllowRoles.learner])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',

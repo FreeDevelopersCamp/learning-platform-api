@@ -6,18 +6,28 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { InstructorService } from '../../services/instructor/instructor.service';
 import { ObjectIdValidationPipe } from 'src/common/pipes/object-id-validation.pipe';
-import { ApiBearerAuth, ApiTags, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiResponse,
+  ApiExcludeEndpoint,
+} from '@nestjs/swagger';
 import { CreateInstructorDto } from '../../dto/instructor/create.instructor';
 import { UpdateInstructorDto } from '../../dto/instructor/update.instructor';
 import { ResourceInstructorDto } from '../../dto/instructor/resource.instructor';
+import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
+import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
+import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
 
 @ApiBearerAuth('authorization')
 @ApiTags('instructor')
 @Controller('instructor')
+@UseGuards(RolesGuard)
 export class InstructorController {
   constructor(private readonly _instructorService: InstructorService) {}
 
@@ -43,6 +53,7 @@ export class InstructorController {
   }
 
   @Post()
+  @ApiExcludeEndpoint()
   @ApiResponse({
     description: 'instructor created information',
     isArray: false,
@@ -53,6 +64,7 @@ export class InstructorController {
   }
 
   @Patch()
+  @Roles([AllowRoles.admin, AllowRoles.instructor])
   @ApiResponse({
     description: 'instructor updated information',
     isArray: false,
@@ -63,6 +75,7 @@ export class InstructorController {
   }
 
   @Delete('/:id')
+  @Roles([AllowRoles.admin, AllowRoles.instructor])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',
@@ -71,5 +84,29 @@ export class InstructorController {
   })
   delete(@Param('id') id: string) {
     return this._instructorService.delete(id);
+  }
+
+  @Get('/approve/:id')
+  @Roles([AllowRoles.admin, AllowRoles.accountManager])
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'Manager approved information',
+    isArray: false,
+    type: ResourceInstructorDto,
+  })
+  approve(@Param('id') id: string) {
+    return this._instructorService.approve(id);
+  }
+
+  @Delete('/reject/:id')
+  @Roles([AllowRoles.admin, AllowRoles.accountManager])
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'Manager approved information',
+    isArray: false,
+    type: ResourceInstructorDto,
+  })
+  reject(@Param('id') id: string) {
+    return this._instructorService.reject(id);
   }
 }

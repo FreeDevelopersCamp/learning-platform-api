@@ -96,7 +96,19 @@ export class ManagerController {
     isArray: false,
     type: ResourceManagerDto,
   })
-  approveManager(@Param('id') id: string) {
-    return this._managerService.approveManager(id);
+  approve(@Param('id') id: string) {
+    return this._managerService.approve(id);
+  }
+
+  @Delete('/reject/:id')
+  @Roles([AllowRoles.admin, AllowRoles.owner])
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'Manager approved information',
+    isArray: false,
+    type: ResourceManagerDto,
+  })
+  reject(@Param('id') id: string) {
+    return this._managerService.reject(id);
   }
 }

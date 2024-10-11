@@ -23,51 +23,54 @@ export class ManagerService {
   }
 
   async list(): Promise<ResourceManagerDto[]> {
-    const managers = await this._repo.findAll();
-    const managersDto = await Promise.all(
-      managers.map((manager) => this.getById(manager._id.toString())),
+    const entities = await this._repo.findAll();
+    return await Promise.all(
+      entities.map((entity) => this.getById(entity._id.toString())),
     );
-    return managersDto;
   }
 
   async getById(id: string): Promise<ResourceManagerDto> {
-    const manager = await this._repo.findOne(id);
-    return this.toDto(manager);
+    const entity = await this._repo.findOne(id);
+    return this.toDto(entity);
   }
 
   async create(dto: CreateManagerDto): Promise<ResourceManagerDto> {
-    const manager = await this._repo.create(new this._managerModel(dto));
-    return this.getById(manager._id.toString());
+    const entity = await this._repo.create(new this._managerModel(dto));
+    return this.getById(entity._id.toString());
   }
 
   async update(dto: UpdateManagerDto): Promise<ResourceManagerDto> {
-    const manager = await this._repo.update(new this._managerModel(dto));
-    return this.getById(manager._id.toString());
+    const entity = await this._repo.update(new this._managerModel(dto));
+    return this.getById(entity._id.toString());
   }
 
   async delete(id: string): Promise<boolean> {
-    const manager = await this.getById(id);
+    const entity = await this.getById(id);
 
-    if (manager.user.roles.length === 1) {
-      await this._userService.delete(manager.user._id);
+    if (entity.user.roles.length === 1) {
+      await this._userService.delete(entity.user._id);
     }
 
     return await this._repo.delete(id);
   }
 
-  async approveManager(id: string): Promise<ResourceManagerDto> {
-    const manager = await this.getById(id);
+  async approve(id: string): Promise<ResourceManagerDto> {
+    const entity = await this.getById(id);
 
-    manager.status = '2';
-    return await this.update(manager);
+    entity.status = '2';
+    return await this.update(entity);
   }
 
-  private async toDto(manager: Manager): Promise<ResourceManagerDto> {
-    const managerDto = new ResourceManagerDto();
-    managerDto._id = manager._id.toString();
-    managerDto.status = manager.status;
-    managerDto.user = await this._userService.getById(manager.userId);
+  async reject(id: string): Promise<Boolean> {
+    return this.delete(id);
+  }
 
-    return managerDto;
+  private async toDto(entity: Manager): Promise<ResourceManagerDto> {
+    const dto = new ResourceManagerDto();
+    dto._id = entity._id.toString();
+    dto.status = entity.status;
+    dto.user = await this._userService.getById(entity.userId);
+
+    return dto;
   }
 }

@@ -7,9 +7,10 @@ import { UserModule } from '../user/user.module';
 import { PaginationService } from 'src/common/interceptors/pagination/pagination.service';
 import { CourseModule } from 'src/modules/learn/controllers/course/course.module';
 import { RoadmapModule } from 'src/modules/learn/controllers/roadmap/roadmap.module';
+import { GuardsModule } from 'src/modules/authentication/guards/guards.module';
 
 @Module({
-  imports: [UserModule, CourseModule, RoadmapModule],
+  imports: [UserModule, CourseModule, RoadmapModule, GuardsModule],
   controllers: [InstructorController],
   providers: [
     InstructorService,
