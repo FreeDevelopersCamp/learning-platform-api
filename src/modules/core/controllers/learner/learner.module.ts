@@ -7,7 +7,8 @@ import { GuardsModule } from 'src/modules/authentication/guards/guards.module';
 import { UserModule } from '../user/user.module';
 
 @Module({
-  controllers: [LearnerController, GuardsModule, UserModule],
+  imports: [GuardsModule, UserModule],
+  controllers: [LearnerController],
   providers: [LearnerService, LearnerModels.learner, LearnerProfile],
   exports: [LearnerService],
 })
