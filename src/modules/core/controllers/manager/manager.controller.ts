@@ -6,22 +6,33 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { ManagerService } from '../../services/manager/manager.service';
 import { ObjectIdValidationPipe } from 'src/common/pipes/object-id-validation.pipe';
-import { ApiBearerAuth, ApiTags, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiResponse,
+  ApiExcludeEndpoint,
+} from '@nestjs/swagger';
 import { CreateManagerDto } from '../../dto/manager/create.manager';
 import { UpdateManagerDto } from '../../dto/manager/update.manager';
 import { ResourceManagerDto } from '../../dto/manager/resource.manager';
+import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
+import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
+import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
 
 @ApiBearerAuth('authorization')
 @ApiTags('manager')
 @Controller('manager')
+@UseGuards(RolesGuard)
 export class ManagerController {
   constructor(private readonly _managerService: ManagerService) {}
 
   @Get()
+  @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
   @ApiResponse({
     description: 'List of manager',
     isArray: true,
@@ -32,6 +43,7 @@ export class ManagerController {
   }
 
   @Get('/:id')
+  @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'manager information',
@@ -43,6 +55,7 @@ export class ManagerController {
   }
 
   @Post()
+  @ApiExcludeEndpoint()
   @ApiResponse({
     description: 'manager created information',
     isArray: false,
@@ -53,6 +66,7 @@ export class ManagerController {
   }
 
   @Patch()
+  @Roles([AllowRoles.admin, AllowRoles.manager])
   @ApiResponse({
     description: 'manager updated information',
     isArray: false,
@@ -63,6 +77,7 @@ export class ManagerController {
   }
 
   @Delete('/:id')
+  @Roles([AllowRoles.admin, AllowRoles.manager])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',
@@ -71,5 +86,17 @@ export class ManagerController {
   })
   delete(@Param('id') id: string) {
     return this._managerService.delete(id);
+  }
+
+  @Get('/approve/:id')
+  @Roles([AllowRoles.admin, AllowRoles.owner])
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'Manager approved information',
+    isArray: false,
+    type: ResourceManagerDto,
+  })
+  approveManager(@Param('id') id: string) {
+    return this._managerService.approveManager(id);
   }
 }

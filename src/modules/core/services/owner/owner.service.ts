@@ -9,8 +9,6 @@ import { ResourceOwnerDto } from '../../dto/owner/resource.owner';
 import { CreateOwnerDto } from '../../dto/owner/create.owner';
 import { UpdateOwnerDto } from '../../dto/owner/update.owner';
 import { UserService } from '../user/user.service';
-import { ManagerService } from '../manager/manager.service';
-import { ResourceManagerDto } from '../../dto/manager/resource.manager';
 
 @Injectable()
 export class OwnerService {
@@ -20,7 +18,6 @@ export class OwnerService {
     @Inject('OWNER_MODEL') private _ownerModel: Model<Owner>,
     @InjectMapper() private readonly _mapper: Mapper,
     private readonly _userService: UserService,
-    private readonly _managerService: ManagerService,
   ) {
     this._repo = new MongoRepository<Owner>(_ownerModel);
   }
@@ -61,20 +58,10 @@ export class OwnerService {
     return await this._repo.delete(id);
   }
 
-  async listManagers(): Promise<ResourceManagerDto[]> {
-    return await this._managerService.list();
-  }
-
-  async approveManager(id: string): Promise<ResourceManagerDto> {
-    const manager = await this._managerService.getById(id);
-
-    manager.status = '2';
-    return await this._managerService.update(manager);
-  }
-
   private async toDto(owner: Owner): Promise<ResourceOwnerDto> {
     const ownerDto = new ResourceOwnerDto();
     ownerDto._id = owner._id.toString();
+    ownerDto.status = owner.status;
     ownerDto.user = await this._userService.getById(owner.userId.toString());
     return ownerDto;
   }
