@@ -4,25 +4,25 @@ import { MongoRepository } from 'src/Infra/database/repository/mongo-repository'
 import { IMongoRepository } from 'src/infra/database/repository/adapter';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
-import { Owner } from '../../entity/owner/owner.schema';
-import { ResourceOwnerDto } from '../../dto/owner/resource.owner';
-import { CreateOwnerDto } from '../../dto/owner/create.owner';
-import { UpdateOwnerDto } from '../../dto/owner/update.owner';
+import { Admin } from '../../entity/admin/admin.schema';
+import { ResourceAdminDto } from '../../dto/admin/resource.admin';
+import { CreateAdminDto } from '../../dto/admin/create.admin';
+import { UpdateAdminDto } from '../../dto/admin/update.admin';
 import { UserService } from '../user/user.service';
 
 @Injectable()
-export class OwnerService {
-  private readonly _repo: IMongoRepository<Owner>;
+export class AdminService {
+  private readonly _repo: IMongoRepository<Admin>;
 
   constructor(
-    @Inject('OWNER_MODEL') private _ownerModel: Model<Owner>,
+    @Inject('ADMIN_MODEL') private _adminModel: Model<Admin>,
     @InjectMapper() private readonly _mapper: Mapper,
     private readonly _userService: UserService,
   ) {
-    this._repo = new MongoRepository<Owner>(_ownerModel);
+    this._repo = new MongoRepository<Admin>(_adminModel);
   }
 
-  async list(): Promise<ResourceOwnerDto[]> {
+  async list(): Promise<ResourceAdminDto[]> {
     const entities = await this._repo.findAll();
 
     const entitiesDto = await Promise.all(
@@ -33,18 +33,18 @@ export class OwnerService {
     return entitiesDto;
   }
 
-  async getById(id: string): Promise<ResourceOwnerDto> {
+  async getById(id: string): Promise<ResourceAdminDto> {
     const entity = await this._repo.findOne(id);
     return this.toDto(entity);
   }
 
-  async create(dto: CreateOwnerDto): Promise<ResourceOwnerDto> {
-    const entity = await this._repo.create(new this._ownerModel(dto));
+  async create(dto: CreateAdminDto): Promise<ResourceAdminDto> {
+    const entity = await this._repo.create(new this._adminModel(dto));
     return this.getById(entity._id.toString());
   }
 
-  async update(dto: UpdateOwnerDto): Promise<ResourceOwnerDto> {
-    const entity = await this._repo.update(new this._ownerModel(dto));
+  async update(dto: UpdateAdminDto): Promise<ResourceAdminDto> {
+    const entity = await this._repo.update(new this._adminModel(dto));
     return this.getById(entity._id.toString());
   }
 
@@ -54,15 +54,15 @@ export class OwnerService {
     if (entity.user.roles.length === 1) {
       await this._userService.delete(entity.user._id);
     } else {
-      entity.user.roles = entity.user.roles.filter((role) => role !== '1');
+      entity.user.roles = entity.user.roles.filter((role) => role !== '0');
       await this._userService.update(entity.user);
     }
 
     return await this._repo.delete(id);
   }
 
-  private async toDto(entity: Owner): Promise<ResourceOwnerDto> {
-    const dto = new ResourceOwnerDto();
+  private async toDto(entity: Admin): Promise<ResourceAdminDto> {
+    const dto = new ResourceAdminDto();
     dto._id = entity._id.toString();
     dto.status = entity.status;
     dto.user = await this._userService.getById(entity.userId.toString());

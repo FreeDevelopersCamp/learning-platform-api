@@ -5,6 +5,7 @@ import { AccountManagerModels } from '../../entity/AccountManager/AccountManager
 import { AccountManagerProfile } from '../../entity/AccountManager/AccountManager.mapper';
 import { GuardsModule } from 'src/modules/authentication/guards/guards.module';
 import { UserModule } from '../user/user.module';
+import { PaginationService } from 'src/common/interceptors/pagination/pagination.service';
 
 @Module({
   imports: [UserModule, GuardsModule],
@@ -13,6 +14,7 @@ import { UserModule } from '../user/user.module';
     AccountManagerService,
     AccountManagerModels.AccountManager,
     AccountManagerProfile,
+    PaginationService,
   ],
   exports: [AccountManagerService],
 })

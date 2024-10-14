@@ -10,32 +10,33 @@ import {
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
-import { LearnerService } from '../../services/learner/learner.service';
+import { AdminService } from '../../services/admin/admin.service';
 import { ObjectIdValidationPipe } from 'src/common/pipes/object-id-validation.pipe';
 import {
   ApiBearerAuth,
   ApiTags,
   ApiResponse,
-  ApiExcludeEndpoint,
   ApiQuery,
+  ApiExcludeEndpoint,
 } from '@nestjs/swagger';
-import { CreateLearnerDto } from '../../dto/learner/create.learner';
-import { UpdateLearnerDto } from '../../dto/learner/update.learner';
-import { ResourceLearnerDto } from '../../dto/learner/resource.learner';
+import { CreateAdminDto } from '../../dto/admin/create.admin';
+import { UpdateAdminDto } from '../../dto/admin/update.admin';
+import { ResourceAdminDto } from '../../dto/admin/resource.admin';
 import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
 import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
 import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
-import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
 import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
+import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
 
 @ApiBearerAuth('authorization')
-@ApiTags('learner')
-@Controller('learner')
+@ApiTags('admin')
+@Controller('admin')
 @UseGuards(AuthGuard, RolesGuard)
-export class LearnerController {
-  constructor(private readonly _learnerService: LearnerService) {}
+export class AdminController {
+  constructor(private readonly _adminService: AdminService) {}
 
   @Get()
+  @Roles([AllowRoles.admin])
   @UseInterceptors(PaginationInterceptor)
   @ApiQuery({
     name: 'page',
@@ -50,56 +51,58 @@ export class LearnerController {
     type: Number,
   })
   @ApiResponse({
-    description: 'List of learner',
+    description: 'List of admin',
     isArray: true,
-    type: ResourceLearnerDto,
+    type: ResourceAdminDto,
   })
   list() {
-    return this._learnerService.list();
+    return this._adminService.list();
   }
 
   @Get('/:id')
+  @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
-    description: 'learner information',
+    description: 'admin information',
     isArray: false,
-    type: ResourceLearnerDto,
+    type: ResourceAdminDto,
   })
   getById(@Param('id') id: string) {
-    return this._learnerService.getById(id);
+    return this._adminService.getById(id);
   }
 
   @Post()
+  @Roles([AllowRoles.admin])
   @ApiExcludeEndpoint()
   @ApiResponse({
-    description: 'learner created information',
+    description: 'admin created information',
     isArray: false,
-    type: ResourceLearnerDto,
+    type: ResourceAdminDto,
   })
-  create(@Body() learner: CreateLearnerDto) {
-    return this._learnerService.create(learner);
+  create(@Body() admin: CreateAdminDto) {
+    return this._adminService.create(admin);
   }
 
   @Patch()
-  @Roles([AllowRoles.admin, AllowRoles.learner])
+  @Roles([AllowRoles.admin])
   @ApiResponse({
-    description: 'learner updated information',
+    description: 'admin updated information',
     isArray: false,
-    type: ResourceLearnerDto,
+    type: ResourceAdminDto,
   })
-  update(@Body() learner: UpdateLearnerDto) {
-    return this._learnerService.update(learner);
+  update(@Body() admin: UpdateAdminDto) {
+    return this._adminService.update(admin);
   }
 
   @Delete('/:id')
-  @Roles([AllowRoles.admin, AllowRoles.learner])
+  @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',
     isArray: false,
-    type: ResourceLearnerDto,
+    type: ResourceAdminDto,
   })
   delete(@Param('id') id: string) {
-    return this._learnerService.delete(id);
+    return this._adminService.delete(id);
   }
 }

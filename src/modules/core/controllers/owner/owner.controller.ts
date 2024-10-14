@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 import { OwnerService } from '../../services/owner/owner.service';
@@ -16,6 +17,7 @@ import {
   ApiTags,
   ApiResponse,
   ApiExcludeEndpoint,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { CreateOwnerDto } from '../../dto/owner/create.owner';
 import { UpdateOwnerDto } from '../../dto/owner/update.owner';
@@ -23,16 +25,31 @@ import { ResourceOwnerDto } from '../../dto/owner/resource.owner';
 import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
 import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
 import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
+import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
+import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
 
 @ApiBearerAuth('authorization')
 @ApiTags('owner')
 @Controller('owner')
-@UseGuards(RolesGuard)
+@UseGuards(AuthGuard, RolesGuard)
 export class OwnerController {
   constructor(private readonly _ownerService: OwnerService) {}
 
   @Get()
   @Roles([AllowRoles.admin, AllowRoles.owner])
+  @UseInterceptors(PaginationInterceptor)
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Items per page',
+    type: Number,
+  })
   @ApiResponse({
     description: 'List of owner',
     isArray: true,

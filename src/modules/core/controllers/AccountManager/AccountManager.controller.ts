@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 import { AccountManagerService } from '../../services/AccountManager/AccountManager.service';
@@ -16,6 +17,7 @@ import {
   ApiTags,
   ApiResponse,
   ApiExcludeEndpoint,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { CreateAccountManagerDto } from '../../dto/AccountManager/create.AccountManager';
 import { UpdateAccountManagerDto } from '../../dto/AccountManager/update.AccountManager';
@@ -23,16 +25,31 @@ import { ResourceAccountManagerDto } from '../../dto/AccountManager/resource.Acc
 import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
 import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
 import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
+import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
+import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
 
 @ApiBearerAuth('authorization')
 @ApiTags('AccountManager')
 @Controller('AccountManager')
-@UseGuards(RolesGuard)
+@UseGuards(AuthGuard, RolesGuard)
 export class AccountManagerController {
   constructor(private readonly _accountManagerService: AccountManagerService) {}
 
   @Get()
   @Roles([AllowRoles.admin, AllowRoles.manager, AllowRoles.accountManager])
+  @UseInterceptors(PaginationInterceptor)
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Items per page',
+    type: Number,
+  })
   @ApiResponse({
     description: 'List of AccountManager',
     isArray: true,

@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 import { InstructorService } from '../../services/instructor/instructor.service';
@@ -16,6 +17,7 @@ import {
   ApiTags,
   ApiResponse,
   ApiExcludeEndpoint,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { CreateInstructorDto } from '../../dto/instructor/create.instructor';
 import { UpdateInstructorDto } from '../../dto/instructor/update.instructor';
@@ -23,15 +25,30 @@ import { ResourceInstructorDto } from '../../dto/instructor/resource.instructor'
 import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
 import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
 import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
+import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
+import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
 
 @ApiBearerAuth('authorization')
 @ApiTags('instructor')
 @Controller('instructor')
-@UseGuards(RolesGuard)
+@UseGuards(AuthGuard, RolesGuard)
 export class InstructorController {
   constructor(private readonly _instructorService: InstructorService) {}
 
   @Get()
+  @UseInterceptors(PaginationInterceptor)
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Items per page',
+    type: Number,
+  })
   @ApiResponse({
     description: 'List of instructor',
     isArray: true,

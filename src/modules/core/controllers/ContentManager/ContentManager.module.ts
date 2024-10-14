@@ -5,6 +5,7 @@ import { ContentManagerModels } from '../../entity/ContentManager/ContentManager
 import { ContentManagerProfile } from '../../entity/ContentManager/ContentManager.mapper';
 import { UserModule } from '../user/user.module';
 import { GuardsModule } from 'src/modules/authentication/guards/guards.module';
+import { PaginationService } from 'src/common/interceptors/pagination/pagination.service';
 
 @Module({
   imports: [UserModule, GuardsModule],
@@ -13,6 +14,7 @@ import { GuardsModule } from 'src/modules/authentication/guards/guards.module';
     ContentManagerService,
     ContentManagerModels.ContentManager,
     ContentManagerProfile,
+    PaginationService,
   ],
   exports: [ContentManagerService],
 })

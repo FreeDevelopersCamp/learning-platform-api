@@ -227,32 +227,6 @@ export class AuthenticationService {
     return user;
   }
 
-  // private async _createOwner(userId: string): Promise<ResourceOwnerDto> {
-  //   const ownerDto = new CreateOwnerDto();
-
-  //   ownerDto.userId = userId;
-
-  //   return await this._ownerService.create(ownerDto);
-  // }
-
-  // private async _createInstructor(
-  //   userId: string,
-  // ): Promise<ResourceInstructorDto> {
-  //   const instructorDto = new CreateInstructorDto();
-
-  //   instructorDto.userId = userId;
-
-  //   return await this._instructorService.create(instructorDto);
-  // }
-
-  // private async _createLearner(userId: string): Promise<ResourceLearnerDto> {
-  //   const learnerDto = new CreateLearnerDto();
-
-  //   learnerDto.userId = userId;
-
-  //   return await this._learnerService.create(learnerDto);
-  // }
-
   private async _setSession(
     active: boolean,
     status: SessionStatus,

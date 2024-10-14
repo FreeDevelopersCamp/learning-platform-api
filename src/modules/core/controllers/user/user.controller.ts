@@ -6,6 +6,8 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
+  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 import { UserService } from '../../services/user/user.service';
@@ -15,18 +17,39 @@ import {
   ApiTags,
   ApiResponse,
   ApiExcludeEndpoint,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { CreateUserDto } from '../../dto/user/create.user';
 import { UpdateUserDto } from '../../dto/user/update.user';
 import { ResourceUserDto } from '../../dto/user/resource.user';
+import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
+import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
+import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
+import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
+import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
 
 @ApiBearerAuth('authorization')
 @ApiTags('user')
 @Controller('user')
+@UseGuards(AuthGuard, RolesGuard)
 export class UserController {
   constructor(private readonly _userService: UserService) {}
 
   @Get()
+  @Roles([AllowRoles.admin])
+  @UseInterceptors(PaginationInterceptor)
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Items per page',
+    type: Number,
+  })
   @ApiResponse({
     description: 'List of user',
     isArray: true,
@@ -37,6 +60,7 @@ export class UserController {
   }
 
   @Get('/:id')
+  @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'user information',
@@ -59,6 +83,7 @@ export class UserController {
   }
 
   @Patch()
+  @ApiExcludeEndpoint()
   @ApiResponse({
     description: 'user updated information',
     isArray: false,
@@ -69,6 +94,7 @@ export class UserController {
   }
 
   @Delete('/:id')
+  @ApiExcludeEndpoint()
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',
