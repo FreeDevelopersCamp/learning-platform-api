@@ -1,5 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 import { BaseEntity } from 'src/utils/entities/base.entity';
 
 @Schema({ autoCreate: false })
@@ -10,7 +11,7 @@ export class AccountManager extends BaseEntity {
 
   @AutoMap()
   @Prop()
-  userId: string;
+  userId: Types.ObjectId;
 }
 
 export const AccountManagerSchema =

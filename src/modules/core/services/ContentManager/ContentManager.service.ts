@@ -81,7 +81,7 @@ export class ContentManagerService {
     const dto = new ResourceContentManagerDto();
     dto._id = entity._id.toString();
     dto.status = entity.status;
-    dto.user = await this._userService.getById(entity.userId);
+    dto.user = await this._userService.getById(entity.userId.toString());
 
     return dto;
   }

@@ -6,4 +6,8 @@ export class UpdateInstructorDto extends InstructorDto {
   @ApiProperty({ default: '' })
   @AutoMap()
   _id: string;
+
+  @AutoMap()
+  @ApiProperty()
+  status: string; // from lookup
 }

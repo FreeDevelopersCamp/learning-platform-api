@@ -63,7 +63,7 @@ export class LearnerService {
   private async toDto(entity: Learner): Promise<ResourceLearnerDto> {
     const dto = new ResourceLearnerDto();
     dto._id = entity._id.toString();
-    dto.user = await this._userService.getById(entity.userId);
+    dto.user = await this._userService.getById(entity.userId.toString());
 
     return dto;
   }

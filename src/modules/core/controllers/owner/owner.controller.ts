@@ -104,4 +104,28 @@ export class OwnerController {
   delete(@Param('id') id: string) {
     return this._ownerService.delete(id);
   }
+
+  @Get('/approve/:id')
+  @Roles([AllowRoles.admin, AllowRoles.owner])
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'Manager approved information',
+    isArray: false,
+    type: ResourceOwnerDto,
+  })
+  approve(@Param('id') id: string) {
+    return this._ownerService.approve(id);
+  }
+
+  @Delete('/reject/:id')
+  @Roles([AllowRoles.admin])
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'Manager approved information',
+    isArray: false,
+    type: ResourceOwnerDto,
+  })
+  reject(@Param('id') id: string) {
+    return this._ownerService.reject(id);
+  }
 }

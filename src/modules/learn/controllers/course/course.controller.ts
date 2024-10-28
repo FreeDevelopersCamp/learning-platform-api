@@ -6,23 +6,47 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
+  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 import { CourseService } from '../../services/course/course.service';
 import { ObjectIdValidationPipe } from 'src/common/pipes/object-id-validation.pipe';
-import { ApiBearerAuth, ApiTags, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiResponse,
+  ApiQuery,
+  ApiExcludeEndpoint,
+} from '@nestjs/swagger';
 import { CreateCourseDto } from '../../dto/course/create.course';
 import { UpdateCourseDto } from '../../dto/course/update.course';
 import { ResourceCourseDto } from '../../dto/course/resource.course';
 import { SchemaValidation } from 'src/common/pipes/schema-validation.pipe';
+import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
+import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
 
 @ApiBearerAuth('authorization')
 @ApiTags('course')
 @Controller('course')
+@UseGuards(RolesGuard)
 export class CourseController {
   constructor(private readonly _courseService: CourseService) {}
 
   @Get()
+  @UseInterceptors(PaginationInterceptor)
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Items per page',
+    type: Number,
+  })
   @ApiResponse({
     description: 'List of course',
     isArray: true,
@@ -44,6 +68,7 @@ export class CourseController {
   }
 
   @Post()
+  @ApiExcludeEndpoint()
   @UsePipes(new SchemaValidation())
   @ApiResponse({
     description: 'course created information',
@@ -55,6 +80,7 @@ export class CourseController {
   }
 
   @Patch()
+  @ApiExcludeEndpoint()
   @UsePipes(new SchemaValidation())
   @ApiResponse({
     description: 'course updated information',
@@ -66,6 +92,7 @@ export class CourseController {
   }
 
   @Delete('/:id')
+  @ApiExcludeEndpoint()
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',

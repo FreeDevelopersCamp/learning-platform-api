@@ -61,6 +61,11 @@ export class AdminService {
     return await this._repo.delete(id);
   }
 
+  async getByUserId(id: string): Promise<ResourceAdminDto> {
+    const entities = await this.list();
+    return entities.find((entity) => entity.user._id === id);
+  }
+
   private async toDto(entity: Admin): Promise<ResourceAdminDto> {
     const dto = new ResourceAdminDto();
     dto._id = entity._id.toString();

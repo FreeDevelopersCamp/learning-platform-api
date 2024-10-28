@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { MongoRepository } from 'src/Infra/database/repository/mongo-repository';
 import { IMongoRepository } from 'src/infra/database/repository/adapter';
 import { InjectMapper } from '@automapper/nestjs';
@@ -11,6 +11,11 @@ import { UpdateInstructorDto } from '../../dto/instructor/update.instructor';
 import { UserService } from '../user/user.service';
 import { CourseService } from 'src/modules/learn/services/course/course.service';
 import { RoadmapService } from 'src/modules/learn/services/roadmap/roadmap.service';
+import { ResourceCourseDto } from 'src/modules/learn/dto/course/resource.course';
+import { UserRequested } from 'src/infra/system/system.constant';
+import { InstructorException } from 'src/utils/exception';
+import { CreateCourseDto } from 'src/modules/learn/dto/course/create.course';
+import { UpdateCourseDto } from 'src/modules/learn/dto/course/update.course';
 
 @Injectable()
 export class InstructorService {
@@ -41,13 +46,29 @@ export class InstructorService {
     return this.toDto(entity);
   }
 
+  async getByUserId(id: string): Promise<ResourceInstructorDto> {
+    const entities = await this.list();
+    return entities.find((entity) => entity.user._id === id);
+  }
+
   async create(dto: CreateInstructorDto): Promise<ResourceInstructorDto> {
     const entity = await this._repo.create(new this._instructorModel(dto));
     return this.getById(entity._id.toString());
   }
 
   async update(dto: UpdateInstructorDto): Promise<ResourceInstructorDto> {
-    const entity = await this._repo.create(new this._instructorModel(dto));
+    const entity = new Instructor();
+    entity._id = new Types.ObjectId(dto._id);
+    entity.status = dto.status;
+    entity.userId = new Types.ObjectId(UserRequested.userId);
+    entity.courseIds = dto.courses.map(
+      (course) => new Types.ObjectId(course._id),
+    );
+    entity.roadmapIds = dto.roadmaps.map(
+      (roadmap) => new Types.ObjectId(roadmap._id),
+    );
+
+    await this._repo.update(new this._instructorModel(entity));
     return this.getById(entity._id.toString());
   }
 
@@ -75,10 +96,84 @@ export class InstructorService {
     return this.delete(id);
   }
 
+  async listCourses(): Promise<ResourceCourseDto[]> {
+    const userId = UserRequested.userId;
+    const instructor = await this.getByUserId(userId);
+    if (instructor.status == '2') {
+      return instructor.courses;
+    } else {
+      throw new InstructorException(
+        'Instructor is not approved by the Account Manager',
+      );
+    }
+  }
+
+  async createCourse(dto: CreateCourseDto): Promise<ResourceCourseDto> {
+    const userId = UserRequested.userId;
+    const instructor = await this.getByUserId(userId);
+
+    if (instructor.status == '2') {
+      const entity = await this._courseService.create(dto);
+      instructor.courses.push(entity);
+
+      const updated = new UpdateInstructorDto();
+      updated._id = instructor._id;
+      updated.status = instructor.status;
+      updated.courses = instructor.courses;
+      updated.roadmaps = instructor.roadmaps;
+
+      await this.update(updated);
+      return entity;
+    } else {
+      throw new InstructorException(
+        'Instructor is not approved by the Account Manager',
+      );
+    }
+  }
+
+  async updateCourse(dto: UpdateCourseDto): Promise<ResourceCourseDto> {
+    const userId = UserRequested.userId;
+    const instructor = await this.getByUserId(userId);
+
+    if (instructor.status == '2') {
+      const entity = await this._courseService.update(dto);
+      for (const course of instructor.courses) {
+        if (course._id == entity._id) {
+          course.description = entity.description;
+          course.resources = entity.resources;
+          course.tips = entity.tips;
+          break;
+        }
+      }
+      return entity;
+    } else {
+      throw new InstructorException(
+        'Instructor is not approved by the Account Manager',
+      );
+    }
+  }
+
+  async deleteCourse(id: string): Promise<boolean> {
+    const userId = UserRequested.userId;
+    const instructor = await this.getByUserId(userId);
+
+    if (instructor.status == '2') {
+      const entity = await this._courseService.delete(id);
+      instructor.courses = instructor.courses.filter(
+        (course) => course._id != id,
+      );
+      return entity;
+    } else {
+      throw new InstructorException(
+        'Instructor is not approved by the Account Manager',
+      );
+    }
+  }
+
   private async toDto(entity: Instructor): Promise<ResourceInstructorDto> {
     const dto = new ResourceInstructorDto();
     dto._id = entity._id.toString();
-
+    dto.status = entity.status;
     dto.user = await this._userService.getById(entity.userId.toString());
 
     dto.courses = await Promise.all(

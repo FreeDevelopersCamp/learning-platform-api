@@ -33,6 +33,11 @@ export class CourseDto {
   @AutoMap()
   @IsString()
   @ApiProperty({ required: true })
+  instructorId: string;
+
+  @AutoMap()
+  @IsString()
+  @ApiProperty({ required: true })
   description: string;
 
   @AutoMap()
