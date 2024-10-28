@@ -36,6 +36,7 @@ export class ManagerController {
   constructor(private readonly _managerService: ManagerService) {}
 
   @Get()
+  @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
   @UseInterceptors(PaginationInterceptor)
   @ApiQuery({
     name: 'page',
@@ -49,7 +50,6 @@ export class ManagerController {
     description: 'Items per page',
     type: Number,
   })
-  @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
   @ApiResponse({
     description: 'List of manager',
     isArray: true,

@@ -29,22 +29,18 @@ export class OwnerService {
   async list(): Promise<ResourceOwnerDto[]> {
     try {
       const userId = UserRequested.userId;
-      console.log('User ID:', userId); // Log userId once for debugging
 
       const authorized = await this.isAuthorized(userId);
-      console.log('Authorized:', authorized); // Log authorization status once for debugging
 
       if (!authorized) {
         throw new OwnerException('Not Approved!');
       }
 
       const entities = await this._repo.findAll();
-      console.log('Entities:', entities); // Log entities for debugging
 
       const entitiesDto = await Promise.all(
         entities.map(async (entity) => {
           const entityDto = await this.getById(entity._id.toString());
-          console.log('Entity DTO:', entityDto); // Log each entity DTO for debugging
           return entityDto;
         }),
       );
@@ -77,6 +73,8 @@ export class OwnerService {
   }
 
   async delete(id: string): Promise<boolean> {
+    this.isAuthorized(UserRequested.userId);
+
     const entity = await this.getById(id);
 
     if (entity.user.roles.length === 1) {

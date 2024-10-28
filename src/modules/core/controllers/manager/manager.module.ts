@@ -6,9 +6,11 @@ import { ManagerProfile } from '../../entity/manager/manager.mapper';
 import { UserModule } from '../user/user.module';
 import { GuardsModule } from 'src/modules/authentication/guards/guards.module';
 import { PaginationService } from 'src/common/interceptors/pagination/pagination.service';
+import { AdminModule } from '../admin/admin.module';
+import { OwnerModule } from '../owner/owner.module';
 
 @Module({
-  imports: [UserModule, GuardsModule],
+  imports: [UserModule, GuardsModule, AdminModule, OwnerModule],
   controllers: [ManagerController],
   providers: [
     ManagerService,

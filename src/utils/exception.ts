@@ -242,3 +242,9 @@ export class OwnerException extends BaseException {
     super(message ?? 'Something went error', 404, parameters);
   }
 }
+
+export class ManagerException extends BaseException {
+  constructor(message?: string, parameters?: ParametersType) {
+    super(message ?? 'Something went error', 404, parameters);
+  }
+}
