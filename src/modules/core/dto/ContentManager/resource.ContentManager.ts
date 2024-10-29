@@ -10,9 +10,5 @@ export class ResourceContentManagerDto extends ContentManagerDto {
 
   @AutoMap()
   @ApiProperty()
-  status: string; // from lookup
-
-  @AutoMap()
-  @ApiProperty()
   user: ResourceUserDto;
 }

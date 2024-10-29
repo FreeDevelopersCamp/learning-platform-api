@@ -8,11 +8,7 @@ export class ResourceOwnerDto extends OwnerDto {
   @AutoMap()
   _id: string;
 
-  @AutoMap()
   @ApiProperty()
+  @AutoMap()
   user: ResourceUserDto;
-
-  @AutoMap()
-  @ApiProperty()
-  status: string; // from lookup
 }

@@ -5,6 +5,10 @@ import { ResourceCourseDto } from 'src/modules/learn/dto/course/resource.course'
 import { ResourceRoadmapDto } from 'src/modules/learn/dto/roadmap/resource.roadmap';
 
 export class InstructorDto {
+  @AutoMap()
+  @ApiProperty({ default: '1' })
+  status: string;
+
   @ApiProperty({ required: false })
   @AutoMap()
   @IsArray()

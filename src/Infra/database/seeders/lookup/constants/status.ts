@@ -8,12 +8,12 @@ export const status: any = {
     },
     {
       id: '2',
-      label: 'approved',
+      label: 'activated', // approved
       order: 2,
     },
     {
       id: '3',
-      label: 'rejected',
+      label: 'deactivated',
       order: 3,
     },
   ],

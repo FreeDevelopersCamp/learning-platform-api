@@ -94,7 +94,7 @@ export class OwnerController {
   }
 
   @Delete('/:id')
-  @Roles([AllowRoles.admin, AllowRoles.owner])
+  @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',
@@ -103,6 +103,18 @@ export class OwnerController {
   })
   delete(@Param('id') id: string) {
     return this._ownerService.delete(id);
+  }
+
+  @Delete('/deactivate/:id')
+  @Roles([AllowRoles.admin, AllowRoles.owner])
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'Deactivate owner account',
+    isArray: false,
+    type: ResourceOwnerDto,
+  })
+  deactivate(@Param('id') id: string) {
+    return this._ownerService.deactivate(id);
   }
 
   @Get('/approve/:id')

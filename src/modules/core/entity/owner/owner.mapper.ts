@@ -1,10 +1,4 @@
-import {
-  Mapper,
-  createMap,
-  forMember,
-  ignore,
-  mapFrom,
-} from '@automapper/core';
+import { Mapper, createMap, forMember, mapFrom } from '@automapper/core';
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { Owner } from './Owner.schema';
 import { OwnerDto } from '../../dto/owner/owner';
@@ -31,7 +25,6 @@ export class OwnerProfile extends AutomapperProfile {
           (dest) => dest._id,
           mapFrom((src) => new Types.ObjectId(src._id)),
         ),
-        forMember((dest) => dest.userId, ignore()),
       );
       createMap(
         mapper,
@@ -41,7 +34,6 @@ export class OwnerProfile extends AutomapperProfile {
           (dest) => dest._id,
           mapFrom((src) => src._id.toString()),
         ),
-        forMember((dest) => dest.user, ignore()),
       );
 
       createMap(mapper, ResourceOwnerDto, OwnerDto);
@@ -50,8 +42,32 @@ export class OwnerProfile extends AutomapperProfile {
       createMap(mapper, ResourceOwnerDto, CreateOwnerDto);
       createMap(mapper, CreateOwnerDto, ResourceOwnerDto);
 
-      createMap(mapper, ResourceOwnerDto, UpdateOwnerDto);
-      createMap(mapper, UpdateOwnerDto, ResourceOwnerDto);
+      createMap(
+        mapper,
+        ResourceOwnerDto,
+        UpdateOwnerDto,
+        forMember(
+          (dest) => dest._id,
+          mapFrom((src) => src._id),
+        ),
+        forMember(
+          (dest) => dest.user,
+          mapFrom((src) => src.user),
+        ),
+      );
+      createMap(
+        mapper,
+        UpdateOwnerDto,
+        ResourceOwnerDto,
+        forMember(
+          (dest) => dest._id,
+          mapFrom((src) => src._id),
+        ),
+        forMember(
+          (dest) => dest.user,
+          mapFrom((src) => src.user),
+        ),
+      );
     };
   }
 }

@@ -95,7 +95,7 @@ export class AccountManagerController {
 
   @Delete('/:id')
   @UsePipes(new ObjectIdValidationPipe())
-  @Roles([AllowRoles.admin, AllowRoles.accountManager])
+  @Roles([AllowRoles.admin, AllowRoles.manager])
   @ApiResponse({
     description: 'Deleted result',
     isArray: false,

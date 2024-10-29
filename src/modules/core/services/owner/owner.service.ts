@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { MongoRepository } from 'src/Infra/database/repository/mongo-repository';
 import { IMongoRepository } from 'src/infra/database/repository/adapter';
 import { InjectMapper } from '@automapper/nestjs';
@@ -38,44 +38,54 @@ export class OwnerService {
 
       const entities = await this._repo.findAll();
 
-      const entitiesDto = await Promise.all(
+      return await Promise.all(
         entities.map(async (entity) => {
-          const entityDto = await this.getById(entity._id.toString());
-          return entityDto;
+          return await this.toDto(entity);
         }),
       );
-
-      return entitiesDto;
     } catch (error) {
       console.error('Error in list method:', error);
     }
   }
 
   async getById(id: string): Promise<ResourceOwnerDto> {
-    this.isAuthorized(UserRequested.userId);
+    await this.isAuthorized(UserRequested.userId);
 
     const entity = await this._repo.findOne(id);
-    return this.toDto(entity);
+    return await this.toDto(entity);
   }
 
   async create(dto: CreateOwnerDto): Promise<ResourceOwnerDto> {
-    this.isAuthorized(UserRequested.userId);
-
     const entity = await this._repo.create(new this._ownerModel(dto));
-    return this.getById(entity._id.toString());
+    return await this.toDto(entity);
   }
 
   async update(dto: UpdateOwnerDto): Promise<ResourceOwnerDto> {
-    this.isAuthorized(UserRequested.userId);
+    const authorized = await this.isAuthorized(UserRequested.userId);
+
+    if (!authorized) {
+      throw new OwnerException('You are not authorized');
+    }
 
     const entity = await this._repo.update(new this._ownerModel(dto));
-    return this.getById(entity._id.toString());
+    if (!entity.userId) {
+      entity.userId = new Types.ObjectId(dto.user._id);
+    }
+    return await this.toDto(entity);
   }
 
   async delete(id: string): Promise<boolean> {
-    this.isAuthorized(UserRequested.userId);
+    const authorized = await this.isAuthorized(UserRequested.userId);
+
+    if (!authorized) {
+      throw new OwnerException('You are not authorized');
+    }
 
     const entity = await this.getById(id);
+
+    if (entity.status != '3') {
+      throw new OwnerException('You can only delete deactivated entities');
+    }
 
     if (entity.user.roles.length === 1) {
       await this._userService.delete(entity.user._id);
@@ -87,19 +97,34 @@ export class OwnerService {
     return await this._repo.delete(id);
   }
 
-  async getByUserId(id: string): Promise<ResourceOwnerDto> {
-    const entities = await this._repo.findAll();
-    const entity = entities.find((entity) => entity.userId.toString() === id);
+  async deactivate(id: string): Promise<ResourceOwnerDto> {
+    const authorized = await this.isAuthorized(UserRequested.userId);
 
-    if (!entity) {
-      throw new OwnerException('Entity not found');
+    if (!authorized) {
+      throw new OwnerException('You are not authorized');
     }
 
-    return this.getById(entity._id.toString());
+    const userRequested = await this._userService.getById(UserRequested.userId);
+    const dto = await this.getById(id);
+
+    if (!userRequested.roles.includes('0')) {
+      const userEntity = await this.getByUserId(userRequested._id);
+      if (userEntity._id != id) {
+        throw new OwnerException(
+          'You are not authorized to deactivate this entity.',
+        );
+      }
+    }
+
+    const entity = new UpdateOwnerDto();
+    entity._id = dto._id;
+    entity.status = '3';
+    entity.user = dto.user;
+    return await this.update(entity);
   }
 
   async approve(id: string): Promise<ResourceOwnerDto> {
-    const authorized = this.isAuthorized(UserRequested.userId);
+    const authorized = await this.isAuthorized(UserRequested.userId);
     if (authorized) {
       const entity = await this.getById(id);
 
@@ -115,10 +140,10 @@ export class OwnerService {
   async reject(id: string): Promise<Boolean> {
     const userId = UserRequested.userId;
 
-    const authorized = this.isAuthorized(userId);
+    const authorized = await this.isAuthorized(userId);
 
     if (authorized) {
-      return this.delete(id);
+      return await this.delete(id);
     } else {
       throw new OwnerException(
         'You are not authorized to perform this action.',
@@ -126,9 +151,19 @@ export class OwnerService {
     }
   }
 
+  async getByUserId(id: string): Promise<ResourceOwnerDto> {
+    const entities = await this._repo.findAll();
+    const entity = entities.find((entity) => entity.userId.toString() === id);
+
+    if (!entity) {
+      throw new OwnerException('Entity not found');
+    }
+
+    return await this.toDto(entity);
+  }
+
   private async isAuthorized(userId: string): Promise<boolean> {
     const user = await this._userService.getById(userId);
-
     let isAdmin = false;
     let isOwner = false;
 

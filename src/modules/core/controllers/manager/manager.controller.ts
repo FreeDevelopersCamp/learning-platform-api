@@ -94,7 +94,7 @@ export class ManagerController {
   }
 
   @Delete('/:id')
-  @Roles([AllowRoles.admin, AllowRoles.manager])
+  @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',
