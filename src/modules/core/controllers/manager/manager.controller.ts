@@ -105,6 +105,18 @@ export class ManagerController {
     return this._managerService.delete(id);
   }
 
+  @Delete('/deactivate/:id')
+  @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'Deactivate owner account',
+    isArray: false,
+    type: ResourceManagerDto,
+  })
+  deactivate(@Param('id') id: string) {
+    return this._managerService.deactivate(id);
+  }
+
   @Get('/approve/:id')
   @Roles([AllowRoles.admin, AllowRoles.owner])
   @UsePipes(new ObjectIdValidationPipe())
