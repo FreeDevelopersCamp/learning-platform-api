@@ -6,9 +6,12 @@ import { ContentManagerProfile } from '../../entity/ContentManager/ContentManage
 import { UserModule } from '../user/user.module';
 import { GuardsModule } from 'src/modules/authentication/guards/guards.module';
 import { PaginationService } from 'src/common/interceptors/pagination/pagination.service';
+import { AdminModule } from '../admin/admin.module';
+import { OwnerModule } from '../owner/owner.module';
+import { ManagerModule } from '../manager/manager.module';
 
 @Module({
-  imports: [UserModule, GuardsModule],
+  imports: [UserModule, GuardsModule, AdminModule, OwnerModule, ManagerModule],
   controllers: [ContentManagerController],
   providers: [
     ContentManagerService,

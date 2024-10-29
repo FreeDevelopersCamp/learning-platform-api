@@ -31,13 +31,17 @@ import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagina
 @ApiBearerAuth('authorization')
 @ApiTags('ContentManager')
 @Controller('ContentManager')
-@UseGuards(RolesGuard)
 @UseGuards(AuthGuard, RolesGuard)
 export class ContentManagerController {
   constructor(private readonly _contentManagerService: ContentManagerService) {}
 
   @Get()
-  @Roles([AllowRoles.admin, AllowRoles.manager, AllowRoles.contentManager])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.contentManager,
+  ])
   @UseInterceptors(PaginationInterceptor)
   @ApiQuery({
     name: 'page',
@@ -61,7 +65,12 @@ export class ContentManagerController {
   }
 
   @Get('/:id')
-  @Roles([AllowRoles.admin, AllowRoles.manager, AllowRoles.contentManager])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.contentManager,
+  ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'ContentManager information',
@@ -95,7 +104,7 @@ export class ContentManagerController {
   }
 
   @Delete('/:id')
-  @Roles([AllowRoles.admin, AllowRoles.contentManager])
+  @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',
@@ -106,8 +115,25 @@ export class ContentManagerController {
     return this._contentManagerService.delete(id);
   }
 
+  @Delete('/deactivate/:id')
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.contentManager,
+  ])
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'Deactivate owner account',
+    isArray: false,
+    type: ResourceContentManagerDto,
+  })
+  deactivate(@Param('id') id: string) {
+    return this._contentManagerService.deactivate(id);
+  }
+
   @Get('/approve/:id')
-  @Roles([AllowRoles.admin, AllowRoles.manager])
+  @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Manager approved information',
@@ -119,7 +145,7 @@ export class ContentManagerController {
   }
 
   @Delete('/reject/:id')
-  @Roles([AllowRoles.admin, AllowRoles.manager])
+  @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Manager approved information',

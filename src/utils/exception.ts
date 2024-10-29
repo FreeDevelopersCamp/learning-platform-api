@@ -254,3 +254,9 @@ export class AccountManagerException extends BaseException {
     super(message ?? 'Something went error', 404, parameters);
   }
 }
+
+export class ContentManagerException extends BaseException {
+  constructor(message?: string, parameters?: ParametersType) {
+    super(message ?? 'Something went error', 404, parameters);
+  }
+}
