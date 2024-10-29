@@ -134,20 +134,20 @@ export class ManagerService {
 
   async approve(id: string): Promise<ResourceManagerDto> {
     const authorized = await this.isAuthorized(UserRequested.userId);
-    if (authorized) {
-      const entity = await this.getById(id);
 
-      if (entity.status != '2') {
-        entity.status = '2';
-        return await this.update(entity);
-      } else {
-        throw new ManagerException('This entity is already approved!');
-      }
-    } else {
+    if (!authorized) {
       throw new ManagerException(
         'You are not authorized to perform this action.',
       );
     }
+
+    const entity = await this.getById(id);
+
+    if (entity.status == '2')
+      throw new ManagerException('This entity is already approved!');
+
+    entity.status = '2';
+    return await this.update(entity);
   }
 
   async reject(id: string): Promise<Boolean> {

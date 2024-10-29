@@ -83,8 +83,8 @@ export class OwnerService {
 
     const entity = await this.getById(id);
 
-    if (entity.status != '3') {
-      throw new OwnerException('You can only delete deactivated entities');
+    if (entity.status == '2') {
+      throw new OwnerException('You can not delete active entities');
     }
 
     if (entity.user.roles.length === 1) {
@@ -107,6 +107,10 @@ export class OwnerService {
     const userRequested = await this._userService.getById(UserRequested.userId);
     const dto = await this.getById(id);
 
+    if (dto.status == '1') {
+      throw new OwnerException('This entity is still pending!');
+    }
+
     if (!userRequested.roles.includes('0')) {
       const userEntity = await this.getByUserId(userRequested._id);
       if (userEntity._id != id) {
@@ -125,16 +129,20 @@ export class OwnerService {
 
   async approve(id: string): Promise<ResourceOwnerDto> {
     const authorized = await this.isAuthorized(UserRequested.userId);
-    if (authorized) {
-      const entity = await this.getById(id);
 
-      entity.status = '2';
-      return await this.update(entity);
-    } else {
+    if (!authorized) {
       throw new OwnerException(
         'You are not authorized to perform this action.',
       );
     }
+
+    const entity = await this.getById(id);
+
+    if (entity.status == '2')
+      throw new OwnerException('This entity is already approved!');
+
+    entity.status = '2';
+    return await this.update(entity);
   }
 
   async reject(id: string): Promise<Boolean> {
@@ -142,13 +150,16 @@ export class OwnerService {
 
     const authorized = await this.isAuthorized(userId);
 
-    if (authorized) {
-      return await this.delete(id);
-    } else {
-      throw new OwnerException(
-        'You are not authorized to perform this action.',
-      );
+    if (!authorized) {
+      throw new OwnerException('Not authorized!');
     }
+
+    const entity = await this.getById(id);
+
+    if (entity.status != '1') {
+      throw new OwnerException('You can only reject pending entities!');
+    }
+    return await this.delete(id);
   }
 
   async getByUserId(id: string): Promise<ResourceOwnerDto> {
