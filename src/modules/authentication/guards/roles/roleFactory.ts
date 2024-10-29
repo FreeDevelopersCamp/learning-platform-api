@@ -20,11 +20,11 @@ export class RoleFactory {
   constructor(
     private readonly adminService: AdminService,
     private readonly ownerService: OwnerService,
-    private readonly instructorService: InstructorService,
-    private readonly learnerService: LearnerService,
     private readonly managerService: ManagerService,
     private readonly accountManagerService: AccountManagerService,
     private readonly contentManagerService: ContentManagerService,
+    private readonly instructorService: InstructorService,
+    private readonly learnerService: LearnerService,
   ) {}
 
   public getServiceAndDto(role: string, userId: string) {
@@ -40,20 +40,6 @@ export class RoleFactory {
       dto.userId = userId;
       return {
         service: this.ownerService,
-        dto: dto,
-      };
-    } else if (role === AllowRoles.instructor) {
-      const dto = new CreateInstructorDto();
-      dto.userId = userId;
-      return {
-        service: this.instructorService,
-        dto: dto,
-      };
-    } else if (role === AllowRoles.learner) {
-      const dto = new CreateLearnerDto();
-      dto.userId = userId;
-      return {
-        service: this.learnerService,
         dto: dto,
       };
     } else if (role === AllowRoles.manager) {
@@ -75,6 +61,20 @@ export class RoleFactory {
       dto.userId = userId;
       return {
         service: this.contentManagerService,
+        dto: dto,
+      };
+    } else if (role === AllowRoles.instructor) {
+      const dto = new CreateInstructorDto();
+      dto.userId = userId;
+      return {
+        service: this.instructorService,
+        dto: dto,
+      };
+    } else if (role === AllowRoles.learner) {
+      const dto = new CreateLearnerDto();
+      dto.userId = userId;
+      return {
+        service: this.learnerService,
         dto: dto,
       };
     } else {

@@ -36,7 +36,12 @@ export class AccountManagerController {
   constructor(private readonly _accountManagerService: AccountManagerService) {}
 
   @Get()
-  @Roles([AllowRoles.admin, AllowRoles.manager, AllowRoles.accountManager])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+  ])
   @UseInterceptors(PaginationInterceptor)
   @ApiQuery({
     name: 'page',
@@ -61,7 +66,12 @@ export class AccountManagerController {
 
   @Get('/:id')
   @UsePipes(new ObjectIdValidationPipe())
-  @Roles([AllowRoles.admin, AllowRoles.manager, AllowRoles.accountManager])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+  ])
   @ApiResponse({
     description: 'AccountManager information',
     isArray: false,
@@ -95,7 +105,7 @@ export class AccountManagerController {
 
   @Delete('/:id')
   @UsePipes(new ObjectIdValidationPipe())
-  @Roles([AllowRoles.admin, AllowRoles.manager])
+  @Roles([AllowRoles.admin])
   @ApiResponse({
     description: 'Deleted result',
     isArray: false,
@@ -105,8 +115,25 @@ export class AccountManagerController {
     return this._accountManagerService.delete(id);
   }
 
+  @Delete('/deactivate/:id')
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+  ])
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'Deactivate owner account',
+    isArray: false,
+    type: ResourceAccountManagerDto,
+  })
+  deactivate(@Param('id') id: string) {
+    return this._accountManagerService.deactivate(id);
+  }
+
   @Get('/approve/:id')
-  @Roles([AllowRoles.admin, AllowRoles.manager])
+  @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Manager approved information',
@@ -118,7 +145,7 @@ export class AccountManagerController {
   }
 
   @Delete('/reject/:id')
-  @Roles([AllowRoles.admin, AllowRoles.manager])
+  @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Manager approved information',

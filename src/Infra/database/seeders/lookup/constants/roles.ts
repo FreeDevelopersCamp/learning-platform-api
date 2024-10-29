@@ -13,27 +13,27 @@ export const roles: any = {
     },
     {
       id: '2',
-      label: 'Instructor',
+      label: 'Manager',
       order: 2,
     },
     {
       id: '3',
-      label: 'Learner',
+      label: 'Account Manager',
       order: 3,
     },
     {
       id: '4',
-      label: 'Manager',
+      label: 'Content Manager',
       order: 4,
     },
     {
       id: '5',
-      label: 'Content Manager',
+      label: 'Instructor',
       order: 5,
     },
     {
       id: '6',
-      label: 'Account Manager',
+      label: 'Learner',
       order: 6,
     },
   ],

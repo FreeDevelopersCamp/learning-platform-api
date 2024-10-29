@@ -29,25 +29,21 @@ export class ManagerService {
   }
 
   async list(): Promise<ResourceManagerDto[]> {
-    try {
-      const userId = UserRequested.userId;
+    const userId = UserRequested.userId;
 
-      const authorized = await this.isAuthorized(userId);
+    const authorized = await this.isAuthorized(userId);
 
-      if (!authorized) {
-        throw new ManagerException('Not Approved!');
-      }
-
-      const entities = await this._repo.findAll();
-
-      return await Promise.all(
-        entities.map(async (entity) => {
-          return await this.toDto(entity);
-        }),
-      );
-    } catch (error) {
-      console.error('Error in list method:', error);
+    if (!authorized) {
+      throw new ManagerException('Not Approved!');
     }
+
+    const entities = await this._repo.findAll();
+
+    return await Promise.all(
+      entities.map(async (entity) => {
+        return await this.toDto(entity);
+      }),
+    );
   }
 
   async getById(id: string): Promise<ResourceManagerDto> {
@@ -185,7 +181,7 @@ export class ManagerService {
       if (owner && owner.status == '2') {
         isOwner = true;
       }
-    } else if (user.roles.includes('4')) {
+    } else if (user.roles.includes('2')) {
       const manager = await this.getByUserId(userId);
 
       if (manager && manager.status == '2') {
