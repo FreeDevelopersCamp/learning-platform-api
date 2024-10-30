@@ -13,6 +13,7 @@ import { AccountManagerModule } from 'src/modules/core/controllers/AccountManage
 import { ContentManagerModule } from 'src/modules/core/controllers/ContentManager/ContentManager.module';
 import { RoleFactory } from '../guards/roles/roleFactory';
 import { ManagerModule } from 'src/modules/core/controllers/manager/manager.module';
+import { AdminModule } from 'src/modules/core/controllers/admin/admin.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ManagerModule } from 'src/modules/core/controllers/manager/manager.modu
     LookupModule,
     LearnerModule,
     InstructorModule,
+    AdminModule,
     OwnerModule,
     ManagerModule,
     AccountManagerModule,

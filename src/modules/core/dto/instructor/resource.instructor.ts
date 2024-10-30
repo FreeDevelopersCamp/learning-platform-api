@@ -11,8 +11,4 @@ export class ResourceInstructorDto extends InstructorDto {
   @AutoMap()
   @ApiProperty()
   user: ResourceUserDto;
-
-  @AutoMap()
-  @ApiProperty()
-  status: string; // from lookup
 }

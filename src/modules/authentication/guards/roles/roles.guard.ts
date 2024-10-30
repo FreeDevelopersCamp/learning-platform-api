@@ -46,7 +46,7 @@ export class RolesGuard implements CanActivate {
   ): boolean {
     return (
       userRoles.some((permission) => allowedRoles.includes(permission)) ||
-      userRoles.includes(AllowRoles.owner)
+      userRoles.includes(AllowRoles.admin)
     );
   }
 }

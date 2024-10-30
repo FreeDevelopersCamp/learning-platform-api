@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { MongoRepository } from 'src/Infra/database/repository/mongo-repository';
 import { IMongoRepository } from 'src/infra/database/repository/adapter';
 import { InjectMapper } from '@automapper/nestjs';
@@ -11,6 +11,16 @@ import { UpdateInstructorDto } from '../../dto/instructor/update.instructor';
 import { UserService } from '../user/user.service';
 import { CourseService } from 'src/modules/learn/services/course/course.service';
 import { RoadmapService } from 'src/modules/learn/services/roadmap/roadmap.service';
+import { ResourceCourseDto } from 'src/modules/learn/dto/course/resource.course';
+import { UserRequested } from 'src/infra/system/system.constant';
+import { InstructorException } from 'src/utils/exception';
+import { CreateCourseDto } from 'src/modules/learn/dto/course/create.course';
+import { UpdateCourseDto } from 'src/modules/learn/dto/course/update.course';
+import { AdminService } from '../admin/admin.service';
+import { OwnerService } from '../owner/owner.service';
+import { ManagerService } from '../manager/manager.service';
+import { AccountManagerService } from '../AccountManager/AccountManager.service';
+import { ContentManagerService } from '../ContentManager/ContentManager.service';
 
 @Injectable()
 export class InstructorService {
@@ -20,6 +30,11 @@ export class InstructorService {
     @Inject('INSTRUCTOR_MODEL') private _instructorModel: Model<Instructor>,
     @InjectMapper() private readonly _mapper: Mapper,
     private readonly _userService: UserService,
+    private readonly _adminService: AdminService,
+    private readonly _ownerService: OwnerService,
+    private readonly _managerService: ManagerService,
+    private readonly _accountManagerService: AccountManagerService,
+    private readonly _contentManagerService: ContentManagerService,
     private readonly _courseService: CourseService,
     private readonly _roadmapService: RoadmapService,
   ) {
@@ -27,65 +42,314 @@ export class InstructorService {
   }
 
   async list(): Promise<ResourceInstructorDto[]> {
-    const entities = await this._repo.findAll();
+    const userId = UserRequested.userId;
 
+    const authorized = await this.isAuthorized(userId);
+
+    if (!authorized) {
+      throw new InstructorException('Not Approved!');
+    }
+
+    const entities = await this._repo.findAll();
+    console.log(entities);
     return await Promise.all(
-      entities.map((entity) => {
-        return this.getById.call(this, entity._id.toString());
+      entities.map(async (entity) => {
+        return await this.toDto(entity);
       }),
     );
   }
 
   async getById(id: string): Promise<ResourceInstructorDto> {
+    const authorized = await this.isAuthorized(UserRequested.userId);
+
+    if (!authorized) {
+      throw new InstructorException('Not approved!');
+    }
+
     const entity = await this._repo.findOne(id);
-    return this.toDto(entity);
+    return await this.toDto(entity);
   }
 
   async create(dto: CreateInstructorDto): Promise<ResourceInstructorDto> {
     const entity = await this._repo.create(new this._instructorModel(dto));
-    return this.getById(entity._id.toString());
+    return await this.toDto(entity);
   }
 
   async update(dto: UpdateInstructorDto): Promise<ResourceInstructorDto> {
-    const entity = await this._repo.create(new this._instructorModel(dto));
-    return this.getById(entity._id.toString());
+    const authorized = await this.isAuthorized(UserRequested.userId);
+
+    if (!authorized) {
+      throw new InstructorException('You are not authorized');
+    }
+
+    const entity = new Instructor();
+    entity._id = new Types.ObjectId(dto._id);
+    entity.status = dto.status;
+    entity.userId = new Types.ObjectId(UserRequested.userId);
+    entity.courseIds = dto.courses?.map(
+      (course) => new Types.ObjectId(course._id),
+    );
+    entity.roadmapIds = dto.roadmaps?.map(
+      (roadmap) => new Types.ObjectId(roadmap._id),
+    );
+
+    const updated = await this._repo.update(new this._instructorModel(entity));
+    if (!updated.userId) {
+      updated.userId = new Types.ObjectId(entity.userId);
+    }
+    return await this.toDto(updated);
   }
 
   async delete(id: string): Promise<boolean> {
+    const authorized = await this.isAuthorized(UserRequested.userId);
+
+    if (!authorized) {
+      throw new InstructorException('You are not authorized');
+    }
+
     const entity = await this.getById(id);
+
+    if (entity.status == '2') {
+      throw new InstructorException('You can not delete active entities');
+    }
 
     if (entity.user.roles.length === 1) {
       await this._userService.delete(entity.user._id);
+    } else {
+      entity.user.roles = entity.user.roles.filter((role) => role !== '2');
+      await this._userService.update(entity.user);
     }
 
     return await this._repo.delete(id);
   }
 
   async approve(id: string): Promise<ResourceInstructorDto> {
+    const authorized = await this.isAuthorized(UserRequested.userId);
+
+    if (!authorized) {
+      throw new InstructorException(
+        'You are not authorized to perform this action.',
+      );
+    }
+
     const entity = await this.getById(id);
+
+    if (entity.status == '2')
+      throw new InstructorException('This entity is already approved!');
 
     entity.status = '2';
     return await this.update(entity);
   }
 
   async reject(id: string): Promise<Boolean> {
-    return this.delete(id);
+    const userId = UserRequested.userId;
+
+    const authorized = await this.isAuthorized(userId);
+
+    if (!authorized) {
+      throw new InstructorException('Not authorized!');
+    }
+
+    const entity = await this.getById(id);
+
+    if (entity.status != '1') {
+      throw new InstructorException('You can only reject pending entities!');
+    }
+    return await this.delete(id);
+  }
+
+  async deactivate(id: string): Promise<ResourceInstructorDto> {
+    const authorized = await this.isAuthorized(UserRequested.userId);
+
+    if (!authorized) {
+      throw new InstructorException('You are not authorized');
+    }
+
+    const userRequested = await this._userService.getById(UserRequested.userId);
+    const dto = await this.getById(id);
+
+    if (dto.status == '1') {
+      throw new InstructorException('This entity is still pending!');
+    }
+
+    if (
+      !userRequested.roles.includes('0') &&
+      !userRequested.roles.includes('1') &&
+      !userRequested.roles.includes('2') &&
+      !userRequested.roles.includes('3')
+    ) {
+      const userEntity = await this.getByUserId(userRequested._id);
+      if (userEntity._id != id) {
+        throw new InstructorException(
+          'You are not authorized to deactivate this entity.',
+        );
+      }
+    }
+
+    const entity = new UpdateInstructorDto();
+    entity._id = dto._id;
+    entity.status = '3';
+    entity.user = dto.user;
+    return await this.update(entity);
+  }
+
+  async getByUserId(id: string): Promise<ResourceInstructorDto> {
+    const entities = await this._repo.findAll();
+    const entity = entities.find((entity) => entity.userId.toString() === id);
+
+    if (!entity) {
+      throw new InstructorException('Entity not found');
+    }
+
+    return await this.toDto(entity);
+  }
+
+  private async isAuthorized(userId: string): Promise<boolean> {
+    const user = await this._userService.getById(userId);
+    let isAdmin = false;
+    let isOwner = false;
+    let isManager = false;
+    let isAccountManager = false;
+    let isContentManager = false;
+    let isInstructor = false;
+
+    if (user.roles.includes('0')) {
+      const admin = await this._adminService.getByUserId(userId);
+
+      if (admin && admin.status == '2') {
+        isAdmin = true;
+      }
+    } else if (user.roles.includes('1')) {
+      const owner = await this._ownerService.getByUserId(userId);
+
+      if (owner && owner.status == '2') {
+        isOwner = true;
+      }
+    } else if (user.roles.includes('2')) {
+      const manager = await this._managerService.getByUserId(userId);
+
+      if (manager && manager.status == '2') {
+        isManager = true;
+      }
+    } else if (user.roles.includes('3')) {
+      const accountManager =
+        await this._accountManagerService.getByUserId(userId);
+
+      if (accountManager && accountManager.status == '2') {
+        isAccountManager = true;
+      }
+    } else if (user.roles.includes('4')) {
+      const contentManager =
+        await this._contentManagerService.getByUserId(userId);
+
+      if (contentManager && contentManager.status == '2') {
+        isContentManager = true;
+      }
+    } else if (user.roles.includes('5')) {
+      const instructor = await this.getByUserId(userId);
+
+      if (instructor && instructor.status == '2') {
+        isInstructor = true;
+      }
+    }
+    return (
+      isAdmin ||
+      isOwner ||
+      isManager ||
+      isAccountManager ||
+      isContentManager ||
+      isInstructor
+    );
+  }
+
+  async listCourses(): Promise<ResourceCourseDto[]> {
+    const userId = UserRequested.userId;
+    const instructor = await this.getByUserId(userId);
+    if (instructor.status == '2') {
+      return instructor.courses;
+    } else {
+      throw new InstructorException(
+        'Instructor is not approved by the Account Manager',
+      );
+    }
+  }
+
+  async createCourse(dto: CreateCourseDto): Promise<ResourceCourseDto> {
+    const userId = UserRequested.userId;
+    const instructor = await this.getByUserId(userId);
+
+    if (instructor.status == '2') {
+      const entity = await this._courseService.create(dto);
+      instructor.courses.push(entity);
+
+      const updated = new UpdateInstructorDto();
+      updated._id = instructor._id;
+      updated.status = instructor.status;
+      updated.courses = instructor.courses;
+      updated.roadmaps = instructor.roadmaps;
+
+      await this.update(updated);
+      return entity;
+    } else {
+      throw new InstructorException(
+        'Instructor is not approved by the Account Manager',
+      );
+    }
+  }
+
+  async updateCourse(dto: UpdateCourseDto): Promise<ResourceCourseDto> {
+    const userId = UserRequested.userId;
+    const instructor = await this.getByUserId(userId);
+
+    if (instructor.status == '2') {
+      const entity = await this._courseService.update(dto);
+      for (const course of instructor.courses) {
+        if (course._id == entity._id) {
+          course.description = entity.description;
+          course.resources = entity.resources;
+          course.tips = entity.tips;
+          break;
+        }
+      }
+      return entity;
+    } else {
+      throw new InstructorException(
+        'Instructor is not approved by the Account Manager',
+      );
+    }
+  }
+
+  async deleteCourse(id: string): Promise<boolean> {
+    const userId = UserRequested.userId;
+    const instructor = await this.getByUserId(userId);
+
+    if (instructor.status == '2') {
+      const entity = await this._courseService.delete(id);
+      instructor.courses = instructor.courses.filter(
+        (course) => course._id != id,
+      );
+      return entity;
+    } else {
+      throw new InstructorException(
+        'Instructor is not approved by the Account Manager',
+      );
+    }
   }
 
   private async toDto(entity: Instructor): Promise<ResourceInstructorDto> {
     const dto = new ResourceInstructorDto();
     dto._id = entity._id.toString();
-
+    dto.status = entity.status;
     dto.user = await this._userService.getById(entity.userId.toString());
 
     dto.courses = await Promise.all(
-      entity.courseIds.map(async (course) => {
+      entity.courseIds?.map(async (course) => {
         return await this._courseService.getById(course._id.toString());
       }),
     );
 
     dto.roadmaps = await Promise.all(
-      entity.roadmapIds.map(async (roadmap) => {
+      entity.roadmapIds?.map(async (roadmap) => {
         return await this._roadmapService.getById(roadmap._id.toString());
       }),
     );

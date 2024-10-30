@@ -1,3 +1,4 @@
+import { AdminModule } from './controllers/admin/admin.module';
 import { OwnerModule } from './controllers/owner/owner.module';
 import { ContentManagerModule } from './controllers/ContentManager/ContentManager.module';
 import { AccountManagerModule } from './controllers/AccountManager/AccountManager.module';
@@ -14,6 +15,7 @@ import { UserModule } from './controllers/user/user.module';
 
 @Module({
   imports: [
+    AdminModule,
     OwnerModule,
     ContentManagerModule,
     AccountManagerModule,

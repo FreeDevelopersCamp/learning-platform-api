@@ -8,9 +8,24 @@ import { PaginationService } from 'src/common/interceptors/pagination/pagination
 import { CourseModule } from 'src/modules/learn/controllers/course/course.module';
 import { RoadmapModule } from 'src/modules/learn/controllers/roadmap/roadmap.module';
 import { GuardsModule } from 'src/modules/authentication/guards/guards.module';
+import { AdminModule } from '../admin/admin.module';
+import { OwnerModule } from '../owner/owner.module';
+import { ManagerModule } from '../manager/manager.module';
+import { AccountManagerModule } from '../AccountManager/AccountManager.module';
+import { ContentManagerModule } from '../ContentManager/ContentManager.module';
 
 @Module({
-  imports: [UserModule, CourseModule, RoadmapModule, GuardsModule],
+  imports: [
+    UserModule,
+    CourseModule,
+    RoadmapModule,
+    GuardsModule,
+    AdminModule,
+    OwnerModule,
+    ManagerModule,
+    AccountManagerModule,
+    ContentManagerModule,
+  ],
   controllers: [InstructorController],
   providers: [
     InstructorService,

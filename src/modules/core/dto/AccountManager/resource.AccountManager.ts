@@ -10,9 +10,5 @@ export class ResourceAccountManagerDto extends AccountManagerDto {
 
   @AutoMap()
   @ApiProperty()
-  status: string; // from lookup
-
-  @AutoMap()
-  @ApiProperty()
   user: ResourceUserDto;
 }

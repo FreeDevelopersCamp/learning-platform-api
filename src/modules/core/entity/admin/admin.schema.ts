@@ -4,7 +4,7 @@ import { Types } from 'mongoose';
 import { BaseEntity } from 'src/utils/entities/base.entity';
 
 @Schema({ autoCreate: false })
-export class AccountManager extends BaseEntity {
+export class Admin extends BaseEntity {
   @AutoMap()
   @Prop({ default: '1' })
   status: string; // from lookup
@@ -14,5 +14,4 @@ export class AccountManager extends BaseEntity {
   userId: Types.ObjectId;
 }
 
-export const AccountManagerSchema =
-  SchemaFactory.createForClass(AccountManager);
+export const AdminSchema = SchemaFactory.createForClass(Admin);

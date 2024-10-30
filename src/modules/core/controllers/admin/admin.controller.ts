@@ -10,30 +10,30 @@ import {
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
-import { UserService } from '../../services/user/user.service';
+import { AdminService } from '../../services/admin/admin.service';
 import { ObjectIdValidationPipe } from 'src/common/pipes/object-id-validation.pipe';
 import {
   ApiBearerAuth,
   ApiTags,
   ApiResponse,
-  ApiExcludeEndpoint,
   ApiQuery,
+  ApiExcludeEndpoint,
 } from '@nestjs/swagger';
-import { CreateUserDto } from '../../dto/user/create.user';
-import { UpdateUserDto } from '../../dto/user/update.user';
-import { ResourceUserDto } from '../../dto/user/resource.user';
-import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
+import { CreateAdminDto } from '../../dto/admin/create.admin';
+import { UpdateAdminDto } from '../../dto/admin/update.admin';
+import { ResourceAdminDto } from '../../dto/admin/resource.admin';
 import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
-import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
 import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
 import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
+import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
+import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
 
 @ApiBearerAuth('authorization')
-@ApiTags('user')
-@Controller('user')
+@ApiTags('admin')
+@Controller('admin')
 @UseGuards(AuthGuard, RolesGuard)
-export class UserController {
-  constructor(private readonly _userService: UserService) {}
+export class AdminController {
+  constructor(private readonly _adminService: AdminService) {}
 
   @Get()
   @Roles([AllowRoles.admin])
@@ -51,57 +51,58 @@ export class UserController {
     type: Number,
   })
   @ApiResponse({
-    description: 'List of user',
+    description: 'List of admin',
     isArray: true,
-    type: ResourceUserDto,
+    type: ResourceAdminDto,
   })
   list() {
-    return this._userService.list();
+    return this._adminService.list();
   }
 
   @Get('/:id')
   @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
-    description: 'user information',
+    description: 'admin information',
     isArray: false,
-    type: ResourceUserDto,
+    type: ResourceAdminDto,
   })
   getById(@Param('id') id: string) {
-    return this._userService.getById(id);
+    return this._adminService.getById(id);
   }
 
   @Post()
+  @Roles([AllowRoles.admin])
   @ApiExcludeEndpoint()
   @ApiResponse({
-    description: 'user created information',
+    description: 'admin created information',
     isArray: false,
-    type: ResourceUserDto,
+    type: ResourceAdminDto,
   })
-  create(@Body() user: CreateUserDto) {
-    return this._userService.create(user);
+  create(@Body() admin: CreateAdminDto) {
+    return this._adminService.create(admin);
   }
 
   @Patch()
-  @ApiExcludeEndpoint()
+  @Roles([AllowRoles.admin])
   @ApiResponse({
-    description: 'user updated information',
+    description: 'admin updated information',
     isArray: false,
-    type: ResourceUserDto,
+    type: ResourceAdminDto,
   })
-  update(@Body() user: UpdateUserDto) {
-    return this._userService.update(user);
+  update(@Body() admin: UpdateAdminDto) {
+    return this._adminService.update(admin);
   }
 
   @Delete('/:id')
-  @ApiExcludeEndpoint()
+  @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',
     isArray: false,
-    type: ResourceUserDto,
+    type: ResourceAdminDto,
   })
   delete(@Param('id') id: string) {
-    return this._userService.delete(id);
+    return this._adminService.delete(id);
   }
 }

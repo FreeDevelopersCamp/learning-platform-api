@@ -45,6 +45,7 @@ export class CourseService {
     const entityDto = new ResourceCourseDto();
     entityDto._id = entity._id.toString();
     entityDto.name = entity.name;
+    entityDto.instructorId = entity.instructorId.toString();
     entityDto.description = entity.description;
     entityDto.resources = entity.resources;
     entityDto.tips = entity.tips;

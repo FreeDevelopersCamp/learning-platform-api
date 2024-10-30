@@ -1,12 +1,13 @@
 import { AutoMap } from '@automapper/classes';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsArray, IsString, IsUrl } from 'class-validator';
+import { Types } from 'mongoose';
 import { BaseEntity } from 'src/utils/entities/base.entity';
 
 export class CourseResource {
   @AutoMap()
   @IsString()
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   name: string;
 
   @AutoMap()
@@ -31,6 +32,10 @@ export class Course extends BaseEntity {
   @IsString()
   @Prop({ required: true, unique: true })
   name: string;
+
+  @AutoMap()
+  @Prop({ required: true })
+  instructorId: Types.ObjectId;
 
   @AutoMap()
   @IsString()

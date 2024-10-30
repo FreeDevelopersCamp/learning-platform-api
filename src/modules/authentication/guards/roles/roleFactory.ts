@@ -12,60 +12,70 @@ import { CreateManagerDto } from 'src/modules/core/dto/manager/create.manager';
 import { CreateAccountManagerDto } from 'src/modules/core/dto/AccountManager/create.AccountManager';
 import { CreateContentManagerDto } from 'src/modules/core/dto/ContentManager/create.ContentManager';
 import { AllowRoles } from '../_constants/roles.constants';
+import { CreateAdminDto } from 'src/modules/core/dto/admin/create.admin';
+import { AdminService } from 'src/modules/core/services/admin/admin.service';
 
 @Injectable()
 export class RoleFactory {
   constructor(
+    private readonly adminService: AdminService,
     private readonly ownerService: OwnerService,
-    private readonly instructorService: InstructorService,
-    private readonly learnerService: LearnerService,
     private readonly managerService: ManagerService,
     private readonly accountManagerService: AccountManagerService,
     private readonly contentManagerService: ContentManagerService,
+    private readonly instructorService: InstructorService,
+    private readonly learnerService: LearnerService,
   ) {}
 
   public getServiceAndDto(role: string, userId: string) {
-    if (role === AllowRoles.owner) {
-      const ownerDto = new CreateOwnerDto();
-      ownerDto.userId = userId;
+    if (role === AllowRoles.admin) {
+      const dto = new CreateAdminDto();
+      dto.userId = userId;
+      return {
+        service: this.adminService,
+        dto: dto,
+      };
+    } else if (role === AllowRoles.owner) {
+      const dto = new CreateOwnerDto();
+      dto.userId = userId;
       return {
         service: this.ownerService,
-        dto: ownerDto,
-      };
-    } else if (role === AllowRoles.instructor) {
-      const instructorDto = new CreateInstructorDto();
-      instructorDto.userId = userId;
-      return {
-        service: this.instructorService,
-        dto: instructorDto,
-      };
-    } else if (role === AllowRoles.learner) {
-      const learnerDto = new CreateLearnerDto();
-      learnerDto.userId = userId;
-      return {
-        service: this.learnerService,
-        dto: learnerDto,
+        dto: dto,
       };
     } else if (role === AllowRoles.manager) {
-      const managerDto = new CreateManagerDto();
-      managerDto.userId = userId;
+      const dto = new CreateManagerDto();
+      dto.userId = userId;
       return {
         service: this.managerService,
-        dto: managerDto,
+        dto: dto,
       };
     } else if (role === AllowRoles.accountManager) {
-      const accountManagerDto = new CreateAccountManagerDto();
-      accountManagerDto.userId = userId;
+      const dto = new CreateAccountManagerDto();
+      dto.userId = userId;
       return {
         service: this.accountManagerService,
-        dto: accountManagerDto,
+        dto: dto,
       };
     } else if (role === AllowRoles.contentManager) {
-      const contentManagerDto = new CreateContentManagerDto();
-      contentManagerDto.userId = userId;
+      const dto = new CreateContentManagerDto();
+      dto.userId = userId;
       return {
         service: this.contentManagerService,
-        dto: contentManagerDto,
+        dto: dto,
+      };
+    } else if (role === AllowRoles.instructor) {
+      const dto = new CreateInstructorDto();
+      dto.userId = userId;
+      return {
+        service: this.instructorService,
+        dto: dto,
+      };
+    } else if (role === AllowRoles.learner) {
+      const dto = new CreateLearnerDto();
+      dto.userId = userId;
+      return {
+        service: this.learnerService,
+        dto: dto,
       };
     } else {
       throw new Error(`Service and DTO for role ${role} not found`);

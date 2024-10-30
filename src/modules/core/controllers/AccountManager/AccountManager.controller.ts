@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 import { AccountManagerService } from '../../services/AccountManager/AccountManager.service';
@@ -16,6 +17,7 @@ import {
   ApiTags,
   ApiResponse,
   ApiExcludeEndpoint,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { CreateAccountManagerDto } from '../../dto/AccountManager/create.AccountManager';
 import { UpdateAccountManagerDto } from '../../dto/AccountManager/update.AccountManager';
@@ -23,16 +25,36 @@ import { ResourceAccountManagerDto } from '../../dto/AccountManager/resource.Acc
 import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
 import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
 import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
+import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
+import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
 
 @ApiBearerAuth('authorization')
 @ApiTags('AccountManager')
 @Controller('AccountManager')
-@UseGuards(RolesGuard)
+@UseGuards(AuthGuard, RolesGuard)
 export class AccountManagerController {
   constructor(private readonly _accountManagerService: AccountManagerService) {}
 
   @Get()
-  @Roles([AllowRoles.admin, AllowRoles.manager, AllowRoles.accountManager])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+  ])
+  @UseInterceptors(PaginationInterceptor)
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Items per page',
+    type: Number,
+  })
   @ApiResponse({
     description: 'List of AccountManager',
     isArray: true,
@@ -44,7 +66,12 @@ export class AccountManagerController {
 
   @Get('/:id')
   @UsePipes(new ObjectIdValidationPipe())
-  @Roles([AllowRoles.admin, AllowRoles.manager, AllowRoles.accountManager])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+  ])
   @ApiResponse({
     description: 'AccountManager information',
     isArray: false,
@@ -78,7 +105,7 @@ export class AccountManagerController {
 
   @Delete('/:id')
   @UsePipes(new ObjectIdValidationPipe())
-  @Roles([AllowRoles.admin, AllowRoles.accountManager])
+  @Roles([AllowRoles.admin])
   @ApiResponse({
     description: 'Deleted result',
     isArray: false,
@@ -88,8 +115,25 @@ export class AccountManagerController {
     return this._accountManagerService.delete(id);
   }
 
+  @Delete('/deactivate/:id')
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+  ])
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'Deactivate owner account',
+    isArray: false,
+    type: ResourceAccountManagerDto,
+  })
+  deactivate(@Param('id') id: string) {
+    return this._accountManagerService.deactivate(id);
+  }
+
   @Get('/approve/:id')
-  @Roles([AllowRoles.admin, AllowRoles.manager])
+  @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Manager approved information',
@@ -101,7 +145,7 @@ export class AccountManagerController {
   }
 
   @Delete('/reject/:id')
-  @Roles([AllowRoles.admin, AllowRoles.manager])
+  @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Manager approved information',

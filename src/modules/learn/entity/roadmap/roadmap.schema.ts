@@ -19,6 +19,10 @@ export class FrequentlyAskedQuestions {
 @Schema({ autoCreate: false })
 export class Roadmap extends BaseEntity {
   @AutoMap()
+  @Prop({ default: '1' })
+  status: string; // from lookup
+
+  @AutoMap()
   @IsString()
   @Prop({ unique: true, required: true })
   name: string;
