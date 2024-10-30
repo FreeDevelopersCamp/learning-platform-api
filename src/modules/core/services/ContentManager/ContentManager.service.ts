@@ -155,7 +155,8 @@ export class ContentManagerService {
 
     if (
       !userRequested.roles.includes('0') &&
-      !userRequested.roles.includes('1')
+      !userRequested.roles.includes('1') &&
+      !userRequested.roles.includes('2')
     ) {
       const userEntity = await this.getByUserId(userRequested._id);
       if (userEntity._id != id) {

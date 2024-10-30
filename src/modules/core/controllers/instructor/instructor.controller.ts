@@ -39,7 +39,15 @@ export class InstructorController {
   constructor(private readonly _instructorService: InstructorService) {}
 
   @Get()
-  @Roles([AllowRoles.admin, AllowRoles.instructor])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
   @UseInterceptors(PaginationInterceptor)
   @ApiQuery({
     name: 'page',
@@ -63,7 +71,15 @@ export class InstructorController {
   }
 
   @Get('course')
-  @Roles([AllowRoles.contentManager, AllowRoles.instructor])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
   @UseInterceptors(PaginationInterceptor)
   @ApiQuery({
     name: 'page',
@@ -87,8 +103,16 @@ export class InstructorController {
   }
 
   @Get('/:id')
-  @Roles([AllowRoles.admin, AllowRoles.instructor])
   @UsePipes(new ObjectIdValidationPipe())
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
   @ApiResponse({
     description: 'instructor information',
     isArray: false,
@@ -110,7 +134,7 @@ export class InstructorController {
   }
 
   @Patch()
-  @Roles([AllowRoles.admin, AllowRoles.instructor])
+  @Roles([AllowRoles.admin, AllowRoles.accountManager, AllowRoles.instructor])
   @ApiResponse({
     description: 'instructor updated information',
     isArray: false,
@@ -121,7 +145,7 @@ export class InstructorController {
   }
 
   @Delete('/:id')
-  @Roles([AllowRoles.admin, AllowRoles.instructor])
+  @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',
@@ -132,8 +156,31 @@ export class InstructorController {
     return this._instructorService.delete(id);
   }
 
+  @Delete('/deactivate/:id')
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.instructor,
+  ])
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'Deactivate owner account',
+    isArray: false,
+    type: ResourceInstructorDto,
+  })
+  deactivate(@Param('id') id: string) {
+    return this._instructorService.deactivate(id);
+  }
+
   @Get('/approve/:id')
-  @Roles([AllowRoles.admin, AllowRoles.accountManager])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+  ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Manager approved information',
@@ -145,7 +192,12 @@ export class InstructorController {
   }
 
   @Delete('/reject/:id')
-  @Roles([AllowRoles.admin, AllowRoles.accountManager])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+  ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Manager approved information',
@@ -157,7 +209,7 @@ export class InstructorController {
   }
 
   @Post('course')
-  @Roles([AllowRoles.instructor])
+  @Roles([AllowRoles.admin, AllowRoles.contentManager, AllowRoles.instructor])
   @ApiResponse({
     description: 'course created information',
     isArray: false,
@@ -168,7 +220,7 @@ export class InstructorController {
   }
 
   @Patch('course')
-  @Roles([AllowRoles.instructor])
+  @Roles([AllowRoles.admin, AllowRoles.contentManager, AllowRoles.instructor])
   @ApiResponse({
     description: 'instructor updated information',
     isArray: false,
@@ -179,7 +231,7 @@ export class InstructorController {
   }
 
   @Delete('course/:id')
-  @Roles([AllowRoles.instructor])
+  @Roles([AllowRoles.admin, AllowRoles.contentManager, AllowRoles.instructor])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',
