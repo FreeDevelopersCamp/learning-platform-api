@@ -6,7 +6,7 @@ import { BaseEntity } from 'src/utils/entities/base.entity';
 @Schema({ autoCreate: false })
 export class Learner extends BaseEntity {
   @AutoMap()
-  @Prop()
+  @Prop({ default: '2' })
   status: string; // from lookup
 
   @AutoMap()

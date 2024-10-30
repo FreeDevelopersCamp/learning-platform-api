@@ -36,6 +36,15 @@ export class LearnerController {
   constructor(private readonly _learnerService: LearnerService) {}
 
   @Get()
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
   @UseInterceptors(PaginationInterceptor)
   @ApiQuery({
     name: 'page',
@@ -59,6 +68,15 @@ export class LearnerController {
   }
 
   @Get('/:id')
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'learner information',
@@ -81,7 +99,7 @@ export class LearnerController {
   }
 
   @Patch()
-  @Roles([AllowRoles.admin, AllowRoles.learner])
+  @Roles([AllowRoles.admin, AllowRoles.accountManager, AllowRoles.learner])
   @ApiResponse({
     description: 'learner updated information',
     isArray: false,
@@ -92,7 +110,7 @@ export class LearnerController {
   }
 
   @Delete('/:id')
-  @Roles([AllowRoles.admin, AllowRoles.learner])
+  @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',
@@ -101,5 +119,40 @@ export class LearnerController {
   })
   delete(@Param('id') id: string) {
     return this._learnerService.delete(id);
+  }
+
+  @Delete('/deactivate/:id')
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.learner,
+  ])
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'Deactivate owner account',
+    isArray: false,
+    type: ResourceLearnerDto,
+  })
+  deactivate(@Param('id') id: string) {
+    return this._learnerService.deactivate(id);
+  }
+
+  @Get('/approve/:id')
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+  ])
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'Manager approved information',
+    isArray: false,
+    type: ResourceLearnerDto,
+  })
+  approve(@Param('id') id: string) {
+    return this._learnerService.approve(id);
   }
 }

@@ -3,6 +3,6 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class LearnerDto {
   @AutoMap()
-  @ApiProperty({ default: '1' })
+  @ApiProperty({ default: '2' })
   status: string;
 }
