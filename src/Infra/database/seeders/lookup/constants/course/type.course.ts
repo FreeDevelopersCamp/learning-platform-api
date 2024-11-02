@@ -22,9 +22,19 @@ export const roles: any = {
       order: 3,
     },
     {
-      id: '3',
+      id: '4',
       label: 'Roadmap',
-      order: 3,
+      order: 4,
+    },
+    {
+      id: '5',
+      label: 'Official',
+      order: 5,
+    },
+    {
+      id: '6',
+      label: 'OpenSource',
+      order: 6,
     },
   ],
 };
