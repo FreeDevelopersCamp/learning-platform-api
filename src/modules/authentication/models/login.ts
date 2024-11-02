@@ -1,6 +1,7 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsEmail,
   IsNotEmpty,
   IsString,
   IsStrongPassword,
@@ -12,8 +13,14 @@ export class Login {
   @IsString()
   @IsNotEmpty()
   @Length(5, 20)
-  @ApiProperty({ default: '', required: true, maxLength: 20 })
-  userName: string;
+  @ApiProperty({ required: false, maxLength: 20 })
+  userName?: string;
+
+  @AutoMap()
+  @IsEmail()
+  @IsNotEmpty()
+  @ApiProperty({ maxLength: 25, required: false })
+  email?: string;
 
   @AutoMap()
   @IsString()

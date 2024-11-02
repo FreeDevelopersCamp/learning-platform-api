@@ -16,8 +16,7 @@ export class Instructor extends BaseEntity {
 
   @Prop({ required: false })
   @AutoMap()
-  @IsArray()
-  courseIds?: Types.ObjectId[];
+  coursesIds?: Types.ObjectId[];
 
   @Prop({ required: false })
   @AutoMap()

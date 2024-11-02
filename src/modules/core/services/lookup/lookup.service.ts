@@ -13,7 +13,7 @@ import { cities } from 'src/Infra/database/seeders/lookup/constants/cities';
 import { countries } from 'src/Infra/database/seeders/lookup/constants/countries';
 import { days } from 'src/Infra/database/seeders/lookup/constants/days';
 import { gender } from 'src/Infra/database/seeders/lookup/constants/gender';
-import { roles } from 'src/Infra/database/seeders/lookup/constants/roles';
+import { roles } from 'src/Infra/database/seeders/lookup/constants/user/user.roles';
 import { ResourceTenancyDto } from '../../dto/tenancy/resource.tenancy';
 import { LookupList } from '../../entity/lookup/lookup.enum';
 import { LookupItemNotFoundException } from 'src/utils/exception';

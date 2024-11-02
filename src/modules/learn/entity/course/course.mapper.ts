@@ -1,10 +1,4 @@
-import {
-  Mapper,
-  createMap,
-  forMember,
-  mapFrom,
-  ignore,
-} from '@automapper/core';
+import { Mapper, createMap, forMember, mapFrom } from '@automapper/core';
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { Course } from './Course.schema';
 import { CourseDto } from '../../dto/course/course';
@@ -39,16 +33,24 @@ export class CourseProfile extends AutomapperProfile {
           (dest) => dest.description,
           mapFrom((src) => src.description),
         ),
-        // forMember(
-        //   (dest) => dest.tips,
-        //   mapFrom((src) => src.tips),
-        // ),
+        forMember(
+          (dest) => dest.category,
+          mapFrom((src) => src.category),
+        ),
+        // forMember((dest) => dest.instructorId, ignore()),
+        // forMember((dest) => dest.subCoursesIds, ignore()),
+        forMember(
+          (dest) => dest.tips,
+          mapFrom((src) => src.tips),
+        ),
+        forMember(
+          (dest) => dest.topic,
+          mapFrom((src) => src.topic),
+        ),
         // forMember(
         //   (dest) => dest.resources,
         //   mapFrom((src) => src.resources),
         // ),
-        forMember((dest) => dest.resources, ignore()),
-        forMember((dest) => dest.tips, ignore()),
       );
       createMap(
         mapper,
@@ -66,16 +68,24 @@ export class CourseProfile extends AutomapperProfile {
           (dest) => dest.description,
           mapFrom((src) => src.description),
         ),
-        // forMember(
-        //   (dest) => dest.tips,
-        //   mapFrom((src) => src.tips),
-        // ),
+        forMember(
+          (dest) => dest.category,
+          mapFrom((src) => src.category),
+        ),
+        // forMember((dest) => dest.instructor, ignore()),
+        // forMember((dest) => dest.subCourses, ignore()),
+        forMember(
+          (dest) => dest.tips,
+          mapFrom((src) => src.tips),
+        ),
+        forMember(
+          (dest) => dest.topic,
+          mapFrom((src) => src.topic),
+        ),
         // forMember(
         //   (dest) => dest.resources,
         //   mapFrom((src) => src.resources),
         // ),
-        forMember((dest) => dest.resources, ignore()),
-        forMember((dest) => dest.tips, ignore()),
       );
 
       createMap(mapper, ResourceCourseDto, CourseDto);
