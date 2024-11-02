@@ -62,7 +62,7 @@ export class CourseController {
     return this._courseService.list();
   }
 
-  @Get()
+  @Get('/courseByInstructor/:id')
   @UsePipes(new ObjectIdValidationPipe())
   @Roles([
     AllowRoles.admin,
