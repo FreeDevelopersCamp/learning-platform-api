@@ -14,9 +14,6 @@ export class Challenge {
   xp: number;
 
   @AutoMap()
-  status: string; // Solved or not
-
-  @AutoMap()
   expectedOutput?: string;
 }
 

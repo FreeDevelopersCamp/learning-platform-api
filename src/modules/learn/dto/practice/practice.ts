@@ -15,10 +15,6 @@ export class ChallengeDto {
   xp: number;
 
   @AutoMap()
-  @ApiProperty({ required: false, default: '0' })
-  status: string; // Solved or not
-
-  @AutoMap()
   @ApiProperty({ required: false })
   expectedOutput?: string;
 }
