@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { ProgressService } from '../../services/progress/progress.service';
@@ -15,14 +16,25 @@ import { SchemaValidation } from 'src/common/pipes/schema-validation.pipe';
 import { CreateProgressDto } from '../../dto/progress/create.progress';
 import { UpdateProgressDto } from '../../dto/progress/update.progress';
 import { ResourceProgressDto } from '../../dto/progress/resource.progress';
+import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
+import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
+import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
+import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
 
 @ApiBearerAuth('authorization')
 @ApiTags('progress')
 @Controller('progress')
+@UseGuards(AuthGuard, RolesGuard)
 export class ProgressController {
   constructor(private readonly _progressService: ProgressService) {}
 
   @Get()
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
   @ApiResponse({
     description: 'List of progress',
     isArray: true,

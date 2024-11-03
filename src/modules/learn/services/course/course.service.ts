@@ -173,6 +173,7 @@ export class CourseService {
     entityDto.topic = entity.topic;
     entityDto.status = entity.status;
     entityDto.duration = entity.duration;
+    entityDto.xp = entity.xp;
 
     entityDto.instructor = await this._instructorService.getById(
       entity.instructorId.toString(),

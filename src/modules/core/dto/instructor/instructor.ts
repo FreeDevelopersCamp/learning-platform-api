@@ -12,5 +12,9 @@ export class InstructorDto {
 
   @ApiProperty({ required: false })
   @AutoMap()
+  practicesIds?: string[];
+
+  @ApiProperty({ required: false })
+  @AutoMap()
   roadmapsIds?: string[];
 }

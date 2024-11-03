@@ -65,6 +65,11 @@ export class Course extends BaseEntity {
   duration: number; // In Minutes
 
   @AutoMap()
+  @IsNumber()
+  @Prop({ required: true })
+  xp: number; // 2000 == 1 hour
+
+  @AutoMap()
   @Prop({ required: false, type: [CourseResource], default: [] })
   resources?: CourseResource[];
 

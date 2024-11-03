@@ -20,6 +20,10 @@ export class Instructor extends BaseEntity {
 
   @Prop({ required: false })
   @AutoMap()
+  practicesIds?: Types.ObjectId[];
+
+  @Prop({ required: false })
+  @AutoMap()
   @IsArray()
   roadmapIds?: Types.ObjectId[];
 }

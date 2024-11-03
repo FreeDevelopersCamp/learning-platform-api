@@ -81,6 +81,7 @@ export class InstructorService {
     entity.userId = new Types.ObjectId(UserRequested.userId);
     entity.coursesIds = dto.coursesIds?.map((id) => new Types.ObjectId(id));
     entity.roadmapIds = dto.roadmapsIds?.map((id) => new Types.ObjectId(id));
+    entity.practicesIds = dto.practicesIds?.map((id) => new Types.ObjectId(id));
 
     const updated = await this._repo.update(new this._instructorModel(entity));
 
@@ -267,6 +268,7 @@ export class InstructorService {
 
     dto.coursesIds = entity.coursesIds?.map((id) => id.toString());
     dto.roadmapsIds = entity.roadmapIds?.map((id) => id.toString());
+    dto.practicesIds = entity.practicesIds?.map((id) => id.toString());
 
     return dto;
   }

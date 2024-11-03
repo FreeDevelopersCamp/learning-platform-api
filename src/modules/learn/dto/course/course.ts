@@ -33,6 +33,11 @@ export class CourseDto {
   duration: number;
 
   @AutoMap()
+  @ApiProperty({ required: true })
+  @IsNumber()
+  xp: number;
+
+  @AutoMap()
   @ApiProperty({ required: false, isArray: true })
   subCoursesIds?: string[];
 

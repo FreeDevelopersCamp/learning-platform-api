@@ -1,6 +1,11 @@
-export const cartStatus: any = {
-  name: 'cartStatus',
+export const roles: any = {
+  name: 'status',
   items: [
+    {
+      id: '0',
+      label: 'Pending',
+      order: 0,
+    },
     {
       id: '1',
       label: 'In Progress',
@@ -8,12 +13,12 @@ export const cartStatus: any = {
     },
     {
       id: '2',
-      label: 'Completed',
+      label: 'Skip',
       order: 2,
     },
     {
       id: '3',
-      label: 'Canceled',
+      label: 'Done',
       order: 3,
     },
   ],
