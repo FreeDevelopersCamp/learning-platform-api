@@ -32,6 +32,9 @@ export class ProjectController {
   @Get()
   @Roles([
     AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
     AllowRoles.contentManager,
     AllowRoles.instructor,
     AllowRoles.learner,
@@ -58,7 +61,7 @@ export class ProjectController {
     return this._projectService.list();
   }
 
-  @Get('/courseByInstructor/:id')
+  @Get('/projectByInstructor/:id')
   @UsePipes(new ObjectIdValidationPipe())
   @Roles([
     AllowRoles.admin,
@@ -94,6 +97,9 @@ export class ProjectController {
   @Get('/:id')
   @Roles([
     AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
     AllowRoles.contentManager,
     AllowRoles.instructor,
     AllowRoles.learner,

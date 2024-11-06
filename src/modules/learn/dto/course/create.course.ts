@@ -8,4 +8,12 @@ export class CreateCourseDto extends CourseDto {
   @IsString()
   @ApiProperty({ required: true })
   instructorId: string;
+
+  @AutoMap()
+  @ApiProperty({ required: false, isArray: true })
+  subCoursesIds?: string[];
+
+  @AutoMap()
+  @ApiProperty({ required: false })
+  parentId?: string;
 }

@@ -1,3 +1,3 @@
-import { ExamDto } from "./exam";
+import { ExamDto } from './exam';
 
 export class CreateExamDto extends ExamDto {}

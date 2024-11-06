@@ -14,6 +14,9 @@ import { ContentManagerService } from 'src/modules/core/services/ContentManager/
 import { InstructorService } from 'src/modules/core/services/instructor/instructor.service';
 import { UserRequested } from 'src/infra/system/system.constant';
 import { ProjectException } from 'src/utils/exception';
+import { OwnerService } from 'src/modules/core/services/owner/owner.service';
+import { ManagerService } from 'src/modules/core/services/manager/manager.service';
+import { AccountManagerService } from 'src/modules/core/services/AccountManager/AccountManager.service';
 
 @Injectable()
 export class ProjectService {
@@ -24,6 +27,9 @@ export class ProjectService {
     @InjectMapper() private readonly _mapper: Mapper,
     private readonly _userService: UserService,
     private readonly _adminService: AdminService,
+    private readonly _ownerService: OwnerService,
+    private readonly _managerService: ManagerService,
+    private readonly _accountManagerService: AccountManagerService,
     private readonly _contentManagerService: ContentManagerService,
     private readonly _instructorService: InstructorService,
   ) {
@@ -143,6 +149,9 @@ export class ProjectService {
   private async isAuthorized(userId: string): Promise<boolean> {
     const user = await this._userService.getById(userId);
     let isAdmin = false;
+    let isOwner = false;
+    let isManager = false;
+    let isAccountManager = false;
     let isContentManager = false;
     let isInstructor = false;
 
@@ -151,6 +160,25 @@ export class ProjectService {
 
       if (admin && admin.status == '2') {
         isAdmin = true;
+      }
+    } else if (user.roles.includes('1')) {
+      const owner = await this._ownerService.getByUserId(userId);
+
+      if (owner && owner.status == '2') {
+        isOwner = true;
+      }
+    } else if (user.roles.includes('2')) {
+      const manager = await this._managerService.getByUserId(userId);
+
+      if (manager && manager.status == '2') {
+        isManager = true;
+      }
+    } else if (user.roles.includes('3')) {
+      const accountManager =
+        await this._accountManagerService.getByUserId(userId);
+
+      if (accountManager && accountManager.status == '2') {
+        isAccountManager = true;
       }
     } else if (user.roles.includes('4')) {
       const contentManager =
@@ -166,7 +194,14 @@ export class ProjectService {
         isInstructor = true;
       }
     }
-    return isAdmin || isContentManager || isInstructor;
+    return (
+      isAdmin ||
+      isOwner ||
+      isManager ||
+      isAccountManager ||
+      isContentManager ||
+      isInstructor
+    );
   }
 
   private async toDto(entity: Project): Promise<ResourceProjectDto> {

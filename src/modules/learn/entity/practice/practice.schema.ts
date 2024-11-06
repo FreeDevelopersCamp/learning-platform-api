@@ -54,6 +54,10 @@ export class Practice extends BaseEntity {
   duration: number; // minutes
 
   @AutoMap()
+  @Prop({ required: false, default: 0 })
+  participants?: number;
+
+  @AutoMap()
   @Prop({ required: true })
   challengesToPass: number;
 

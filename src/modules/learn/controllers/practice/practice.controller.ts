@@ -32,6 +32,9 @@ export class PracticeController {
   @Get()
   @Roles([
     AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
     AllowRoles.contentManager,
     AllowRoles.instructor,
     AllowRoles.learner,
@@ -58,7 +61,7 @@ export class PracticeController {
     return this._practiceService.list();
   }
 
-  @Get('/courseByInstructor/:id')
+  @Get('/practiceByInstructor/:id')
   @UsePipes(new ObjectIdValidationPipe())
   @Roles([
     AllowRoles.admin,
@@ -94,6 +97,9 @@ export class PracticeController {
   @Get('/:id')
   @Roles([
     AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
     AllowRoles.contentManager,
     AllowRoles.instructor,
     AllowRoles.learner,

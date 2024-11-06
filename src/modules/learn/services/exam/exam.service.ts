@@ -56,4 +56,3 @@ export class ExamService {
     return await this._repo.delete(id);
   }
 }
-
