@@ -4,7 +4,6 @@ import { ResourceRoadmapDto } from '../roadmap/resource.roadmap';
 import { ResourceCourseDto } from '../course/resource.course';
 import { ResourceProjectDto } from '../project/resource.project';
 import { ResourcePracticeDto } from '../practice/resource.practice';
-import { ResourceAssignmentDto } from '../assignment/resource.assignment';
 import { ResourceTutorialDto } from '../tutorial/resource.tutorial';
 import { ResourceCertificationDto } from '../certification/resource.certification';
 
@@ -40,10 +39,6 @@ export class ProgressDto {
   @AutoMap()
   @ApiProperty({ required: false })
   completedPractices?: ResourcePracticeDto[];
-
-  @AutoMap()
-  @ApiProperty({ required: false })
-  completedAssignments?: ResourceAssignmentDto[];
 
   @AutoMap()
   @ApiProperty({ required: false })
