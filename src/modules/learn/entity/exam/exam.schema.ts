@@ -2,6 +2,6 @@ import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import { BaseEntity } from 'src/utils/entities/base.entity';
 
 @Schema({ autoCreate: false })
-export class Assignment extends BaseEntity {}
+export class Exam extends BaseEntity {}
 
-export const AssignmentSchema = SchemaFactory.createForClass(Assignment);
+export const ExamSchema = SchemaFactory.createForClass(Exam);

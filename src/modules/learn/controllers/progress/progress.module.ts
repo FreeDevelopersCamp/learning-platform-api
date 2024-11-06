@@ -8,7 +8,6 @@ import { CourseModule } from '../course/course.module';
 import { RoadmapModule } from '../roadmap/roadmap.module';
 import { PracticeModule } from '../practice/practice.module';
 import { ProjectModule } from '../project/project.module';
-import { AssignmentModule } from '../assignment/assignment.module';
 import { CertificationModule } from '../certification/certification.module';
 import { TutorialModule } from '../tutorial/tutorial.module';
 
@@ -19,7 +18,6 @@ import { TutorialModule } from '../tutorial/tutorial.module';
     RoadmapModule,
     PracticeModule,
     ProjectModule,
-    AssignmentModule,
     CertificationModule,
     TutorialModule,
   ],

@@ -39,10 +39,6 @@ export class Progress extends BaseEntity {
 
   @AutoMap()
   @Prop({ required: false })
-  completedAssignmentsIds?: Types.ObjectId[];
-
-  @AutoMap()
-  @Prop({ required: false })
   completedTutorialsIds?: Types.ObjectId[];
 
   @AutoMap()
