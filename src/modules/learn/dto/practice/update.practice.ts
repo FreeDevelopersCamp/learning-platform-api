@@ -6,4 +6,9 @@ export class UpdatePracticeDto extends PracticeDto {
   @ApiProperty({ default: '' })
   @AutoMap()
   _id: string;
+
+  // @AutoMap()
+  // @IsString()
+  // @ApiProperty({ required: true })
+  // instructorId: string;
 }

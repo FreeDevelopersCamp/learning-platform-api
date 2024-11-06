@@ -1,34 +1,16 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 import { CourseResource } from '../../entity/course/course.schema';
+import { CourseDto } from './course';
 
-export class UpdateCourseDto {
+export class UpdateCourseDto extends CourseDto {
   @ApiProperty({ default: '' })
   @AutoMap()
   _id: string;
 
-  @AutoMap()
-  @ApiProperty({ required: false })
-  name: string;
-
-  @AutoMap()
-  @ApiProperty({ required: false })
-  description: string;
-
-  @AutoMap()
-  @ApiProperty({ required: false })
-  category: string;
-
-  @AutoMap()
-  @ApiProperty({ required: false })
-  topic: string;
-
-  @AutoMap()
-  status: string; // from lookup
-
-  @AutoMap()
-  @ApiProperty({ required: false })
-  duration: number;
+  // @AutoMap()
+  // @ApiProperty({ required: true })
+  // instructorId: string;
 
   @AutoMap()
   @ApiProperty({ required: false })
@@ -41,8 +23,4 @@ export class UpdateCourseDto {
   @AutoMap()
   @ApiProperty({ required: false })
   resources?: CourseResource[];
-
-  @AutoMap()
-  @ApiProperty({ required: false })
-  tips?: string[];
 }

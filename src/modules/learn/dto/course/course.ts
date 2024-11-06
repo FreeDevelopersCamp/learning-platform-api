@@ -1,7 +1,31 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
-import { CourseResource } from '../../entity/course/course.schema';
+
+export class CourseResourceDto {
+  @AutoMap()
+  @IsString()
+  @ApiProperty({ required: true })
+  name: string;
+
+  @AutoMap()
+  @ApiProperty({ required: false })
+  id?: string;
+
+  @AutoMap()
+  @ApiProperty({ required: false })
+  url?: string;
+
+  @AutoMap()
+  @IsString()
+  @ApiProperty({ required: true })
+  type: string; // article video ...
+
+  @AutoMap()
+  @IsString()
+  @ApiProperty({ required: true })
+  tag: string; // free or paid resource
+}
 
 export class CourseDto {
   @AutoMap()
@@ -38,18 +62,10 @@ export class CourseDto {
   xp: number;
 
   @AutoMap()
-  @ApiProperty({ required: false, isArray: true })
-  subCoursesIds?: string[];
-
-  @AutoMap()
-  @ApiProperty({ required: false })
-  parentId?: string;
-
-  @AutoMap()
-  @ApiProperty({ required: false, type: CourseResource, isArray: true })
-  resources?: CourseResource[];
-
-  @AutoMap()
   @ApiProperty({ required: false })
   tips?: string[];
+
+  @AutoMap()
+  @ApiProperty({ required: false, type: CourseResourceDto, isArray: true })
+  resources?: CourseResourceDto[];
 }

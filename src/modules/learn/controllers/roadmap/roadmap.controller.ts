@@ -6,22 +6,52 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
+  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 import { RoadmapService } from '../../services/roadmap/roadmap.service';
 import { ObjectIdValidationPipe } from 'src/common/pipes/object-id-validation.pipe';
-import { ApiBearerAuth, ApiTags, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { CreateRoadmapDto } from '../../dto/roadmap/create.roadmap';
 import { UpdateRoadmapDto } from '../../dto/roadmap/update.roadmap';
 import { ResourceRoadmapDto } from '../../dto/roadmap/resource.roadmap';
+import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
+import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
+import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
+import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
+import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
 
 @ApiBearerAuth('authorization')
 @ApiTags('roadmap')
 @Controller('roadmap')
+@UseGuards(AuthGuard, RolesGuard)
 export class RoadmapController {
   constructor(private readonly _roadmapService: RoadmapService) {}
 
   @Get()
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
+  @UseInterceptors(PaginationInterceptor)
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Items per page',
+    type: Number,
+  })
   @ApiResponse({
     description: 'List of roadmap',
     isArray: true,
@@ -31,7 +61,49 @@ export class RoadmapController {
     return this._roadmapService.list();
   }
 
+  @Get('/roadmapByInstructor/:id')
+  @UsePipes(new ObjectIdValidationPipe())
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
+  @UseInterceptors(PaginationInterceptor)
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Items per page',
+    type: Number,
+  })
+  @ApiResponse({
+    description: 'List of course',
+    isArray: true,
+    type: ResourceRoadmapDto,
+  })
+  listByInstructor(@Param('id') id: string) {
+    return this._roadmapService.listByInstructor(id);
+  }
+
   @Get('/:id')
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'roadmap information',
@@ -43,6 +115,7 @@ export class RoadmapController {
   }
 
   @Post()
+  @Roles([AllowRoles.admin, AllowRoles.contentManager, AllowRoles.instructor])
   @ApiResponse({
     description: 'roadmap created information',
     isArray: false,
@@ -53,6 +126,7 @@ export class RoadmapController {
   }
 
   @Patch()
+  @Roles([AllowRoles.admin, AllowRoles.contentManager, AllowRoles.instructor])
   @ApiResponse({
     description: 'roadmap updated information',
     isArray: false,
@@ -63,6 +137,7 @@ export class RoadmapController {
   }
 
   @Delete('/:id')
+  @Roles([AllowRoles.admin, AllowRoles.contentManager, AllowRoles.instructor])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',

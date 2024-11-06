@@ -179,10 +179,15 @@ export class CourseService {
       entity.instructorId.toString(),
     );
 
-    entityDto.subCoursesIds = await Promise.all(
-      entity.subCoursesIds.map(async (id) => id.toString()),
-    );
+    if (entity.parentId) {
+      entityDto.parentId = entity.parentId.toString();
+    }
 
+    if (entity.subCoursesIds) {
+      entityDto.subCourses = await Promise.all(
+        entity.subCoursesIds.map(async (id) => this.getById(id.toString())),
+      );
+    }
     entityDto.resources = entity.resources;
     entityDto.tips = entity.tips;
     return entityDto;

@@ -5,13 +5,8 @@ import { ExamModels } from '../../entity/exam/exam.model.provider';
 import { ExamProfile } from '../../entity/exam/exam.mapper';
 
 @Module({
-  controllers: [
-    ExamController
-  ],
-  providers: [
-    ExamService,
-    ExamModels.exam,
-    ExamProfile
-  ]
+  controllers: [ExamController],
+  providers: [ExamService, ExamModels.exam, ExamProfile],
+  exports: [ExamService, ExamModels.exam, ExamProfile],
 })
 export class ExamModule {}

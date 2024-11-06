@@ -11,4 +11,12 @@ export class ResourceCourseDto extends CourseDto {
   @AutoMap()
   @ApiProperty({ required: true })
   instructor: ResourceInstructorDto;
+
+  @AutoMap()
+  @ApiProperty({ required: false })
+  parentId?: string;
+
+  @AutoMap()
+  @ApiProperty({ required: false, isArray: true })
+  subCourses?: ResourceCourseDto[];
 }

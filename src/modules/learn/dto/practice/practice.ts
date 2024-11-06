@@ -53,6 +53,10 @@ export class PracticeDto {
   challengesToPass: number;
 
   @AutoMap()
+  @ApiProperty({ required: false, default: 0 })
+  participants?: number;
+
+  @AutoMap()
   @ApiProperty({ required: true, isArray: true, default: [] })
   challenges: ChallengeDto[];
 }
