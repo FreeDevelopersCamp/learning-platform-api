@@ -29,8 +29,8 @@ export class PracticeDto {
   status: string; // lookup
 
   @AutoMap()
-  @ApiProperty({ required: true })
-  required: string;
+  @ApiProperty({ required: true, isArray: true })
+  prerequisites: string[];
 
   @AutoMap()
   @ApiProperty({ required: true })

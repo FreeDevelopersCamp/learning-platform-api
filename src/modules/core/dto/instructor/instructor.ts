@@ -16,5 +16,9 @@ export class InstructorDto {
 
   @ApiProperty({ required: false })
   @AutoMap()
+  projectsIds?: string[];
+
+  @ApiProperty({ required: false })
+  @AutoMap()
   roadmapsIds?: string[];
 }

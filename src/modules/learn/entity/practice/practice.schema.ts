@@ -1,5 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { IsArray } from 'class-validator';
 import { Types } from 'mongoose';
 import { BaseEntity } from 'src/utils/entities/base.entity';
 
@@ -33,7 +34,8 @@ export class Practice extends BaseEntity {
 
   @AutoMap()
   @Prop({ required: true })
-  required: string;
+  @IsArray()
+  prerequisites: string[];
 
   @AutoMap()
   @Prop({ required: true })

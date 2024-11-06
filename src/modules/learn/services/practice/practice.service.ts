@@ -102,8 +102,8 @@ export class PracticeService {
     if (dto.duration) {
       entity.duration = dto.duration;
     }
-    if (dto.required) {
-      entity.required = dto.required;
+    if (dto.prerequisites) {
+      entity.prerequisites = dto.prerequisites;
     }
     if (dto.status) {
       entity.status = dto.status;
@@ -170,7 +170,7 @@ export class PracticeService {
     const entityDto = new ResourcePracticeDto();
     entityDto._id = entity._id.toString();
     entityDto.name = entity.name;
-    entityDto.required = entity.required;
+    entityDto.prerequisites = entity.prerequisites;
     entityDto.category = entity.category;
     entityDto.topic = entity.topic;
     entityDto.status = entity.status;

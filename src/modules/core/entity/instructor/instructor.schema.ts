@@ -24,6 +24,10 @@ export class Instructor extends BaseEntity {
 
   @Prop({ required: false })
   @AutoMap()
+  projectsIds?: Types.ObjectId[];
+
+  @Prop({ required: false })
+  @AutoMap()
   @IsArray()
   roadmapIds?: Types.ObjectId[];
 }

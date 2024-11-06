@@ -44,8 +44,8 @@ export class PracticeProfile extends AutomapperProfile {
           mapFrom((src) => src.topic),
         ),
         forMember(
-          (dest) => dest.required,
-          mapFrom((src) => src.required),
+          (dest) => dest.prerequisites,
+          mapFrom((src) => src.prerequisites),
         ),
         forMember(
           (dest) => dest.status,
@@ -90,8 +90,8 @@ export class PracticeProfile extends AutomapperProfile {
           mapFrom((src) => src.topic),
         ),
         forMember(
-          (dest) => dest.required,
-          mapFrom((src) => src.required),
+          (dest) => dest.prerequisites,
+          mapFrom((src) => src.prerequisites),
         ),
         forMember(
           (dest) => dest.status,

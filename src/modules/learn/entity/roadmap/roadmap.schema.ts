@@ -1,25 +1,22 @@
 import { AutoMap } from '@automapper/classes';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { IsArray, IsObject, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 import { BaseEntity } from 'src/utils/entities/base.entity';
-import { Course } from '../course/course.schema';
-import { Project } from '../project/project.schema';
-import { Assignment } from '../assignment/assignment.schema';
+import { Types } from 'mongoose';
 
 export class FrequentlyAskedQuestions {
   @AutoMap()
-  @IsString()
   question: string;
 
   @AutoMap()
-  @IsString()
   answer: string;
 }
 
 @Schema({ autoCreate: false })
 export class Roadmap extends BaseEntity {
+  // should include courses, practices, projects only
   @AutoMap()
-  @Prop({ default: '1' })
+  @Prop({ default: '0' })
   status: string; // from lookup
 
   @AutoMap()
@@ -33,42 +30,40 @@ export class Roadmap extends BaseEntity {
   description: string;
 
   @AutoMap()
-  @IsArray()
-  @Prop({ required: true, type: String })
+  @Prop({ required: true })
   topic: string; // Python Web Development Machine Learning ....
 
   @AutoMap()
-  @Prop({ required: true, type: String })
+  @Prop({ required: true })
   tag: string; // official_roadmap AI_generated ....
 
   @AutoMap()
-  @Prop({ required: true, type: String })
+  @Prop({ required: true })
   category: string; // Design Development Marketing IT and Software Business English ....
 
   @AutoMap()
-  @IsObject()
-  @Prop({ required: true, type: [Course] })
-  courses: Course[];
+  @Prop({ required: true })
+  instructorId: Types.ObjectId;
 
   @AutoMap()
-  @IsArray()
-  @Prop({ required: false, type: [Project] })
-  projects?: Project[];
+  @Prop({ required: true })
+  coursesIds: Types.ObjectId[];
 
   @AutoMap()
-  @IsArray()
-  @Prop({ required: false, type: [Assignment] })
-  assignments?: Assignment[];
+  @Prop({ required: false })
+  projectsIds?: Types.ObjectId[];
 
   @AutoMap()
-  @IsArray()
-  @Prop({ required: false, type: [FrequentlyAskedQuestions] })
+  @Prop({ required: false })
+  practicesIds?: Types.ObjectId[];
+
+  @AutoMap()
+  @Prop({ required: false, type: [FrequentlyAskedQuestions], default: [] })
   frequentlyAskedQuestions?: FrequentlyAskedQuestions[];
 
-  // @AutoMap()
-  // @IsObject()
-  // @Prop({ required: false, type: [Roadmap] })
-  // related?: Roadmap[];
+  @AutoMap()
+  @Prop({ required: false })
+  relatedRoadmapsIds?: Types.ObjectId[];
 }
 
 export const RoadmapSchema = SchemaFactory.createForClass(Roadmap);
