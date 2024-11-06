@@ -7,5 +7,6 @@ import { TutorialProfile } from '../../entity/tutorial/tutorial.mapper';
 @Module({
   controllers: [TutorialController],
   providers: [TutorialService, TutorialModels.tutorial, TutorialProfile],
+  exports: [TutorialService],
 })
 export class TutorialModule {}

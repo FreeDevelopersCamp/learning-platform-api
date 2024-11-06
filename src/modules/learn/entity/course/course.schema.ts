@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { IsArray, IsString, IsUrl } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 import { BaseEntity } from 'src/utils/entities/base.entity';
 
@@ -11,9 +11,12 @@ export class CourseResource {
   name: string;
 
   @AutoMap()
-  @IsUrl()
-  @Prop({ required: true })
-  url: string;
+  @Prop({ required: false })
+  id?: string;
+
+  @AutoMap()
+  @Prop({ required: false })
+  url?: string;
 
   @AutoMap()
   @IsString()
@@ -23,7 +26,7 @@ export class CourseResource {
   @AutoMap()
   @IsString()
   @Prop({ required: true })
-  category: string; // free or paid resource
+  tag: string; // free or paid resource
 }
 
 @Schema({ autoCreate: false })
@@ -43,14 +46,44 @@ export class Course extends BaseEntity {
   description: string;
 
   @AutoMap()
-  @IsArray()
-  @Prop({ required: true, type: [CourseResource] })
-  resources: CourseResource[];
+  @IsString()
+  @Prop({ required: true })
+  category: string;
 
   @AutoMap()
   @IsString()
-  @Prop({ required: false })
+  @Prop({ required: true })
+  topic: string;
+
+  @AutoMap()
+  @Prop({ required: false, default: '0' })
+  status: string; // from lookup
+
+  @AutoMap()
+  @Prop({ required: true, default: 0 })
+  @IsNumber()
+  duration: number; // In Minutes
+
+  @AutoMap()
+  @IsNumber()
+  @Prop({ required: true })
+  xp: number; // 2000 == 1 hour
+
+  @AutoMap()
+  @Prop({ required: false, type: [CourseResource], default: [] })
+  resources?: CourseResource[];
+
+  @AutoMap()
+  @Prop({ required: false, default: [] })
   tips?: string[];
+
+  @AutoMap()
+  @Prop({ required: false, isArray: true })
+  subCoursesIds?: Types.ObjectId[];
+
+  @AutoMap()
+  @Prop({ required: false })
+  parentId?: Types.ObjectId;
 }
 
 export const CourseSchema = SchemaFactory.createForClass(Course);

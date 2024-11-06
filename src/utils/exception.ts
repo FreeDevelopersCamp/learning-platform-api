@@ -260,7 +260,26 @@ export class InstructorException extends BaseException {
     super(message ?? 'Something went error', 404, parameters);
   }
 }
+
 export class LearnerException extends BaseException {
+  constructor(message?: string, parameters?: ParametersType) {
+    super(message ?? 'Something went error', 404, parameters);
+  }
+}
+
+export class CourseException extends BaseException {
+  constructor(message?: string, parameters?: ParametersType) {
+    super(message ?? 'Something went error', 404, parameters);
+  }
+}
+
+export class PracticeException extends BaseException {
+  constructor(message?: string, parameters?: ParametersType) {
+    super(message ?? 'Something went error', 404, parameters);
+  }
+}
+
+export class ProjectException extends BaseException {
   constructor(message?: string, parameters?: ParametersType) {
     super(message ?? 'Something went error', 404, parameters);
   }

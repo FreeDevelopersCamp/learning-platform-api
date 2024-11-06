@@ -12,6 +12,7 @@ import { ManagerModule } from '../manager/manager.module';
 import { AccountManagerModule } from '../AccountManager/AccountManager.module';
 import { InstructorModule } from '../instructor/instructor.module';
 import { ContentManagerModule } from '../ContentManager/ContentManager.module';
+import { ProgressModule } from 'src/modules/learn/controllers/progress/progress.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ContentManagerModule } from '../ContentManager/ContentManager.module';
     AccountManagerModule,
     ContentManagerModule,
     InstructorModule,
+    ProgressModule,
   ],
   controllers: [LearnerController],
   providers: [

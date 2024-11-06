@@ -86,15 +86,28 @@ export class AuthenticationService {
   }
 
   async login(login: Login): Promise<Token> {
-    UserRequested.username = login.userName;
+    let user;
+
+    if (!login.password) {
+      throw new InvalidLoginException();
+    }
+    if (!login.userName && !login.email) {
+      throw new InvalidLoginException();
+    } else if (!login.userName) {
+      user = await this._userService.getByEmail(login.email, true);
+
+      UserRequested.username = user.userName;
+    } else if (!login.email) {
+      user = await this._userService.getByUserName(login.userName, true);
+      UserRequested.username = user.userName;
+    }
+
     if (
       (await this._sessionService.isReachMaxAttempts()) &&
       !(await this._sessionService.checkIfCanRetry())
     ) {
       throw new LoginAttemptsException();
     }
-
-    const user = await this._userService.getByUserName(login.userName, true);
 
     if (!user) {
       await this._setSession(

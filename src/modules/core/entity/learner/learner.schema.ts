@@ -14,8 +14,8 @@ export class Learner extends BaseEntity {
   userId: Types.ObjectId;
 
   @AutoMap()
-  @Prop()
-  progress: string;
+  @Prop({ required: false })
+  progressId?: Types.ObjectId;
 }
 
 export const LearnerSchema = SchemaFactory.createForClass(Learner);

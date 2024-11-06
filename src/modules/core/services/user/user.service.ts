@@ -92,6 +92,27 @@ export class UserService {
     return user;
   }
 
+  async getByEmail(email: string, forAuth?: boolean) {
+    const users = await this.list();
+    const user = forAuth
+      ? this._mapper.map(
+          (await this._userRepo.findAll()).find(
+            (a) => a.contacts.email === email,
+          ),
+          User,
+          ForAuthUserDto,
+        )
+      : Array.isArray(users)
+        ? users.find((a) => a.contacts.email === email)
+        : null;
+
+    if (!user && !forAuth) {
+      throw new UserNotFoundException();
+    }
+
+    return user;
+  }
+
   async update(dto: UpdateUserDto): Promise<ResourceUserDto> {
     return this._mapper.map(
       await this._userRepo.update(new this._userModel(dto)),

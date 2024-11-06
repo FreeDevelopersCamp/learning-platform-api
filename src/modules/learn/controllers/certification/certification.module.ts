@@ -11,5 +11,6 @@ import { CertificationProfile } from '../../entity/certification/certification.m
     CertificationModels.certification,
     CertificationProfile,
   ],
+  exports: [CertificationService],
 })
 export class CertificationModule {}

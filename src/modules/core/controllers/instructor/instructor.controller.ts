@@ -27,9 +27,6 @@ import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.c
 import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
 import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
 import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
-import { ResourceCourseDto } from 'src/modules/learn/dto/course/resource.course';
-import { CreateCourseDto } from 'src/modules/learn/dto/course/create.course';
-import { UpdateCourseDto } from 'src/modules/learn/dto/course/update.course';
 
 @ApiBearerAuth('authorization')
 @ApiTags('instructor')
@@ -68,38 +65,6 @@ export class InstructorController {
   })
   list() {
     return this._instructorService.list();
-  }
-
-  @Get('course')
-  @Roles([
-    AllowRoles.admin,
-    AllowRoles.owner,
-    AllowRoles.manager,
-    AllowRoles.accountManager,
-    AllowRoles.contentManager,
-    AllowRoles.instructor,
-    AllowRoles.learner,
-  ])
-  @UseInterceptors(PaginationInterceptor)
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    description: 'Page number',
-    type: Number,
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    description: 'Items per page',
-    type: Number,
-  })
-  @ApiResponse({
-    description: 'List of instructor courses',
-    isArray: true,
-    type: ResourceCourseDto,
-  })
-  listCourses() {
-    return this._instructorService.listCourses();
   }
 
   @Get('/:id')
@@ -206,39 +171,5 @@ export class InstructorController {
   })
   reject(@Param('id') id: string) {
     return this._instructorService.reject(id);
-  }
-
-  @Post('course')
-  @Roles([AllowRoles.admin, AllowRoles.contentManager, AllowRoles.instructor])
-  @ApiResponse({
-    description: 'course created information',
-    isArray: false,
-    type: ResourceCourseDto,
-  })
-  createCourse(@Body() instructor: CreateCourseDto) {
-    return this._instructorService.createCourse(instructor);
-  }
-
-  @Patch('course')
-  @Roles([AllowRoles.admin, AllowRoles.contentManager, AllowRoles.instructor])
-  @ApiResponse({
-    description: 'instructor updated information',
-    isArray: false,
-    type: ResourceCourseDto,
-  })
-  updateCourse(@Body() instructor: UpdateCourseDto) {
-    return this._instructorService.updateCourse(instructor);
-  }
-
-  @Delete('course/:id')
-  @Roles([AllowRoles.admin, AllowRoles.contentManager, AllowRoles.instructor])
-  @UsePipes(new ObjectIdValidationPipe())
-  @ApiResponse({
-    description: 'Deleted result',
-    isArray: false,
-    type: ResourceCourseDto,
-  })
-  deleteCourse(@Param('id') id: string) {
-    return this._instructorService.deleteCourse(id);
   }
 }
