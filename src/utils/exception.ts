@@ -231,6 +231,12 @@ export class CartNotFoundException extends BaseException {
   }
 }
 
+export class AdminException extends BaseException {
+  constructor(message?: string, parameters?: ParametersType) {
+    super(message ?? 'Something went error', 404, parameters);
+  }
+}
+
 export class OwnerException extends BaseException {
   constructor(message?: string, parameters?: ParametersType) {
     super(message ?? 'Something went error', 404, parameters);

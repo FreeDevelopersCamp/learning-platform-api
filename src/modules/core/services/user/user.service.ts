@@ -59,6 +59,23 @@ export class UserService {
     return user;
   }
 
+  async getUserRequested(): Promise<ResourceUserDto> {
+    console.log(UserRequested);
+    const id = UserRequested.userId;
+
+    const user = this._mapper.map(
+      await this._userRepo.findOne(id),
+      User,
+      ResourceUserDto,
+    );
+
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+
+    return user;
+  }
+
   async create(dto: CreateUserDto): Promise<ResourceUserDto> {
     const entity = new this._userModel(dto);
     entity.roles = dto.roles.map((a) => a);

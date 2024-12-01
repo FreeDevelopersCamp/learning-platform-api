@@ -16,14 +16,14 @@ export class Name {
   @IsString()
   @IsNotEmpty()
   @Prop({ maxlength: 10 })
-  @ApiProperty({ required: true, default: '' })
+  @ApiProperty({ required: false, default: '' })
   second: string;
 
   @AutoMap()
   @IsString()
   @IsNotEmpty()
   @Prop({ maxlength: 10 })
-  @ApiProperty({ required: true, default: '' })
+  @ApiProperty({ required: false, default: '' })
   third: string;
 
   @AutoMap()
