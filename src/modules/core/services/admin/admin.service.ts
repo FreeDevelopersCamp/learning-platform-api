@@ -9,6 +9,7 @@ import { ResourceAdminDto } from '../../dto/admin/resource.admin';
 import { CreateAdminDto } from '../../dto/admin/create.admin';
 import { UpdateAdminDto } from '../../dto/admin/update.admin';
 import { UserService } from '../user/user.service';
+import { AdminException } from 'src/utils/exception';
 
 @Injectable()
 export class AdminService {
@@ -62,8 +63,14 @@ export class AdminService {
   }
 
   async getByUserId(id: string): Promise<ResourceAdminDto> {
-    const entities = await this.list();
-    return entities.find((entity) => entity.user._id === id);
+    const entities = await this._repo.findAll();
+    const entity = entities.find((entity) => entity.userId.toString() === id);
+
+    if (!entity) {
+      throw new AdminException('Entity not found');
+    }
+
+    return await this.toDto(entity);
   }
 
   private async toDto(entity: Admin): Promise<ResourceAdminDto> {

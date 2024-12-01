@@ -6,7 +6,7 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,
+  // UseGuards,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
@@ -22,21 +22,21 @@ import {
 import { CreateUserDto } from '../../dto/user/create.user';
 import { UpdateUserDto } from '../../dto/user/update.user';
 import { ResourceUserDto } from '../../dto/user/resource.user';
-import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
-import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
+// import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
+// import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
 import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
-import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
-import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
+// import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
+// import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
 
 @ApiBearerAuth('authorization')
 @ApiTags('user')
 @Controller('user')
-@UseGuards(AuthGuard, RolesGuard)
+// @UseGuards(AuthGuard, RolesGuard)
 export class UserController {
   constructor(private readonly _userService: UserService) {}
 
   @Get()
-  @Roles([AllowRoles.admin])
+  // @Roles([AllowRoles.admin])
   @UseInterceptors(PaginationInterceptor)
   @ApiQuery({
     name: 'page',
@@ -60,7 +60,7 @@ export class UserController {
   }
 
   @Get('/:id')
-  @Roles([AllowRoles.admin])
+  // @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'user information',
@@ -69,6 +69,16 @@ export class UserController {
   })
   getById(@Param('id') id: string) {
     return this._userService.getById(id);
+  }
+
+  @Get('/userId/:userName')
+  @ApiResponse({
+    description: 'user information',
+    isArray: false,
+    type: ResourceUserDto,
+  })
+  getByUserName(@Param('userName') userName: string) {
+    return this._userService.getByUserName(userName, true);
   }
 
   @Post()

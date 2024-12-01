@@ -6,7 +6,7 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,
+  // UseGuards,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
@@ -24,19 +24,20 @@ import { UpdateOwnerDto } from '../../dto/owner/update.owner';
 import { ResourceOwnerDto } from '../../dto/owner/resource.owner';
 import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
 import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
-import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
-import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
+// import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
+// import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
 import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
 
 @ApiBearerAuth('authorization')
 @ApiTags('owner')
 @Controller('owner')
-@UseGuards(AuthGuard, RolesGuard)
+// @UseGuards(RolesGuard)
+// @UseGuards(AuthGuard, RolesGuard)
 export class OwnerController {
   constructor(private readonly _ownerService: OwnerService) {}
 
   @Get()
-  @Roles([AllowRoles.admin, AllowRoles.owner])
+  // @Roles([AllowRoles.admin, AllowRoles.owner])
   @UseInterceptors(PaginationInterceptor)
   @ApiQuery({
     name: 'page',
@@ -61,7 +62,7 @@ export class OwnerController {
 
   @Get('/:id')
   @UsePipes(new ObjectIdValidationPipe())
-  @Roles([AllowRoles.admin, AllowRoles.owner])
+  // @Roles([AllowRoles.admin, AllowRoles.owner])
   @ApiResponse({
     description: 'owner information',
     isArray: false,
@@ -69,6 +70,18 @@ export class OwnerController {
   })
   getById(@Param('id') id: string) {
     return this._ownerService.getById(id);
+  }
+
+  @Get('/user/:userId')
+  // @Roles([AllowRoles.admin])
+  // @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'owner information',
+    isArray: false,
+    type: ResourceOwnerDto,
+  })
+  getByUserId(@Param('userId') userId: string) {
+    return this._ownerService.getByUserId(userId);
   }
 
   @Post()
@@ -94,7 +107,7 @@ export class OwnerController {
   }
 
   @Delete('/:id')
-  @Roles([AllowRoles.admin])
+  // @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',
@@ -106,7 +119,7 @@ export class OwnerController {
   }
 
   @Delete('/deactivate/:id')
-  @Roles([AllowRoles.admin, AllowRoles.owner])
+  // @Roles([AllowRoles.admin, AllowRoles.owner])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deactivate owner account',
@@ -118,7 +131,7 @@ export class OwnerController {
   }
 
   @Get('/approve/:id')
-  @Roles([AllowRoles.admin, AllowRoles.owner])
+  // @Roles([AllowRoles.admin, AllowRoles.owner])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Manager approved information',
@@ -130,7 +143,7 @@ export class OwnerController {
   }
 
   @Delete('/reject/:id')
-  @Roles([AllowRoles.admin])
+  // @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Manager approved information',

@@ -6,7 +6,7 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,
+  // UseGuards,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
@@ -22,29 +22,30 @@ import {
 import { CreateLearnerDto } from '../../dto/learner/create.learner';
 import { UpdateLearnerDto } from '../../dto/learner/update.learner';
 import { ResourceLearnerDto } from '../../dto/learner/resource.learner';
-import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
+// import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
 import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
 import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
-import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
+// import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
 import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
 
 @ApiBearerAuth('authorization')
 @ApiTags('learner')
 @Controller('learner')
-@UseGuards(AuthGuard, RolesGuard)
+// @UseGuards(RolesGuard)
+// @UseGuards(AuthGuard, RolesGuard)
 export class LearnerController {
   constructor(private readonly _learnerService: LearnerService) {}
 
   @Get()
-  @Roles([
-    AllowRoles.admin,
-    AllowRoles.owner,
-    AllowRoles.manager,
-    AllowRoles.accountManager,
-    AllowRoles.contentManager,
-    AllowRoles.instructor,
-    AllowRoles.learner,
-  ])
+  // @Roles([
+  //   AllowRoles.admin,
+  //   AllowRoles.owner,
+  //   AllowRoles.manager,
+  //   AllowRoles.accountManager,
+  //   AllowRoles.contentManager,
+  //   AllowRoles.instructor,
+  //   AllowRoles.learner,
+  // ])
   @UseInterceptors(PaginationInterceptor)
   @ApiQuery({
     name: 'page',
@@ -68,15 +69,15 @@ export class LearnerController {
   }
 
   @Get('/:id')
-  @Roles([
-    AllowRoles.admin,
-    AllowRoles.owner,
-    AllowRoles.manager,
-    AllowRoles.accountManager,
-    AllowRoles.contentManager,
-    AllowRoles.instructor,
-    AllowRoles.learner,
-  ])
+  // @Roles([
+  //   AllowRoles.admin,
+  //   AllowRoles.owner,
+  //   AllowRoles.manager,
+  //   AllowRoles.accountManager,
+  //   AllowRoles.contentManager,
+  //   AllowRoles.instructor,
+  //   AllowRoles.learner,
+  // ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'learner information',
@@ -85,6 +86,18 @@ export class LearnerController {
   })
   getById(@Param('id') id: string) {
     return this._learnerService.getById(id);
+  }
+
+  @Get('/user/:userId')
+  // @Roles([AllowRoles.admin])
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'learner information',
+    isArray: false,
+    type: ResourceLearnerDto,
+  })
+  getByUserId(@Param('userId') userId: string) {
+    return this._learnerService.getByUserId(userId);
   }
 
   @Post()
@@ -110,7 +123,7 @@ export class LearnerController {
   }
 
   @Delete('/:id')
-  @Roles([AllowRoles.admin])
+  // @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',
@@ -122,13 +135,13 @@ export class LearnerController {
   }
 
   @Delete('/deactivate/:id')
-  @Roles([
-    AllowRoles.admin,
-    AllowRoles.owner,
-    AllowRoles.manager,
-    AllowRoles.accountManager,
-    AllowRoles.learner,
-  ])
+  // @Roles([
+  //   AllowRoles.admin,
+  //   AllowRoles.owner,
+  //   AllowRoles.manager,
+  //   AllowRoles.accountManager,
+  //   AllowRoles.learner,
+  // ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deactivate owner account',
@@ -140,12 +153,12 @@ export class LearnerController {
   }
 
   @Get('/approve/:id')
-  @Roles([
-    AllowRoles.admin,
-    AllowRoles.owner,
-    AllowRoles.manager,
-    AllowRoles.accountManager,
-  ])
+  // @Roles([
+  //   AllowRoles.admin,
+  //   AllowRoles.owner,
+  //   AllowRoles.manager,
+  //   AllowRoles.accountManager,
+  // ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Manager approved information',
