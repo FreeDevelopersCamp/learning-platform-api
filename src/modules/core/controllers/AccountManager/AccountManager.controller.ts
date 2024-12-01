@@ -6,7 +6,7 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,
+  // UseGuards,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
@@ -22,26 +22,27 @@ import {
 import { CreateAccountManagerDto } from '../../dto/AccountManager/create.AccountManager';
 import { UpdateAccountManagerDto } from '../../dto/AccountManager/update.AccountManager';
 import { ResourceAccountManagerDto } from '../../dto/AccountManager/resource.AccountManager';
-import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
 import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
 import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
 import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
-import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
+// import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
+// import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
 
 @ApiBearerAuth('authorization')
 @ApiTags('AccountManager')
 @Controller('AccountManager')
-@UseGuards(AuthGuard, RolesGuard)
+// @UseGuards(RolesGuard)
+// @UseGuards(AuthGuard, RolesGuard)
 export class AccountManagerController {
   constructor(private readonly _accountManagerService: AccountManagerService) {}
 
   @Get()
-  @Roles([
-    AllowRoles.admin,
-    AllowRoles.owner,
-    AllowRoles.manager,
-    AllowRoles.accountManager,
-  ])
+  // @Roles([
+  //   AllowRoles.admin,
+  //   AllowRoles.owner,
+  //   AllowRoles.manager,
+  //   AllowRoles.accountManager,
+  // ])
   @UseInterceptors(PaginationInterceptor)
   @ApiQuery({
     name: 'page',
@@ -66,12 +67,12 @@ export class AccountManagerController {
 
   @Get('/:id')
   @UsePipes(new ObjectIdValidationPipe())
-  @Roles([
-    AllowRoles.admin,
-    AllowRoles.owner,
-    AllowRoles.manager,
-    AllowRoles.accountManager,
-  ])
+  // @Roles([
+  //   AllowRoles.admin,
+  //   AllowRoles.owner,
+  //   AllowRoles.manager,
+  //   AllowRoles.accountManager,
+  // ])
   @ApiResponse({
     description: 'AccountManager information',
     isArray: false,
@@ -79,6 +80,18 @@ export class AccountManagerController {
   })
   getById(@Param('id') id: string) {
     return this._accountManagerService.getById(id);
+  }
+
+  @Get('/user/:userId')
+  // @Roles([AllowRoles.admin])
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'AccountManager information',
+    isArray: false,
+    type: ResourceAccountManagerDto,
+  })
+  getByUserId(@Param('userId') userId: string) {
+    return this._accountManagerService.getByUserId(userId);
   }
 
   @Post()
@@ -105,7 +118,7 @@ export class AccountManagerController {
 
   @Delete('/:id')
   @UsePipes(new ObjectIdValidationPipe())
-  @Roles([AllowRoles.admin])
+  // @Roles([AllowRoles.admin])
   @ApiResponse({
     description: 'Deleted result',
     isArray: false,
@@ -116,12 +129,12 @@ export class AccountManagerController {
   }
 
   @Delete('/deactivate/:id')
-  @Roles([
-    AllowRoles.admin,
-    AllowRoles.owner,
-    AllowRoles.manager,
-    AllowRoles.accountManager,
-  ])
+  // @Roles([
+  //   AllowRoles.admin,
+  //   AllowRoles.owner,
+  //   AllowRoles.manager,
+  //   AllowRoles.accountManager,
+  // ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deactivate owner account',
@@ -133,7 +146,7 @@ export class AccountManagerController {
   }
 
   @Get('/approve/:id')
-  @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
+  // @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Manager approved information',
@@ -145,7 +158,7 @@ export class AccountManagerController {
   }
 
   @Delete('/reject/:id')
-  @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
+  // @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Manager approved information',

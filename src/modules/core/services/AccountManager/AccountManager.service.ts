@@ -95,7 +95,7 @@ export class AccountManagerService {
     if (entity.user.roles.length === 1) {
       await this._userService.delete(entity.user._id);
     } else {
-      entity.user.roles = entity.user.roles.filter((role) => role !== '1');
+      entity.user.roles = entity.user.roles.filter((role) => role !== '3');
       await this._userService.update(entity.user);
     }
 
