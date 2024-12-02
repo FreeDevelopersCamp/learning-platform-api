@@ -158,6 +158,8 @@ export class LearnerService {
   }
 
   async getByUserId(id: string): Promise<ResourceLearnerDto> {
+    await this.isAuthorized(UserRequested.userId);
+
     const entities = await this._repo.findAll();
     const entity = entities.find((entity) => entity.userId.toString() === id);
 

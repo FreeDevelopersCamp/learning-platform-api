@@ -27,30 +27,16 @@ export class OwnerService {
   }
 
   async list(): Promise<ResourceOwnerDto[]> {
-    try {
-      const userId = UserRequested.userId;
+    const entities = await this._repo.findAll();
 
-      const authorized = await this.isAuthorized(userId);
-
-      if (!authorized) {
-        throw new OwnerException('Not Approved!');
-      }
-
-      const entities = await this._repo.findAll();
-
-      return await Promise.all(
-        entities.map(async (entity) => {
-          return await this.toDto(entity);
-        }),
-      );
-    } catch (error) {
-      console.error('Error in list method:', error);
-    }
+    return await Promise.all(
+      entities.map(async (entity) => {
+        return await this.toDto(entity);
+      }),
+    );
   }
 
   async getById(id: string): Promise<ResourceOwnerDto> {
-    await this.isAuthorized(UserRequested.userId);
-
     const entity = await this._repo.findOne(id);
     return await this.toDto(entity);
   }
@@ -163,6 +149,8 @@ export class OwnerService {
   }
 
   async getByUserId(id: string): Promise<ResourceOwnerDto> {
+    await this.isAuthorized(UserRequested.userId);
+
     const entities = await this._repo.findAll();
     const entity = entities.find((entity) => entity.userId.toString() === id);
 

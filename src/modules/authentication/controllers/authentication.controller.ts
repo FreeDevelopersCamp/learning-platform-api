@@ -6,6 +6,7 @@ import { ChangePassword } from '../models/changePassword';
 import { CreateUserDto } from 'src/modules/core/dto/user/create.user';
 import { AuthGuard } from '../guards/auth/auth.guard';
 import { Token } from '../models/payload';
+import { Session } from '../session/session';
 
 @ApiBearerAuth('authorization')
 @Controller('Auth')
@@ -54,6 +55,16 @@ export class AuthController {
   @UseGuards(AuthGuard)
   killSession(): Promise<boolean> {
     return this._authService.killSession();
+  }
+
+  @Get('session')
+  @ApiResponse({
+    description: 'Get Session',
+    isArray: false,
+    type: Session,
+  })
+  getSession(): Promise<Session> {
+    return this._authService.getSessionData();
   }
 
   @Get('roles')

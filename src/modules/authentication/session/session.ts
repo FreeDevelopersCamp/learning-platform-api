@@ -30,8 +30,12 @@ export class Session extends BaseEntity {
 
   @Prop({ required: true })
   @AutoMap()
+  role: string;
+
+  @Prop({ required: true })
+  @AutoMap()
   @ApiProperty({ default: '', required: true })
-  password: string;
+  password?: string;
 
   @Prop({ required: true })
   @AutoMap()
@@ -73,6 +77,7 @@ export const SessionModels = {
 
 export interface SessionParams {
   username: string;
+  role: string;
   password: string;
   token: string;
   status: string;

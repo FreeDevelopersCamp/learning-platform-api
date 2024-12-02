@@ -6,7 +6,7 @@ import {
   Param,
   Patch,
   Post,
-  // UseGuards,
+  UseGuards,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
@@ -22,27 +22,29 @@ import {
 import { CreateContentManagerDto } from '../../dto/ContentManager/create.ContentManager';
 import { UpdateContentManagerDto } from '../../dto/ContentManager/update.ContentManager';
 import { ResourceContentManagerDto } from '../../dto/ContentManager/resource.ContentManager';
-// import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
+import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
 import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
 import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
-// import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
+import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
 import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
 
 @ApiBearerAuth('authorization')
 @ApiTags('ContentManager')
 @Controller('ContentManager')
-// @UseGuards(RolesGuard)
-// @UseGuards(AuthGuard, RolesGuard)
+@UseGuards(AuthGuard, RolesGuard)
 export class ContentManagerController {
   constructor(private readonly _contentManagerService: ContentManagerService) {}
 
   @Get()
-  // @Roles([
-  //   AllowRoles.admin,
-  //   AllowRoles.owner,
-  //   AllowRoles.manager,
-  //   AllowRoles.contentManager,
-  // ])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
   @UseInterceptors(PaginationInterceptor)
   @ApiQuery({
     name: 'page',
@@ -66,12 +68,15 @@ export class ContentManagerController {
   }
 
   @Get('/:id')
-  // @Roles([
-  //   AllowRoles.admin,
-  //   AllowRoles.owner,
-  //   AllowRoles.manager,
-  //   AllowRoles.contentManager,
-  // ])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'ContentManager information',
@@ -83,7 +88,7 @@ export class ContentManagerController {
   }
 
   @Get('/user/:userId')
-  // @Roles([AllowRoles.admin])
+  @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'ContentManager information',
@@ -118,7 +123,7 @@ export class ContentManagerController {
 
   @Delete('/:id')
   @Roles([AllowRoles.admin])
-  // @UsePipes(new ObjectIdValidationPipe())
+  @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',
     isArray: false,
@@ -129,12 +134,12 @@ export class ContentManagerController {
   }
 
   @Delete('/deactivate/:id')
-  // @Roles([
-  //   AllowRoles.admin,
-  //   AllowRoles.owner,
-  //   AllowRoles.manager,
-  //   AllowRoles.contentManager,
-  // ])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.contentManager,
+  ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deactivate owner account',
@@ -146,7 +151,7 @@ export class ContentManagerController {
   }
 
   @Get('/approve/:id')
-  // @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
+  @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Manager approved information',
@@ -158,7 +163,7 @@ export class ContentManagerController {
   }
 
   @Delete('/reject/:id')
-  // @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
+  @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Manager approved information',

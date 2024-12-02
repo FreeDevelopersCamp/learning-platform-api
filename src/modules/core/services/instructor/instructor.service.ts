@@ -199,6 +199,8 @@ export class InstructorService {
   }
 
   async getByUserId(id: string): Promise<ResourceInstructorDto> {
+    await this.isAuthorized(UserRequested.userId);
+
     const entities = await this._repo.findAll();
     const entity = entities.find((entity) => entity.userId.toString() === id);
 

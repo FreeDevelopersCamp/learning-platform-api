@@ -6,7 +6,7 @@ import {
   Param,
   Patch,
   Post,
-  // UseGuards,
+  UseGuards,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
@@ -24,20 +24,27 @@ import { UpdateManagerDto } from '../../dto/manager/update.manager';
 import { ResourceManagerDto } from '../../dto/manager/resource.manager';
 import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
 import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
-// import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
-// import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
+import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
+import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
 import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
 
 @ApiBearerAuth('authorization')
 @ApiTags('manager')
 @Controller('manager')
-// @UseGuards(RolesGuard)
-// @UseGuards(AuthGuard, RolesGuard)
+@UseGuards(AuthGuard, RolesGuard)
 export class ManagerController {
   constructor(private readonly _managerService: ManagerService) {}
 
   @Get()
-  // @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
   @UseInterceptors(PaginationInterceptor)
   @ApiQuery({
     name: 'page',
@@ -61,7 +68,15 @@ export class ManagerController {
   }
 
   @Get('/:id')
-  // @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'manager information',
@@ -73,7 +88,7 @@ export class ManagerController {
   }
 
   @Get('/user/:userId')
-  // @Roles([AllowRoles.admin])
+  @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'manager information',
@@ -107,7 +122,7 @@ export class ManagerController {
   }
 
   @Delete('/:id')
-  // @Roles([AllowRoles.admin])
+  @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',
@@ -119,7 +134,7 @@ export class ManagerController {
   }
 
   @Delete('/deactivate/:id')
-  // @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
+  @Roles([AllowRoles.admin, AllowRoles.owner, AllowRoles.manager])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deactivate owner account',
@@ -131,7 +146,7 @@ export class ManagerController {
   }
 
   @Get('/approve/:id')
-  // @Roles([AllowRoles.admin, AllowRoles.owner])
+  @Roles([AllowRoles.admin, AllowRoles.owner])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Manager approved information',
@@ -143,7 +158,7 @@ export class ManagerController {
   }
 
   @Delete('/reject/:id')
-  // @Roles([AllowRoles.admin, AllowRoles.owner])
+  @Roles([AllowRoles.admin, AllowRoles.owner])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Manager approved information',

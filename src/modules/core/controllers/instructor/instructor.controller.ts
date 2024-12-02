@@ -6,7 +6,7 @@ import {
   Param,
   Patch,
   Post,
-  // UseGuards,
+  UseGuards,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
@@ -22,30 +22,29 @@ import {
 import { CreateInstructorDto } from '../../dto/instructor/create.instructor';
 import { UpdateInstructorDto } from '../../dto/instructor/update.instructor';
 import { ResourceInstructorDto } from '../../dto/instructor/resource.instructor';
-// import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
+import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
 import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
 import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
 import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
-// import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
+import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
 
 @ApiBearerAuth('authorization')
 @ApiTags('instructor')
 @Controller('instructor')
-// @UseGuards(RolesGuard)
-// @UseGuards(AuthGuard, RolesGuard)
+@UseGuards(AuthGuard, RolesGuard)
 export class InstructorController {
   constructor(private readonly _instructorService: InstructorService) {}
 
   @Get()
-  // @Roles([
-  //   AllowRoles.admin,
-  //   AllowRoles.owner,
-  //   AllowRoles.manager,
-  //   AllowRoles.accountManager,
-  //   AllowRoles.contentManager,
-  //   AllowRoles.instructor,
-  //   AllowRoles.learner,
-  // ])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
   @UseInterceptors(PaginationInterceptor)
   @ApiQuery({
     name: 'page',
@@ -70,15 +69,15 @@ export class InstructorController {
 
   @Get('/:id')
   @UsePipes(new ObjectIdValidationPipe())
-  // @Roles([
-  //   AllowRoles.admin,
-  //   AllowRoles.owner,
-  //   AllowRoles.manager,
-  //   AllowRoles.accountManager,
-  //   AllowRoles.contentManager,
-  //   AllowRoles.instructor,
-  //   AllowRoles.learner,
-  // ])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
   @ApiResponse({
     description: 'instructor information',
     isArray: false,
@@ -89,7 +88,7 @@ export class InstructorController {
   }
 
   @Get('/user/:userId')
-  // @Roles([AllowRoles.admin])
+  @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'instructor information',
@@ -123,7 +122,7 @@ export class InstructorController {
   }
 
   @Delete('/:id')
-  // @Roles([AllowRoles.admin])
+  @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',
@@ -135,13 +134,13 @@ export class InstructorController {
   }
 
   @Delete('/deactivate/:id')
-  // @Roles([
-  //   AllowRoles.admin,
-  //   AllowRoles.owner,
-  //   AllowRoles.manager,
-  //   AllowRoles.accountManager,
-  //   AllowRoles.instructor,
-  // ])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.instructor,
+  ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deactivate owner account',
@@ -153,12 +152,12 @@ export class InstructorController {
   }
 
   @Get('/approve/:id')
-  // @Roles([
-  //   AllowRoles.admin,
-  //   AllowRoles.owner,
-  //   AllowRoles.manager,
-  //   AllowRoles.accountManager,
-  // ])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+  ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Manager approved information',
@@ -170,12 +169,12 @@ export class InstructorController {
   }
 
   @Delete('/reject/:id')
-  // @Roles([
-  //   AllowRoles.admin,
-  //   AllowRoles.owner,
-  //   AllowRoles.manager,
-  //   AllowRoles.accountManager,
-  // ])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+  ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Manager approved information',

@@ -50,7 +50,7 @@ export class ContentManagerService {
   }
 
   async getById(id: string): Promise<ResourceContentManagerDto> {
-    // await this.isAuthorized(UserRequested.userId);
+    await this.isAuthorized(UserRequested.userId);
 
     const entity = await this._repo.findOne(id);
     return await this.toDto(entity);
@@ -66,11 +66,11 @@ export class ContentManagerService {
   async update(
     dto: UpdateContentManagerDto,
   ): Promise<ResourceContentManagerDto> {
-    // const authorized = await this.isAuthorized(UserRequested.userId);
+    const authorized = await this.isAuthorized(UserRequested.userId);
 
-    // if (!authorized) {
-    //   throw new ContentManagerException('You are not authorized');
-    // }
+    if (!authorized) {
+      throw new ContentManagerException('You are not authorized');
+    }
 
     const entity = await this._repo.update(new this._ContentManagerModel(dto));
     if (!entity.userId) {
@@ -80,11 +80,11 @@ export class ContentManagerService {
   }
 
   async delete(id: string): Promise<boolean> {
-    // const authorized = await this.isAuthorized(UserRequested.userId);
+    const authorized = await this.isAuthorized(UserRequested.userId);
 
-    // if (!authorized) {
-    //   throw new ContentManagerException('You are not authorized');
-    // }
+    if (!authorized) {
+      throw new ContentManagerException('You are not authorized');
+    }
 
     const entity = await this.getById(id);
 
@@ -103,13 +103,13 @@ export class ContentManagerService {
   }
 
   async approve(id: string): Promise<ResourceContentManagerDto> {
-    // const authorized = await this.isAuthorized(UserRequested.userId);
+    const authorized = await this.isAuthorized(UserRequested.userId);
 
-    // if (!authorized) {
-    //   throw new ContentManagerException(
-    //     'You are not authorized to perform this action.',
-    //   );
-    // }
+    if (!authorized) {
+      throw new ContentManagerException(
+        'You are not authorized to perform this action.',
+      );
+    }
 
     const entity = await this.getById(id);
 
@@ -121,13 +121,13 @@ export class ContentManagerService {
   }
 
   async reject(id: string): Promise<Boolean> {
-    // const userId = UserRequested.userId;
+    const userId = UserRequested.userId;
 
-    // const authorized = await this.isAuthorized(userId);
+    const authorized = await this.isAuthorized(userId);
 
-    // if (!authorized) {
-    //   throw new ContentManagerException('Not authorized!');
-    // }
+    if (!authorized) {
+      throw new ContentManagerException('Not authorized!');
+    }
 
     const entity = await this.getById(id);
 
@@ -140,31 +140,31 @@ export class ContentManagerService {
   }
 
   async deactivate(id: string): Promise<ResourceContentManagerDto> {
-    // const authorized = await this.isAuthorized(UserRequested.userId);
+    const authorized = await this.isAuthorized(UserRequested.userId);
 
-    // if (!authorized) {
-    //   throw new ContentManagerException('You are not authorized');
-    // }
+    if (!authorized) {
+      throw new ContentManagerException('You are not authorized');
+    }
 
-    // const userRequested = await this._userService.getById(UserRequested.userId);
+    const userRequested = await this._userService.getById(UserRequested.userId);
     const dto = await this.getById(id);
 
     if (dto.status == '1') {
       throw new ContentManagerException('This entity is still pending!');
     }
 
-    // if (
-    //   !userRequested.roles.includes('0') &&
-    //   !userRequested.roles.includes('1') &&
-    //   !userRequested.roles.includes('2')
-    // ) {
-    //   const userEntity = await this.getByUserId(userRequested._id);
-    //   if (userEntity._id != id) {
-    //     throw new ContentManagerException(
-    //       'You are not authorized to deactivate this entity.',
-    //     );
-    //   }
-    // }
+    if (
+      !userRequested.roles.includes('0') &&
+      !userRequested.roles.includes('1') &&
+      !userRequested.roles.includes('2')
+    ) {
+      const userEntity = await this.getByUserId(userRequested._id);
+      if (userEntity._id != id) {
+        throw new ContentManagerException(
+          'You are not authorized to deactivate this entity.',
+        );
+      }
+    }
 
     const entity = new UpdateContentManagerDto();
     entity._id = dto._id;
@@ -174,6 +174,8 @@ export class ContentManagerService {
   }
 
   async getByUserId(id: string): Promise<ResourceContentManagerDto> {
+    await this.isAuthorized(UserRequested.userId);
+
     const entities = await this._repo.findAll();
     const entity = entities.find((entity) => entity.userId.toString() === id);
 
