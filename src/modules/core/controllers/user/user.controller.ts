@@ -87,7 +87,7 @@ export class UserController {
     return this._userService.getById(id);
   }
 
-  @Get('/userId/:userName')
+  @Get('/getByUserName/:userName')
   @ApiResponse({
     description: 'user information',
     isArray: false,
