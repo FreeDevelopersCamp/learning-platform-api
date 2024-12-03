@@ -25,6 +25,12 @@ export class Login {
   @AutoMap()
   @IsString()
   @IsNotEmpty()
+  @ApiProperty({ default: '6', required: false })
+  role: string;
+
+  @AutoMap()
+  @IsString()
+  @IsNotEmpty()
   @Length(8, 16)
   @IsStrongPassword({
     minLength: 8,

@@ -74,6 +74,7 @@ export class AuthenticationService {
       true,
       SessionStatus.active,
       dto.userName,
+      dto.roles[0],
       dto.password,
       token,
     );
@@ -109,11 +110,21 @@ export class AuthenticationService {
       throw new LoginAttemptsException();
     }
 
+    if (!login.role) {
+      login.role = user.roles[0];
+    }
+
+    if (!user.roles.includes(login.role))
+      throw new LoginAttemptsException(
+        'You are not allowed to login with this role',
+      );
+
     if (!user) {
       await this._setSession(
         false,
         SessionStatus.inactive,
         login.userName,
+        login.role,
         login.password,
         '',
       );
@@ -131,6 +142,7 @@ export class AuthenticationService {
         false,
         SessionStatus.inactive,
         login.userName,
+        login.role,
         login.password,
         '',
       );
@@ -157,6 +169,7 @@ export class AuthenticationService {
       true,
       SessionStatus.active,
       login.userName,
+      login.role,
       login.password,
       token,
     );
@@ -201,6 +214,7 @@ export class AuthenticationService {
 
     const token: string = await this.login({
       userName: updatedUser.userName,
+      role: updatedUser.roles[0],
       password: changePassword.newPassword,
     }).then();
 
@@ -208,6 +222,7 @@ export class AuthenticationService {
       true,
       SessionStatus.active,
       user.userName,
+      user.roles[0],
       user.password,
       token,
     );
@@ -244,6 +259,7 @@ export class AuthenticationService {
     active: boolean,
     status: SessionStatus,
     userName: string,
+    role: string,
     password: string,
     token: string,
   ): Promise<Session> {
@@ -252,6 +268,7 @@ export class AuthenticationService {
       status: status,
       token: token,
       password: password,
+      role: role,
       username: userName,
     };
 
@@ -260,5 +277,9 @@ export class AuthenticationService {
 
   async getAllRoles(): Promise<string[]> {
     return await this._lookupService.getRoles();
+  }
+
+  async getSessionData(): Promise<Session> {
+    return await this._sessionService.get();
   }
 }

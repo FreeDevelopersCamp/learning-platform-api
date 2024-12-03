@@ -6,7 +6,7 @@ import {
   Param,
   Patch,
   Post,
-  // UseGuards,
+  UseGuards,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
@@ -22,22 +22,29 @@ import {
 import { CreateAdminDto } from '../../dto/admin/create.admin';
 import { UpdateAdminDto } from '../../dto/admin/update.admin';
 import { ResourceAdminDto } from '../../dto/admin/resource.admin';
-// import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
+import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
 import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
 import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
 import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
-// import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
+import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
 
 @ApiBearerAuth('authorization')
 @ApiTags('admin')
 @Controller('admin')
-// @UseGuards(RolesGuard)
-// @UseGuards(AuthGuard, RolesGuard)
+@UseGuards(AuthGuard, RolesGuard)
 export class AdminController {
   constructor(private readonly _adminService: AdminService) {}
 
   @Get()
-  // @Roles([AllowRoles.admin])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
   @UseInterceptors(PaginationInterceptor)
   @ApiQuery({
     name: 'page',
@@ -61,7 +68,15 @@ export class AdminController {
   }
 
   @Get('/:id')
-  // @Roles([AllowRoles.admin])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'admin information',
@@ -73,7 +88,7 @@ export class AdminController {
   }
 
   @Get('/user/:userId')
-  // @Roles([AllowRoles.admin])
+  @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'admin information',
@@ -108,7 +123,7 @@ export class AdminController {
   }
 
   @Delete('/:id')
-  // @Roles([AllowRoles.admin])
+  @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',
