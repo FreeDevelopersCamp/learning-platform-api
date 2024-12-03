@@ -41,12 +41,6 @@ export class AdminService {
   }
 
   async create(dto: CreateAdminDto): Promise<ResourceAdminDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new AdminException('You are not authorized');
-    }
-
     const entity = await this._repo.create(new this._adminModel(dto));
     return this.getById(entity._id.toString());
   }
@@ -57,12 +51,6 @@ export class AdminService {
   }
 
   async delete(id: string): Promise<boolean> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new AdminException('You are not authorized');
-    }
-
     const entity = await this.getById(id);
 
     if (entity.status == '2') {
@@ -80,12 +68,6 @@ export class AdminService {
   }
 
   async deactivate(id: string): Promise<ResourceAdminDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new AdminException('You are not authorized');
-    }
-
     const userRequested = await this._userService.getById(UserRequested.userId);
     const dto = await this.getById(id);
 
@@ -122,8 +104,6 @@ export class AdminService {
   }
 
   async getByUserId(id: string): Promise<ResourceAdminDto> {
-    await this.isAuthorized(UserRequested.userId);
-
     const entities = await this._repo.findAll();
     const entity = entities.find((entity) => entity.userId.toString() === id);
 

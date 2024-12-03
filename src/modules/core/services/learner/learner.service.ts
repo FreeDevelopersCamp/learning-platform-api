@@ -9,7 +9,6 @@ import { ResourceLearnerDto } from '../../dto/learner/resource.learner';
 import { CreateLearnerDto } from '../../dto/learner/create.learner';
 import { UpdateLearnerDto } from '../../dto/learner/update.learner';
 import { UserService } from '../user/user.service';
-import { UserRequested } from 'src/infra/system/system.constant';
 import { LearnerException } from 'src/utils/exception';
 import { AdminService } from '../admin/admin.service';
 import { OwnerService } from '../owner/owner.service';
@@ -37,14 +36,6 @@ export class LearnerService {
   }
 
   async list(): Promise<ResourceLearnerDto[]> {
-    const userId = UserRequested.userId;
-
-    const authorized = await this.isAuthorized(userId);
-
-    if (!authorized) {
-      throw new LearnerException('Not Approved!');
-    }
-
     const entities = await this._repo.findAll();
 
     return await Promise.all(
@@ -55,8 +46,6 @@ export class LearnerService {
   }
 
   async getById(id: string): Promise<ResourceLearnerDto> {
-    await this.isAuthorized(UserRequested.userId);
-
     const entity = await this._repo.findOne(id);
     return await this.toDto(entity);
   }
@@ -67,12 +56,6 @@ export class LearnerService {
   }
 
   async update(dto: UpdateLearnerDto): Promise<ResourceLearnerDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new LearnerException('You are not authorized');
-    }
-
     const entity = await this._repo.update(new this._learnerModel(dto));
     if (!entity.userId) {
       entity.userId = new Types.ObjectId(dto.user._id);
@@ -81,12 +64,6 @@ export class LearnerService {
   }
 
   async delete(id: string): Promise<boolean> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new LearnerException('You are not authorized');
-    }
-
     const entity = await this.getById(id);
 
     if (entity.status == '2') {
@@ -104,33 +81,33 @@ export class LearnerService {
   }
 
   async deactivate(id: string): Promise<ResourceLearnerDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
+    // const authorized = await this.isAuthorized(UserRequested.userId);
 
-    if (!authorized) {
-      throw new LearnerException('You are not authorized');
-    }
+    // if (!authorized) {
+    //   throw new LearnerException('You are not authorized');
+    // }
 
-    const userRequested = await this._userService.getById(UserRequested.userId);
+    // const userRequested = await this._userService.getById(UserRequested.userId);
     const dto = await this.getById(id);
 
     if (dto.status == '1') {
       throw new LearnerException('This entity is still pending!');
     }
 
-    if (
-      !userRequested.roles.includes('0') &&
-      !userRequested.roles.includes('1') &&
-      !userRequested.roles.includes('2') &&
-      !userRequested.roles.includes('3') &&
-      !userRequested.roles.includes('6')
-    ) {
-      const userEntity = await this.getByUserId(userRequested._id);
-      if (userEntity._id != id) {
-        throw new LearnerException(
-          'You are not authorized to deactivate this entity.',
-        );
-      }
-    }
+    // if (
+    //   !userRequested.roles.includes('0') &&
+    //   !userRequested.roles.includes('1') &&
+    //   !userRequested.roles.includes('2') &&
+    //   !userRequested.roles.includes('3') &&
+    //   !userRequested.roles.includes('6')
+    // ) {
+    //   const userEntity = await this.getByUserId(userRequested._id);
+    //   if (userEntity._id != id) {
+    //     throw new LearnerException(
+    //       'You are not authorized to deactivate this entity.',
+    //     );
+    //   }
+    // }
 
     const entity = new UpdateLearnerDto();
     entity._id = dto._id;
@@ -140,14 +117,6 @@ export class LearnerService {
   }
 
   async approve(id: string): Promise<ResourceLearnerDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new LearnerException(
-        'You are not authorized to perform this action.',
-      );
-    }
-
     const entity = await this.getById(id);
 
     if (entity.status == '2')
@@ -158,7 +127,7 @@ export class LearnerService {
   }
 
   async getByUserId(id: string): Promise<ResourceLearnerDto> {
-    await this.isAuthorized(UserRequested.userId);
+    // await this.isAuthorized(UserRequested.userId);
 
     const entities = await this._repo.findAll();
     const entity = entities.find((entity) => entity.userId.toString() === id);

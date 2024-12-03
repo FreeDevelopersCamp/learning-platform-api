@@ -60,7 +60,6 @@ export class UserService {
   }
 
   async getUserRequested(): Promise<ResourceUserDto> {
-    console.log(UserRequested);
     const id = UserRequested.userId;
 
     const user = this._mapper.map(

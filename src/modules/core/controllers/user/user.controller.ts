@@ -36,7 +36,15 @@ export class UserController {
   constructor(private readonly _userService: UserService) {}
 
   @Get()
-  @Roles([AllowRoles.admin])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
   @UseInterceptors(PaginationInterceptor)
   @ApiQuery({
     name: 'page',
@@ -60,7 +68,15 @@ export class UserController {
   }
 
   @Get('/:id')
-  @Roles([AllowRoles.admin])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'user information',
@@ -77,6 +93,15 @@ export class UserController {
     isArray: false,
     type: ResourceUserDto,
   })
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
   getByUserName(@Param('userName') userName: string) {
     return this._userService.getByUserName(userName, true);
   }

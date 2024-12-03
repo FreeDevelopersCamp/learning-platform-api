@@ -12,7 +12,6 @@ import { UserService } from '../user/user.service';
 import { AccountManagerException } from 'src/utils/exception';
 import { AdminService } from '../admin/admin.service';
 import { OwnerService } from '../owner/owner.service';
-import { UserRequested } from 'src/infra/system/system.constant';
 import { ManagerService } from '../manager/manager.service';
 
 @Injectable()
@@ -32,14 +31,6 @@ export class AccountManagerService {
   }
 
   async list(): Promise<ResourceAccountManagerDto[]> {
-    const userId = UserRequested.userId;
-
-    const authorized = await this.isAuthorized(userId);
-
-    if (!authorized) {
-      throw new AccountManagerException('Not Approved!');
-    }
-
     const entities = await this._repo.findAll();
 
     return await Promise.all(
@@ -50,8 +41,6 @@ export class AccountManagerService {
   }
 
   async getById(id: string): Promise<ResourceAccountManagerDto> {
-    await this.isAuthorized(UserRequested.userId);
-
     const entity = await this._repo.findOne(id);
     return await this.toDto(entity);
   }
@@ -66,12 +55,6 @@ export class AccountManagerService {
   async update(
     dto: UpdateAccountManagerDto,
   ): Promise<ResourceAccountManagerDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new AccountManagerException('You are not authorized');
-    }
-
     const entity = await this._repo.update(new this._AccountManagerModel(dto));
     if (!entity.userId) {
       entity.userId = new Types.ObjectId(dto.user._id);
@@ -80,12 +63,6 @@ export class AccountManagerService {
   }
 
   async delete(id: string): Promise<boolean> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new AccountManagerException('You are not authorized');
-    }
-
     const entity = await this.getById(id);
 
     if (entity.status == '2') {
@@ -103,14 +80,6 @@ export class AccountManagerService {
   }
 
   async approve(id: string): Promise<ResourceAccountManagerDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new AccountManagerException(
-        'You are not authorized to perform this action.',
-      );
-    }
-
     const entity = await this.getById(id);
 
     if (entity.status == '2')
@@ -121,14 +90,6 @@ export class AccountManagerService {
   }
 
   async reject(id: string): Promise<Boolean> {
-    const userId = UserRequested.userId;
-
-    const authorized = await this.isAuthorized(userId);
-
-    if (!authorized) {
-      throw new AccountManagerException('Not authorized!');
-    }
-
     const entity = await this.getById(id);
 
     if (entity.status != '1') {
@@ -140,31 +101,31 @@ export class AccountManagerService {
   }
 
   async deactivate(id: string): Promise<ResourceAccountManagerDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
+    // const authorized = await this.isAuthorized(UserRequested.userId);
 
-    if (!authorized) {
-      throw new AccountManagerException('You are not authorized');
-    }
+    // if (!authorized) {
+    //   throw new AccountManagerException('You are not authorized');
+    // }
 
-    const userRequested = await this._userService.getById(UserRequested.userId);
+    // const userRequested = await this._userService.getById(UserRequested.userId);
     const dto = await this.getById(id);
 
     if (dto.status == '1') {
       throw new AccountManagerException('This entity is still pending!');
     }
 
-    if (
-      !userRequested.roles.includes('0') &&
-      !userRequested.roles.includes('1') &&
-      !userRequested.roles.includes('2')
-    ) {
-      const userEntity = await this.getByUserId(userRequested._id);
-      if (userEntity._id != id) {
-        throw new AccountManagerException(
-          'You are not authorized to deactivate this entity.',
-        );
-      }
-    }
+    // if (
+    //   !userRequested.roles.includes('0') &&
+    //   !userRequested.roles.includes('1') &&
+    //   !userRequested.roles.includes('2')
+    // ) {
+    //   const userEntity = await this.getByUserId(userRequested._id);
+    //   if (userEntity._id != id) {
+    //     throw new AccountManagerException(
+    //       'You are not authorized to deactivate this entity.',
+    //     );
+    //   }
+    // }
 
     const entity = new UpdateAccountManagerDto();
     entity._id = dto._id;
@@ -174,7 +135,7 @@ export class AccountManagerService {
   }
 
   async getByUserId(id: string): Promise<ResourceAccountManagerDto> {
-    await this.isAuthorized(UserRequested.userId);
+    // await this.isAuthorized(UserRequested.userId);
 
     const entities = await this._repo.findAll();
     const entity = entities.find((entity) => entity.userId.toString() === id);

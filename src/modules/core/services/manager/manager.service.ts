@@ -29,14 +29,6 @@ export class ManagerService {
   }
 
   async list(): Promise<ResourceManagerDto[]> {
-    const userId = UserRequested.userId;
-
-    const authorized = await this.isAuthorized(userId);
-
-    if (!authorized) {
-      throw new ManagerException('Not Approved!');
-    }
-
     const entities = await this._repo.findAll();
 
     return await Promise.all(
@@ -47,8 +39,6 @@ export class ManagerService {
   }
 
   async getById(id: string): Promise<ResourceManagerDto> {
-    await this.isAuthorized(UserRequested.userId);
-
     const entity = await this._repo.findOne(id);
     return await this.toDto(entity);
   }
@@ -59,12 +49,6 @@ export class ManagerService {
   }
 
   async update(dto: UpdateManagerDto): Promise<ResourceManagerDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new ManagerException('You are not authorized');
-    }
-
     const entity = await this._repo.update(new this._managerModel(dto));
     if (!entity.userId) {
       entity.userId = new Types.ObjectId(dto.user._id);
@@ -73,12 +57,6 @@ export class ManagerService {
   }
 
   async delete(id: string): Promise<boolean> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new ManagerException('You are not authorized');
-    }
-
     const entity = await this.getById(id);
 
     if (entity.status == '2') {
@@ -96,12 +74,6 @@ export class ManagerService {
   }
 
   async deactivate(id: string): Promise<ResourceManagerDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new ManagerException('You are not authorized');
-    }
-
     const userRequested = await this._userService.getById(UserRequested.userId);
     const dto = await this.getById(id);
 
@@ -129,14 +101,6 @@ export class ManagerService {
   }
 
   async approve(id: string): Promise<ResourceManagerDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new ManagerException(
-        'You are not authorized to perform this action.',
-      );
-    }
-
     const entity = await this.getById(id);
 
     if (entity.status == '2')
@@ -147,14 +111,6 @@ export class ManagerService {
   }
 
   async reject(id: string): Promise<Boolean> {
-    const userId = UserRequested.userId;
-
-    const authorized = await this.isAuthorized(userId);
-
-    if (!authorized) {
-      throw new ManagerException('Not authorized!');
-    }
-
     const entity = await this.getById(id);
 
     if (entity.status != '1') {
@@ -192,7 +148,7 @@ export class ManagerService {
   }
 
   async getByUserId(id: string): Promise<ResourceManagerDto> {
-    await this.isAuthorized(UserRequested.userId);
+    // await this.isAuthorized(UserRequested.userId);
 
     const entities = await this._repo.findAll();
     const entity = entities.find((entity) => entity.userId.toString() === id);
