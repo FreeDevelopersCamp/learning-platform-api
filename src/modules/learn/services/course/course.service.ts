@@ -109,6 +109,12 @@ export class CourseService {
     if (dto.tips) {
       entity.tips = dto.tips;
     }
+    if (dto.xp) {
+      entity.xp = dto.xp;
+    }
+    if (dto.rating) {
+      entity.rating = dto.rating;
+    }
     if (dto.subCoursesIds) {
       entity.subCoursesIds = dto.subCoursesIds.map(
         (id) => new Types.ObjectId(id),
@@ -174,6 +180,7 @@ export class CourseService {
     entityDto.status = entity.status;
     entityDto.duration = entity.duration;
     entityDto.xp = entity.xp;
+    entityDto.rating = entity.rating;
 
     entityDto.instructor = await this._instructorService.getById(
       entity.instructorId.toString(),

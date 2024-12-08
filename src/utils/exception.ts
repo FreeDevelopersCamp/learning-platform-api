@@ -296,3 +296,9 @@ export class RoadmapException extends BaseException {
     super(message ?? 'Something went error', 404, parameters);
   }
 }
+
+export class ProfileException extends BaseException {
+  constructor(message?: string, parameters?: ParametersType) {
+    super(message ?? 'Something went error', 404, parameters);
+  }
+}

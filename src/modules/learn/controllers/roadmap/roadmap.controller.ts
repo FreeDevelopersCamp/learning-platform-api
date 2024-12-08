@@ -6,7 +6,6 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
@@ -16,8 +15,6 @@ import { ApiBearerAuth, ApiTags, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { CreateRoadmapDto } from '../../dto/roadmap/create.roadmap';
 import { UpdateRoadmapDto } from '../../dto/roadmap/update.roadmap';
 import { ResourceRoadmapDto } from '../../dto/roadmap/resource.roadmap';
-import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
-import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
 import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
 import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
 import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
@@ -25,7 +22,6 @@ import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagina
 @ApiBearerAuth('authorization')
 @ApiTags('roadmap')
 @Controller('roadmap')
-@UseGuards(AuthGuard, RolesGuard)
 export class RoadmapController {
   constructor(private readonly _roadmapService: RoadmapService) {}
 
