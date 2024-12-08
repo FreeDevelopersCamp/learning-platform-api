@@ -66,6 +66,10 @@ export class Roadmap extends BaseEntity {
   rating?: string;
 
   @AutoMap()
+  @Prop({ required: false, default: [], type: [String] })
+  raters?: string[];
+
+  @AutoMap()
   @Prop({ required: false, default: 0 })
   duration?: number; // minutes
 

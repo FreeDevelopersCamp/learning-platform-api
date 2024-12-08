@@ -13,6 +13,8 @@ import { AccountManagerModule } from '../AccountManager/AccountManager.module';
 import { InstructorModule } from '../instructor/instructor.module';
 import { ContentManagerModule } from '../ContentManager/ContentManager.module';
 import { ProgressModule } from 'src/modules/learn/controllers/progress/progress.module';
+import { CourseModule } from 'src/modules/learn/controllers/course/course.module';
+import { RoadmapModule } from 'src/modules/learn/controllers/roadmap/roadmap.module';
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import { ProgressModule } from 'src/modules/learn/controllers/progress/progress.
     ContentManagerModule,
     InstructorModule,
     ProgressModule,
+    CourseModule,
+    RoadmapModule,
   ],
   controllers: [LearnerController],
   providers: [

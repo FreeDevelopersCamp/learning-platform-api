@@ -53,8 +53,12 @@ export class RoadmapDto {
   xp?: number;
 
   @AutoMap()
-  @ApiProperty({ required: false, default: '' })
+  @ApiProperty({ required: false })
   rating?: string;
+
+  @AutoMap()
+  @ApiProperty({ required: false, default: [] })
+  raters?: string[];
 
   @AutoMap()
   @ApiProperty({ required: false, default: 0 })

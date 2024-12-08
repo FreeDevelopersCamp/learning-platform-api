@@ -8,10 +8,6 @@ export class UpdateCourseDto extends CourseDto {
   @AutoMap()
   _id: string;
 
-  // @AutoMap()
-  // @ApiProperty({ required: true })
-  // instructorId: string;
-
   @AutoMap()
   @ApiProperty({ required: false })
   subCoursesIds?: string[];
@@ -23,4 +19,26 @@ export class UpdateCourseDto extends CourseDto {
   @AutoMap()
   @ApiProperty({ required: false })
   resources?: CourseResource[];
+}
+
+export class RatingDto {
+  @ApiProperty({ default: '', required: false })
+  @AutoMap()
+  _id: string;
+
+  @AutoMap()
+  @ApiProperty({ required: false })
+  courseId: string;
+
+  @AutoMap()
+  @ApiProperty({ required: false })
+  roadmapId: string;
+
+  @AutoMap()
+  @ApiProperty({ required: false })
+  userId: string;
+
+  @AutoMap()
+  @ApiProperty({ required: true })
+  rating: string;
 }

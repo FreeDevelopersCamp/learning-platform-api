@@ -70,6 +70,10 @@ export class CourseDto {
   rating?: string;
 
   @AutoMap()
+  @ApiProperty({ required: false, default: [] })
+  raters?: string[];
+
+  @AutoMap()
   @ApiProperty({ required: false, type: CourseResourceDto, isArray: true })
   resources?: CourseResourceDto[];
 }
