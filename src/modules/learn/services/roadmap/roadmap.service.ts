@@ -140,6 +140,9 @@ export class RoadmapService {
     if (dto.prerequisites) {
       entity.prerequisites = dto.prerequisites;
     }
+    if (dto.rating) {
+      entity.rating = dto.rating;
+    }
     if (dto.coursesIds) {
       entity.coursesIds = dto.coursesIds.map((id) => new Types.ObjectId(id));
     }
@@ -255,6 +258,7 @@ export class RoadmapService {
     entityDto.topic = entity.topic;
     entityDto.duration = entity.duration;
     entityDto.xp = entity.xp;
+    entityDto.rating = entity.rating;
     entityDto.tag = entity.tag;
     entityDto.keywords = entity.keywords;
     entityDto.prerequisites = entity.prerequisites;
