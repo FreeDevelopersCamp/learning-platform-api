@@ -27,6 +27,8 @@ import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.c
 import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
 import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
 import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
+import { ResourceCourseDto } from 'src/modules/learn/dto/course/resource.course';
+import { RatingDto } from 'src/modules/learn/dto/course/update.course';
 
 @ApiBearerAuth('authorization')
 @ApiTags('learner')
@@ -166,5 +168,16 @@ export class LearnerController {
   })
   approve(@Param('id') id: string) {
     return this._learnerService.approve(id);
+  }
+
+  @Post('/rating')
+  @Roles([AllowRoles.learner])
+  @ApiResponse({
+    description: 'Rating course',
+    isArray: false,
+    type: ResourceCourseDto,
+  })
+  addRating(@Body() dto: RatingDto) {
+    return this._learnerService.addRating(dto);
   }
 }

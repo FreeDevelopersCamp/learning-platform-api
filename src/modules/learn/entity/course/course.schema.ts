@@ -82,6 +82,10 @@ export class Course extends BaseEntity {
   rating?: string;
 
   @AutoMap()
+  @Prop({ required: false, default: [], type: [String] })
+  raters?: string[];
+
+  @AutoMap()
   @Prop({ required: false, isArray: true })
   subCoursesIds?: Types.ObjectId[];
 

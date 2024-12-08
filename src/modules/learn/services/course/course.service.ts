@@ -7,7 +7,7 @@ import { Mapper } from '@automapper/core';
 import { Course } from '../../entity/course/course.schema';
 import { ResourceCourseDto } from '../../dto/course/resource.course';
 import { CreateCourseDto } from '../../dto/course/create.course';
-import { UpdateCourseDto } from '../../dto/course/update.course';
+import { RatingDto, UpdateCourseDto } from '../../dto/course/update.course';
 import { InstructorService } from 'src/modules/core/services/instructor/instructor.service';
 import { CourseException } from 'src/utils/exception';
 import { UserRequested } from 'src/infra/system/system.constant';
@@ -65,6 +65,28 @@ export class CourseService {
     return this.getById(entity._id.toString());
   }
 
+  async addRating(dto: RatingDto): Promise<ResourceCourseDto> {
+    const entity = await this._repo.findOne(dto._id);
+
+    const userId = dto.userId;
+
+    if (entity?.raters?.includes(userId)) {
+      throw new CourseException('You have already rated this course!');
+    }
+
+    if (!entity.raters) entity.raters = [];
+
+    entity.raters.push(userId);
+
+    const totalRatings =
+      Number(entity.rating) * (entity.raters.length - 1) + Number(dto.rating);
+    const newRating = totalRatings / entity.raters.length;
+
+    entity.rating = Math.min(Math.max(newRating, 0), 5).toFixed(1);
+
+    return this.toDto(await this._repo.update(new this._courseModel(entity)));
+  }
+
   async update(dto: UpdateCourseDto): Promise<ResourceCourseDto> {
     const authorized = await this.isAuthorized(UserRequested.userId);
 
@@ -114,6 +136,9 @@ export class CourseService {
     }
     if (dto.rating) {
       entity.rating = dto.rating;
+    }
+    if (dto.raters) {
+      entity.raters = dto.raters;
     }
     if (dto.subCoursesIds) {
       entity.subCoursesIds = dto.subCoursesIds.map(

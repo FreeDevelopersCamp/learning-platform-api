@@ -16,6 +16,10 @@ import { ManagerService } from '../manager/manager.service';
 import { AccountManagerService } from '../AccountManager/AccountManager.service';
 import { ContentManagerService } from '../ContentManager/ContentManager.service';
 import { InstructorService } from '../instructor/instructor.service';
+import { RatingDto } from 'src/modules/learn/dto/course/update.course';
+import { UserRequested } from 'src/infra/system/system.constant';
+import { CourseService } from 'src/modules/learn/services/course/course.service';
+import { RoadmapService } from 'src/modules/learn/services/roadmap/roadmap.service';
 
 @Injectable()
 export class LearnerService {
@@ -31,6 +35,8 @@ export class LearnerService {
     private readonly _accountManagerService: AccountManagerService,
     private readonly _contentManagerService: ContentManagerService,
     private readonly _instructorService: InstructorService,
+    private readonly _courseService: CourseService,
+    private readonly _roadmapService: RoadmapService,
   ) {
     this._repo = new MongoRepository<Learner>(_learnerModel);
   }
@@ -137,6 +143,19 @@ export class LearnerService {
     }
 
     return await this.toDto(entity);
+  }
+
+  async addRating(dto: RatingDto) {
+    const userId = UserRequested.userId;
+
+    dto = { ...dto, userId };
+
+    if (dto.courseId) {
+      dto._id = dto.courseId;
+      return await this._courseService.addRating(dto);
+    }
+    if (dto.roadmapId) dto._id = dto.roadmapId;
+    return await this._roadmapService.addRating(dto);
   }
 
   private async isAuthorized(userId: string): Promise<boolean> {
