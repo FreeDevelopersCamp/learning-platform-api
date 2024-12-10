@@ -50,7 +50,12 @@ export class CourseDto {
   topic: string;
 
   @AutoMap()
+  @ApiProperty({ required: false })
   status: string; // from lookup
+
+  @AutoMap()
+  @ApiProperty({ required: false })
+  level: string; // from lookup
 
   @AutoMap()
   @ApiProperty({ required: true, default: 0 })
