@@ -41,6 +41,7 @@ export class SessionService {
   async setSessionProperties(params: SessionParams): Promise<Session> {
     const session = new Session();
     session.username = params.username;
+    session.role = params.role;
     session.password = params.password;
     session.status = params.status;
     if (params.status == SessionStatus.active) {

@@ -22,6 +22,7 @@ import { ExamService } from '../exam/exam.service';
 import { CertificationService } from '../certification/certification.service';
 import { RoadmapException } from 'src/utils/exception';
 import { UserRequested } from 'src/infra/system/system.constant';
+import { RatingDto } from '../../dto/course/update.course';
 
 @Injectable()
 export class RoadmapService {
@@ -140,6 +141,9 @@ export class RoadmapService {
     if (dto.prerequisites) {
       entity.prerequisites = dto.prerequisites;
     }
+    if (dto.rating) {
+      entity.rating = dto.rating;
+    }
     if (dto.coursesIds) {
       entity.coursesIds = dto.coursesIds.map((id) => new Types.ObjectId(id));
     }
@@ -184,6 +188,28 @@ export class RoadmapService {
     );
     await this._instructorService.update(instructor);
     return await this._repo.delete(id);
+  }
+
+  async addRating(dto: RatingDto): Promise<ResourceRoadmapDto> {
+    const entity = await this._repo.findOne(dto._id);
+
+    const userId = dto.userId;
+
+    if (entity?.raters?.includes(userId)) {
+      throw new RoadmapException('You have already rated this roadmap!');
+    }
+
+    if (!entity.raters) entity.raters = [];
+
+    entity.raters.push(userId);
+
+    const totalRatings =
+      Number(entity.rating) * (entity.raters.length - 1) + Number(dto.rating);
+    const newRating = totalRatings / entity.raters.length;
+
+    entity.rating = Math.min(Math.max(newRating, 0), 5).toFixed(1);
+
+    return this.toDto(await this._repo.update(new this._roadmapModel(entity)));
   }
 
   private async isAuthorized(userId: string): Promise<boolean> {
@@ -255,6 +281,7 @@ export class RoadmapService {
     entityDto.topic = entity.topic;
     entityDto.duration = entity.duration;
     entityDto.xp = entity.xp;
+    entityDto.rating = entity.rating;
     entityDto.tag = entity.tag;
     entityDto.keywords = entity.keywords;
     entityDto.prerequisites = entity.prerequisites;

@@ -35,14 +35,6 @@ export class InstructorService {
   }
 
   async list(): Promise<ResourceInstructorDto[]> {
-    const userId = UserRequested.userId;
-
-    const authorized = await this.isAuthorized(userId);
-
-    if (!authorized) {
-      throw new InstructorException('Not Approved!');
-    }
-
     const entities = await this._repo.findAll();
 
     return await Promise.all(
@@ -53,12 +45,6 @@ export class InstructorService {
   }
 
   async getById(id: string): Promise<ResourceInstructorDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new InstructorException('Not approved!');
-    }
-
     const entity = await this._repo.findOne(id);
     return await this.toDto(entity);
   }
@@ -69,12 +55,6 @@ export class InstructorService {
   }
 
   async update(dto: UpdateInstructorDto): Promise<ResourceInstructorDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new InstructorException('You are not authorized');
-    }
-
     const entity = new Instructor();
     entity._id = new Types.ObjectId(dto._id);
     entity.status = dto.status;
@@ -106,12 +86,6 @@ export class InstructorService {
   }
 
   async delete(id: string): Promise<boolean> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new InstructorException('You are not authorized');
-    }
-
     const entity = await this.getById(id);
 
     if (entity.status == '2') {
@@ -129,14 +103,6 @@ export class InstructorService {
   }
 
   async approve(id: string): Promise<ResourceInstructorDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new InstructorException(
-        'You are not authorized to perform this action.',
-      );
-    }
-
     const entity = await this.getById(id);
 
     if (entity.status == '2')
@@ -147,14 +113,6 @@ export class InstructorService {
   }
 
   async reject(id: string): Promise<Boolean> {
-    const userId = UserRequested.userId;
-
-    const authorized = await this.isAuthorized(userId);
-
-    if (!authorized) {
-      throw new InstructorException('Not authorized!');
-    }
-
     const entity = await this.getById(id);
 
     if (entity.status != '1') {
@@ -164,32 +122,32 @@ export class InstructorService {
   }
 
   async deactivate(id: string): Promise<ResourceInstructorDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
+    // const authorized = await this.isAuthorized(UserRequested.userId);
 
-    if (!authorized) {
-      throw new InstructorException('You are not authorized');
-    }
+    // if (!authorized) {
+    //   throw new InstructorException('You are not authorized');
+    // }
 
-    const userRequested = await this._userService.getById(UserRequested.userId);
+    // const userRequested = await this._userService.getById(UserRequested.userId);
     const dto = await this.getById(id);
 
     if (dto.status == '1') {
       throw new InstructorException('This entity is still pending!');
     }
 
-    if (
-      !userRequested.roles.includes('0') &&
-      !userRequested.roles.includes('1') &&
-      !userRequested.roles.includes('2') &&
-      !userRequested.roles.includes('3')
-    ) {
-      const userEntity = await this.getByUserId(userRequested._id);
-      if (userEntity._id != id) {
-        throw new InstructorException(
-          'You are not authorized to deactivate this entity.',
-        );
-      }
-    }
+    // if (
+    //   !userRequested.roles.includes('0') &&
+    //   !userRequested.roles.includes('1') &&
+    //   !userRequested.roles.includes('2') &&
+    //   !userRequested.roles.includes('3')
+    // ) {
+    //   const userEntity = await this.getByUserId(userRequested._id);
+    //   if (userEntity._id != id) {
+    //     throw new InstructorException(
+    //       'You are not authorized to deactivate this entity.',
+    //     );
+    //   }
+    // }
 
     const entity = new UpdateInstructorDto();
     entity._id = dto._id;
@@ -199,6 +157,8 @@ export class InstructorService {
   }
 
   async getByUserId(id: string): Promise<ResourceInstructorDto> {
+    // await this.isAuthorized(UserRequested.userId);
+
     const entities = await this._repo.findAll();
     const entity = entities.find((entity) => entity.userId.toString() === id);
 

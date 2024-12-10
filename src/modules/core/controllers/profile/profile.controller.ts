@@ -11,7 +11,6 @@ import {
 import { ProfileService } from '../../services/profile/profile.service';
 import { ObjectIdValidationPipe } from 'src/common/pipes/object-id-validation.pipe';
 import { ApiBearerAuth, ApiTags, ApiResponse } from '@nestjs/swagger';
-import { SchemaValidation } from 'src/common/pipes/schema-validation.pipe';
 import { CreateProfileDto } from '../../dto/profile/create.profile';
 import { UpdateProfileDto } from '../../dto/profile/update.profile';
 import { ResourceProfileDto } from '../../dto/profile/resource.profile';
@@ -43,9 +42,17 @@ export class ProfileController {
     return this._profileService.getById(id);
   }
 
+  @Get('/getByUserName/:userName')
+  @ApiResponse({
+    description: 'user information',
+    isArray: false,
+    type: ResourceProfileDto,
+  })
+  getByUserName(@Param('userName') userName: string) {
+    return this._profileService.getByUserName(userName);
+  }
+
   @Post()
-  @UsePipes(new SchemaValidation())
-  @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'profile created information',
     isArray: false,
@@ -56,7 +63,6 @@ export class ProfileController {
   }
 
   @Patch()
-  @UsePipes(new ObjectIdValidationPipe(), new SchemaValidation())
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'profile updated information',
@@ -68,7 +74,6 @@ export class ProfileController {
   }
 
   @Delete('/:id')
-  @UsePipes(new ObjectIdValidationPipe())
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',

@@ -6,7 +6,6 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
@@ -17,29 +16,15 @@ import { CreateCourseDto } from '../../dto/course/create.course';
 import { UpdateCourseDto } from '../../dto/course/update.course';
 import { ResourceCourseDto } from '../../dto/course/resource.course';
 import { SchemaValidation } from 'src/common/pipes/schema-validation.pipe';
-import { RolesGuard } from 'src/modules/authentication/guards/roles/roles.guard';
 import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
-import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
-import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
-import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
 
 @ApiBearerAuth('authorization')
 @ApiTags('course')
 @Controller('course')
-@UseGuards(AuthGuard, RolesGuard)
 export class CourseController {
   constructor(private readonly _courseService: CourseService) {}
 
   @Get()
-  @Roles([
-    AllowRoles.admin,
-    AllowRoles.owner,
-    AllowRoles.manager,
-    AllowRoles.accountManager,
-    AllowRoles.contentManager,
-    AllowRoles.instructor,
-    AllowRoles.learner,
-  ])
   @UseInterceptors(PaginationInterceptor)
   @ApiQuery({
     name: 'page',
@@ -64,15 +49,6 @@ export class CourseController {
 
   @Get('/courseByInstructor/:id')
   @UsePipes(new ObjectIdValidationPipe())
-  @Roles([
-    AllowRoles.admin,
-    AllowRoles.owner,
-    AllowRoles.manager,
-    AllowRoles.accountManager,
-    AllowRoles.contentManager,
-    AllowRoles.instructor,
-    AllowRoles.learner,
-  ])
   @UseInterceptors(PaginationInterceptor)
   @ApiQuery({
     name: 'page',
@@ -96,15 +72,6 @@ export class CourseController {
   }
 
   @Get('/:id')
-  @Roles([
-    AllowRoles.admin,
-    AllowRoles.owner,
-    AllowRoles.manager,
-    AllowRoles.accountManager,
-    AllowRoles.contentManager,
-    AllowRoles.instructor,
-    AllowRoles.learner,
-  ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'course information',
@@ -116,7 +83,6 @@ export class CourseController {
   }
 
   @Post()
-  @Roles([AllowRoles.admin, AllowRoles.contentManager, AllowRoles.instructor])
   @UsePipes(new SchemaValidation())
   @ApiResponse({
     description: 'course created information',
@@ -128,7 +94,6 @@ export class CourseController {
   }
 
   @Patch()
-  @Roles([AllowRoles.admin, AllowRoles.contentManager, AllowRoles.instructor])
   @ApiResponse({
     description: 'course updated information',
     isArray: false,
@@ -139,7 +104,6 @@ export class CourseController {
   }
 
   @Delete('/:id')
-  @Roles([AllowRoles.admin, AllowRoles.contentManager, AllowRoles.instructor])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',

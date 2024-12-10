@@ -27,30 +27,16 @@ export class OwnerService {
   }
 
   async list(): Promise<ResourceOwnerDto[]> {
-    try {
-      const userId = UserRequested.userId;
+    const entities = await this._repo.findAll();
 
-      const authorized = await this.isAuthorized(userId);
-
-      if (!authorized) {
-        throw new OwnerException('Not Approved!');
-      }
-
-      const entities = await this._repo.findAll();
-
-      return await Promise.all(
-        entities.map(async (entity) => {
-          return await this.toDto(entity);
-        }),
-      );
-    } catch (error) {
-      console.error('Error in list method:', error);
-    }
+    return await Promise.all(
+      entities.map(async (entity) => {
+        return await this.toDto(entity);
+      }),
+    );
   }
 
   async getById(id: string): Promise<ResourceOwnerDto> {
-    await this.isAuthorized(UserRequested.userId);
-
     const entity = await this._repo.findOne(id);
     return await this.toDto(entity);
   }
@@ -61,12 +47,6 @@ export class OwnerService {
   }
 
   async update(dto: UpdateOwnerDto): Promise<ResourceOwnerDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new OwnerException('You are not authorized');
-    }
-
     const entity = await this._repo.update(new this._ownerModel(dto));
     if (!entity.userId) {
       entity.userId = new Types.ObjectId(dto.user._id);
@@ -75,12 +55,6 @@ export class OwnerService {
   }
 
   async delete(id: string): Promise<boolean> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new OwnerException('You are not authorized');
-    }
-
     const entity = await this.getById(id);
 
     if (entity.status == '2') {
@@ -98,12 +72,6 @@ export class OwnerService {
   }
 
   async deactivate(id: string): Promise<ResourceOwnerDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new OwnerException('You are not authorized');
-    }
-
     const userRequested = await this._userService.getById(UserRequested.userId);
     const dto = await this.getById(id);
 
@@ -128,14 +96,6 @@ export class OwnerService {
   }
 
   async approve(id: string): Promise<ResourceOwnerDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new OwnerException(
-        'You are not authorized to perform this action.',
-      );
-    }
-
     const entity = await this.getById(id);
 
     if (entity.status == '2')
@@ -146,14 +106,6 @@ export class OwnerService {
   }
 
   async reject(id: string): Promise<Boolean> {
-    const userId = UserRequested.userId;
-
-    const authorized = await this.isAuthorized(userId);
-
-    if (!authorized) {
-      throw new OwnerException('Not authorized!');
-    }
-
     const entity = await this.getById(id);
 
     if (entity.status != '1') {
@@ -163,6 +115,8 @@ export class OwnerService {
   }
 
   async getByUserId(id: string): Promise<ResourceOwnerDto> {
+    // await this.isAuthorized(UserRequested.userId);
+
     const entities = await this._repo.findAll();
     const entity = entities.find((entity) => entity.userId.toString() === id);
 

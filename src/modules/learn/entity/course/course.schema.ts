@@ -29,6 +29,20 @@ export class CourseResource {
   tag: string; // free or paid resource
 }
 
+export class Exercise {
+  @AutoMap()
+  @Prop({ required: false })
+  question: string;
+
+  @AutoMap()
+  @Prop({ required: false, default: [] })
+  answers?: string[];
+
+  @AutoMap()
+  @Prop({ required: false })
+  correctAnswer?: string;
+}
+
 @Schema({ autoCreate: false })
 export class Course extends BaseEntity {
   @AutoMap()
@@ -76,6 +90,22 @@ export class Course extends BaseEntity {
   @AutoMap()
   @Prop({ required: false, default: [] })
   tips?: string[];
+
+  @AutoMap()
+  @Prop({ required: false, default: '' })
+  rating?: string;
+
+  @AutoMap()
+  @Prop({ required: false, default: [], type: [String] })
+  raters?: string[];
+
+  @AutoMap()
+  @Prop({ required: false, default: [], type: [String] })
+  reviews?: string[];
+
+  @AutoMap()
+  @Prop({ required: false, default: [] })
+  exercises?: Exercise[];
 
   @AutoMap()
   @Prop({ required: false, isArray: true })
