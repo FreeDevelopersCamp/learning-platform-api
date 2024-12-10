@@ -1,6 +1,7 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
+import { Exercise } from '../../entity/course/course.schema';
 
 export class CourseResourceDto {
   @AutoMap()
@@ -72,6 +73,14 @@ export class CourseDto {
   @AutoMap()
   @ApiProperty({ required: false, default: [] })
   raters?: string[];
+
+  @AutoMap()
+  @ApiProperty({ required: false, default: [], type: [String] })
+  reviews?: string[];
+
+  @AutoMap()
+  @ApiProperty({ required: false, default: [] })
+  exercises?: Exercise[];
 
   @AutoMap()
   @ApiProperty({ required: false, type: CourseResourceDto, isArray: true })

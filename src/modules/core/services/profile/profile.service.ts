@@ -46,6 +46,13 @@ export class ProfileService {
     return this.toDto(entity);
   }
 
+  async getByUserName(userName: string): Promise<ResourceProfileDto> {
+    const user = await this._userService.getByUserName(userName, false);
+    const entities = await this._repo.findAll();
+    const entity = entities.find((e) => e.userId.toString() === user._id);
+    return this.toDto(entity);
+  }
+
   async create(dto: CreateProfileDto): Promise<ResourceProfileDto> {
     const entity = await this._repo.create(new this._profileModel(dto));
     return this.getById(entity._id.toString());
