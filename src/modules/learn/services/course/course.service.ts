@@ -32,7 +32,12 @@ export class CourseService {
 
   async list(): Promise<ResourceCourseDto[]> {
     const courses = await this._repo.findAll();
-    return Promise.all(courses.map((course) => this.toDto(course)));
+    return Promise.all(
+      courses.map((course) => {
+        if (course?.parentId) return null;
+        return this.toDto(course);
+      }),
+    );
   }
 
   async listByInstructor(id: string): Promise<ResourceCourseDto[]> {
@@ -62,7 +67,6 @@ export class CourseService {
     instructor.coursesIds.push(entity._id.toString());
     await this._instructorService.update(instructor);
 
-    console.log(instructor);
     return this.getById(entity._id.toString());
   }
 
