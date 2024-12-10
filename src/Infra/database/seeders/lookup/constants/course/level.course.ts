@@ -1,14 +1,14 @@
 export const roles: any = {
-  name: 'status',
+  name: 'level',
   items: [
     {
       id: '0',
-      label: 'Only resources',
+      label: 'Beginner',
       order: 0,
     },
     {
       id: '1',
-      label: 'Can view on application',
+      label: 'Advanced',
       order: 1,
     },
   ],

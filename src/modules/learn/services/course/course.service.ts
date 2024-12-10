@@ -32,7 +32,12 @@ export class CourseService {
 
   async list(): Promise<ResourceCourseDto[]> {
     const courses = await this._repo.findAll();
-    return Promise.all(courses.map((course) => this.toDto(course)));
+    return Promise.all(
+      courses.map((course) => {
+        if (course?.parentId) return null;
+        return this.toDto(course);
+      }),
+    );
   }
 
   async listByInstructor(id: string): Promise<ResourceCourseDto[]> {
@@ -50,12 +55,6 @@ export class CourseService {
   }
 
   async create(dto: CreateCourseDto): Promise<ResourceCourseDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new CourseException('You are not authorized');
-    }
-
     const entity = await this._repo.create(new this._courseModel(dto));
 
     if (entity.parentId) {
@@ -130,6 +129,9 @@ export class CourseService {
     }
     if (dto.status) {
       entity.status = dto.status;
+    }
+    if (dto.level) {
+      entity.level = dto.level;
     }
     if (dto.resources) {
       entity.resources = dto.resources;
@@ -215,6 +217,7 @@ export class CourseService {
     entityDto.category = entity.category;
     entityDto.topic = entity.topic;
     entityDto.status = entity.status;
+    entityDto.level = entity.level;
     entityDto.duration = entity.duration;
     entityDto.xp = entity.xp;
     entityDto.rating = entity.rating;
