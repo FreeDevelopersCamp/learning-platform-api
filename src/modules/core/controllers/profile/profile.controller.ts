@@ -42,6 +42,16 @@ export class ProfileController {
     return this._profileService.getById(id);
   }
 
+  @Get('/getByUserName/:userName')
+  @ApiResponse({
+    description: 'user information',
+    isArray: false,
+    type: ResourceProfileDto,
+  })
+  getByUserName(@Param('userName') userName: string) {
+    return this._profileService.getByUserName(userName);
+  }
+
   @Post()
   @ApiResponse({
     description: 'profile created information',

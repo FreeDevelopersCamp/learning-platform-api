@@ -58,6 +58,12 @@ export class CourseService {
 
     const entity = await this._repo.create(new this._courseModel(dto));
 
+    if (entity.parentId) {
+      const parentCourse = await this._repo.findOne(entity.parentId.toString());
+      parentCourse.subCoursesIds.push(entity._id);
+      await this._repo.update(new this._courseModel(parentCourse));
+    }
+
     const instructor = await this._instructorService.getById(dto.instructorId);
     instructor.coursesIds.push(entity._id.toString());
     await this._instructorService.update(instructor);
@@ -140,6 +146,12 @@ export class CourseService {
     if (dto.raters) {
       entity.raters = dto.raters;
     }
+    if (dto.reviews) {
+      entity.reviews = dto.reviews;
+    }
+    if (dto.exercises) {
+      entity.exercises = dto.exercises;
+    }
     if (dto.subCoursesIds) {
       entity.subCoursesIds = dto.subCoursesIds.map(
         (id) => new Types.ObjectId(id),
@@ -206,6 +218,9 @@ export class CourseService {
     entityDto.duration = entity.duration;
     entityDto.xp = entity.xp;
     entityDto.rating = entity.rating;
+    entityDto.raters = entity.raters;
+    entityDto.reviews = entity.reviews;
+    entityDto.exercises = entity.exercises;
 
     entityDto.instructor = await this._instructorService.getById(
       entity.instructorId.toString(),
