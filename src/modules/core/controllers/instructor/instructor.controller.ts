@@ -88,7 +88,14 @@ export class InstructorController {
   }
 
   @Get('/user/:userId')
-  @Roles([AllowRoles.admin])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+  ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'instructor information',
