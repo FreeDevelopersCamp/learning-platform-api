@@ -9,7 +9,6 @@ import { ResourceInstructorDto } from '../../dto/instructor/resource.instructor'
 import { CreateInstructorDto } from '../../dto/instructor/create.instructor';
 import { UpdateInstructorDto } from '../../dto/instructor/update.instructor';
 import { UserService } from '../user/user.service';
-import { UserRequested } from 'src/infra/system/system.constant';
 import { InstructorException } from 'src/utils/exception';
 import { AdminService } from '../admin/admin.service';
 import { OwnerService } from '../owner/owner.service';
@@ -58,7 +57,7 @@ export class InstructorService {
     const entity = new Instructor();
     entity._id = new Types.ObjectId(dto._id);
     entity.status = dto.status;
-    entity.userId = new Types.ObjectId(UserRequested.userId);
+    entity.userId = new Types.ObjectId(dto.user._id);
     entity.coursesIds = dto.coursesIds?.map((id) => new Types.ObjectId(id));
     entity.roadmapIds = dto.roadmapsIds?.map((id) => new Types.ObjectId(id));
     entity.practicesIds = dto.practicesIds?.map((id) => new Types.ObjectId(id));

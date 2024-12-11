@@ -74,6 +74,10 @@ export class Course extends BaseEntity {
   status: string; // from lookup
 
   @AutoMap()
+  @Prop({ required: false, default: '0' })
+  level: string; // from lookup
+
+  @AutoMap()
   @Prop({ required: true, default: 0 })
   @IsNumber()
   duration: number; // In Minutes
