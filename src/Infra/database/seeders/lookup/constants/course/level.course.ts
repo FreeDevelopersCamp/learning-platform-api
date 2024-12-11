@@ -3,12 +3,12 @@ export const roles: any = {
   items: [
     {
       id: '0',
-      label: 'Beginner',
+      label: 'Advanced',
       order: 0,
     },
     {
       id: '1',
-      label: 'Advanced',
+      label: 'Beginner',
       order: 1,
     },
   ],
