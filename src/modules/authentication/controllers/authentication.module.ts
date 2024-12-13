@@ -14,10 +14,12 @@ import { ContentManagerModule } from 'src/modules/core/controllers/ContentManage
 import { RoleFactory } from '../guards/roles/roleFactory';
 import { ManagerModule } from 'src/modules/core/controllers/manager/manager.module';
 import { AdminModule } from 'src/modules/core/controllers/admin/admin.module';
+import { ProfileModule } from '../../core/controllers/profile/profile.module';
 
 @Module({
   imports: [
     UserModule,
+    ProfileModule,
     GuardsModule,
     SessionModule,
     LookupModule,

@@ -50,6 +50,7 @@ export class ProfileService {
     const user = await this._userService.getByUserName(userName, false);
     const entities = await this._repo.findAll();
     const entity = entities.find((e) => e.userId.toString() === user._id);
+    if (!entity) return null;
     return this.toDto(entity);
   }
 

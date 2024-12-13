@@ -21,6 +21,8 @@ import { Session, SessionParams } from '../session/session';
 import { SessionStatus } from '../models/enum/session.status';
 import { LookupService } from 'src/modules/core/services/lookup/lookup.service';
 import { RoleFactory } from '../guards/roles/roleFactory';
+import { CreateProfileDto } from 'src/modules/core/dto/profile/create.profile';
+import { ProfileService } from 'src/modules/core/services/profile/profile.service';
 
 @Injectable()
 export class AuthenticationService {
@@ -32,6 +34,7 @@ export class AuthenticationService {
     private _sessionService: SessionService,
     private _lookupService: LookupService,
     private _roleFactory: RoleFactory,
+    private _profileService: ProfileService,
   ) {}
 
   async setConnection(model: ResourceTenancyDto) {
@@ -176,6 +179,15 @@ export class AuthenticationService {
 
     if (!session) throw new InvalidLoginException('Invalid session');
 
+    // create profile for the user if it does not exist
+    const profile = await this._profileService.getByUserName(user.userName);
+
+    if (!profile) {
+      const profileDto = new CreateProfileDto();
+      profileDto.userId = user._id;
+      await this._profileService.create(profileDto);
+    }
+
     return {
       token: token,
     };
@@ -251,6 +263,11 @@ export class AuthenticationService {
       );
       await service.create(roleDto); // Call the service's create method with the appropriate DTO
     }
+
+    // create profile for the new user
+    const profileDto = new CreateProfileDto();
+    profileDto.userId = user._id;
+    await this._profileService.create(profileDto);
 
     return user;
   }
