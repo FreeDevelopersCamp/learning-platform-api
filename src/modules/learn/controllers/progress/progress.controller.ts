@@ -87,7 +87,6 @@ export class ProgressController {
   }
 
   @Patch()
-  @UsePipes(new ObjectIdValidationPipe())
   @Roles([AllowRoles.learner])
   @ApiResponse({
     description: 'progress updated information',

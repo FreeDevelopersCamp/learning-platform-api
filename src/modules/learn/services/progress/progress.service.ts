@@ -57,9 +57,11 @@ export class ProgressService {
   async update(dto: UpdateProgressDto): Promise<ResourceProgressDto> {
     // const entity = await this._repo.update(new this._progressModel(dto));
 
-    const entity = await this._repo.findOne(dto._id);
+    let entity;
 
-    if (!entity) {
+    try {
+      entity = await this._repo.findOne(dto._id);
+    } catch (Exception) {
       const createdEntity = new CreateProgressDto();
       createdEntity.xp = dto.xp;
       createdEntity.userId = dto.userId;
@@ -74,41 +76,34 @@ export class ProgressService {
       return await this.create(createdEntity);
     }
 
-    if (dto.currentRoadmapsIds.length > 0) {
-      entity.currentRoadmapsIds = dto.currentRoadmapsIds.map(
-        (id) => new Types.ObjectId(id),
-      );
-    }
-    if (dto.currentCoursesIds.length > 0) {
-      entity.currentCoursesIds = dto.currentCoursesIds.map(
-        (id) => new Types.ObjectId(id),
-      );
-    }
-    if (dto.currentProjectsIds.length > 0) {
-      entity.currentProjectsIds = dto.currentProjectsIds.map(
-        (id) => new Types.ObjectId(id),
-      );
-    }
-    if (dto.completedRoadmapsIds.length > 0) {
-      entity.completedRoadmapsIds = dto.completedRoadmapsIds.map(
-        (id) => new Types.ObjectId(id),
-      );
-    }
-    if (dto.completedCoursesIds.length > 0) {
-      entity.completedCoursesIds = dto.completedCoursesIds.map(
-        (id) => new Types.ObjectId(id),
-      );
-    }
-    if (dto.completedProjectsIds.length > 0) {
-      entity.completedProjectsIds = dto.completedProjectsIds.map(
-        (id) => new Types.ObjectId(id),
-      );
-    }
-    if (dto.completedPracticesIds.length > 0) {
-      entity.completedPracticesIds = dto.completedPracticesIds.map(
-        (id) => new Types.ObjectId(id),
-      );
-    }
+    entity.currentRoadmapsIds = dto?.currentRoadmapsIds?.map(
+      (id) => new Types.ObjectId(id),
+    );
+
+    entity.currentCoursesIds = dto?.currentCoursesIds?.map(
+      (id) => new Types.ObjectId(id),
+    );
+
+    entity.currentProjectsIds = dto?.currentProjectsIds?.map(
+      (id) => new Types.ObjectId(id),
+    );
+
+    entity.completedRoadmapsIds = dto?.completedRoadmapsIds?.map(
+      (id) => new Types.ObjectId(id),
+    );
+
+    entity.completedCoursesIds = dto?.completedCoursesIds?.map(
+      (id) => new Types.ObjectId(id),
+    );
+
+    entity.completedProjectsIds = dto?.completedProjectsIds?.map(
+      (id) => new Types.ObjectId(id),
+    );
+
+    entity.completedPracticesIds = dto?.completedPracticesIds?.map(
+      (id) => new Types.ObjectId(id),
+    );
+
     entity.xp = dto.xp;
     entity.userId = dto.userId;
 
@@ -128,47 +123,33 @@ export class ProgressService {
 
     entityDto.user = await this._userService.getById(entity.userId);
 
-    entityDto.currentRoadmaps = await Promise.all(
-      entity.currentRoadmapsIds.map(async (id) => {
-        return await this._roadmapService.getById(id.toString());
-      }),
-    );
+    entityDto.currentRoadmapsIds = entity.currentRoadmapsIds.map((id) => {
+      return id.toString();
+    });
 
-    entityDto.currentCourses = await Promise.all(
-      entity.currentCoursesIds.map(async (id) => {
-        return await this._courseService.getById(id.toString());
-      }),
-    );
+    entityDto.currentCoursesIds = entity.currentCoursesIds.map((id) => {
+      return id.toString();
+    });
 
-    entityDto.currentProjects = await Promise.all(
-      entity.currentProjectsIds.map(async (id) => {
-        return await this._projectService.getById(id.toString());
-      }),
-    );
+    entityDto.currentProjectsIds = entity.currentProjectsIds.map((id) => {
+      return id.toString();
+    });
 
-    entityDto.completedRoadmaps = await Promise.all(
-      entity.completedRoadmapsIds.map(async (id) => {
-        return await this._roadmapService.getById(id.toString());
-      }),
-    );
+    entityDto.completedRoadmapsIds = entity.completedRoadmapsIds.map((id) => {
+      return id.toString();
+    });
 
-    entityDto.completedCourses = await Promise.all(
-      entity.completedCoursesIds.map(async (id) => {
-        return await this._courseService.getById(id.toString());
-      }),
-    );
+    entityDto.completedCoursesIds = entity.completedCoursesIds.map((id) => {
+      return id.toString();
+    });
 
-    entityDto.completedProjects = await Promise.all(
-      entity.completedProjectsIds.map(async (id) => {
-        return await this._projectService.getById(id.toString());
-      }),
-    );
+    entityDto.completedProjectsIds = entity.completedProjectsIds.map((id) => {
+      return id.toString();
+    });
 
-    entityDto.completedPractices = await Promise.all(
-      entity.completedPracticesIds.map(async (id) => {
-        return await this._practiceService.getById(id.toString());
-      }),
-    );
+    entityDto.completedPracticesIds = entity.completedPracticesIds.map((id) => {
+      return id.toString();
+    });
 
     return entityDto;
   }
