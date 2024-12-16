@@ -1,11 +1,5 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
-import { ResourceRoadmapDto } from '../roadmap/resource.roadmap';
-import { ResourceCourseDto } from '../course/resource.course';
-import { ResourceProjectDto } from '../project/resource.project';
-import { ResourcePracticeDto } from '../practice/resource.practice';
-import { ResourceTutorialDto } from '../tutorial/resource.tutorial';
-import { ResourceCertificationDto } from '../certification/resource.certification';
 
 export class ProgressDto {
   @AutoMap()
@@ -14,37 +8,37 @@ export class ProgressDto {
 
   @AutoMap()
   @ApiProperty({ required: false })
-  currentRoadmap?: ResourceRoadmapDto;
+  currentRoadmapsIds?: string[];
 
   @AutoMap()
   @ApiProperty({ required: false })
-  currentCourse?: ResourceCourseDto;
+  currentCoursesIds?: string[];
 
   @AutoMap()
   @ApiProperty({ required: false })
-  currentProject?: ResourceProjectDto;
+  currentProjectsIds?: string[];
 
   @AutoMap()
   @ApiProperty({ required: false })
-  completedRoadmaps?: ResourceRoadmapDto[];
+  completedRoadmapsIds?: string[];
 
   @AutoMap()
   @ApiProperty({ required: false })
-  completedCourses?: ResourceCourseDto[];
+  completedCoursesIds?: string[];
 
   @AutoMap()
   @ApiProperty({ required: false })
-  completedProjects?: ResourceProjectDto[];
+  completedProjectsIds?: string[];
 
   @AutoMap()
   @ApiProperty({ required: false })
-  completedPractices?: ResourcePracticeDto[];
+  completedPracticesIds?: string[];
 
   @AutoMap()
   @ApiProperty({ required: false })
-  completedTutorials?: ResourceTutorialDto[];
+  completedTutorialsIds?: string[];
 
   @AutoMap()
   @ApiProperty({ required: false })
-  completedCertificates?: ResourceCertificationDto[];
+  completedCertificatesIds?: string[];
 }

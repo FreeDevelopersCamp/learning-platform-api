@@ -10,9 +10,11 @@ import { PracticeModule } from '../practice/practice.module';
 import { ProjectModule } from '../project/project.module';
 import { CertificationModule } from '../certification/certification.module';
 import { TutorialModule } from '../tutorial/tutorial.module';
+import { UserModule } from '../../../core/controllers/user/user.module';
 
 @Module({
   imports: [
+    UserModule,
     GuardsModule,
     CourseModule,
     RoadmapModule,

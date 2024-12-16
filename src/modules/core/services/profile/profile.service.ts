@@ -33,12 +33,11 @@ export class ProfileService {
   async list(): Promise<ResourceProfileDto[]> {
     const entities = await this._repo.findAll();
 
-    const entitiesDto = await Promise.all(
+    return await Promise.all(
       entities.map(async (entity) => {
         return this.getById.call(this, entity._id.toString());
       }),
     );
-    return entitiesDto;
   }
 
   async getById(id: string): Promise<ResourceProfileDto> {

@@ -11,8 +11,12 @@ import {
 } from '@nestjs/common';
 import { ProgressService } from '../../services/progress/progress.service';
 import { ObjectIdValidationPipe } from 'src/common/pipes/object-id-validation.pipe';
-import { ApiBearerAuth, ApiTags, ApiResponse } from '@nestjs/swagger';
-import { SchemaValidation } from 'src/common/pipes/schema-validation.pipe';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiResponse,
+  ApiExcludeEndpoint,
+} from '@nestjs/swagger';
 import { CreateProgressDto } from '../../dto/progress/create.progress';
 import { UpdateProgressDto } from '../../dto/progress/update.progress';
 import { ResourceProgressDto } from '../../dto/progress/resource.progress';
@@ -31,8 +35,12 @@ export class ProgressController {
   @Get()
   @Roles([
     AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
     AllowRoles.contentManager,
     AllowRoles.instructor,
+    AllowRoles.contentManager,
     AllowRoles.learner,
   ])
   @ApiResponse({
@@ -46,6 +54,16 @@ export class ProgressController {
 
   @Get('/:id')
   @UsePipes(new ObjectIdValidationPipe())
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.contentManager,
+    AllowRoles.learner,
+  ])
   @ApiResponse({
     description: 'progress information',
     isArray: false,
@@ -56,8 +74,9 @@ export class ProgressController {
   }
 
   @Post()
-  @UsePipes(new SchemaValidation())
   @UsePipes(new ObjectIdValidationPipe())
+  @ApiExcludeEndpoint()
+  @Roles([AllowRoles.learner])
   @ApiResponse({
     description: 'progress created information',
     isArray: false,
@@ -68,8 +87,7 @@ export class ProgressController {
   }
 
   @Patch()
-  @UsePipes(new ObjectIdValidationPipe(), new SchemaValidation())
-  @UsePipes(new ObjectIdValidationPipe())
+  @Roles([AllowRoles.learner])
   @ApiResponse({
     description: 'progress updated information',
     isArray: false,
@@ -81,7 +99,8 @@ export class ProgressController {
 
   @Delete('/:id')
   @UsePipes(new ObjectIdValidationPipe())
-  @UsePipes(new ObjectIdValidationPipe())
+  @ApiExcludeEndpoint()
+  @Roles([AllowRoles.learner])
   @ApiResponse({
     description: 'Deleted result',
     isArray: false,
