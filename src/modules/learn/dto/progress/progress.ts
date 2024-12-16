@@ -14,15 +14,15 @@ export class ProgressDto {
 
   @AutoMap()
   @ApiProperty({ required: false })
-  currentRoadmap?: ResourceRoadmapDto;
+  currentRoadmaps?: ResourceRoadmapDto[];
 
   @AutoMap()
   @ApiProperty({ required: false })
-  currentCourse?: ResourceCourseDto;
+  currentCourses?: ResourceCourseDto[];
 
   @AutoMap()
   @ApiProperty({ required: false })
-  currentProject?: ResourceProjectDto;
+  currentProjects?: ResourceProjectDto[];
 
   @AutoMap()
   @ApiProperty({ required: false })

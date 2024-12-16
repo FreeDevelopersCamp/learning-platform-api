@@ -19,6 +19,6 @@ import { RoadmapModule } from 'src/modules/learn/controllers/roadmap/roadmap.mod
   ],
   controllers: [ProfileController],
   providers: [ProfileService, ProfileModels.profile, ProfileProfile],
-  exports: [ProfileModule, ProfileService]
+  exports: [ProfileModule, ProfileService],
 })
 export class ProfileModule {}

@@ -10,16 +10,20 @@ export class Progress extends BaseEntity {
   xp: number;
 
   @AutoMap()
-  @Prop({ required: false })
-  currentRoadmapId?: Types.ObjectId;
+  @Prop({ required: true })
+  userId: string;
 
   @AutoMap()
   @Prop({ required: false })
-  currentCourse?: Types.ObjectId;
+  currentRoadmapsIds?: Types.ObjectId[];
 
   @AutoMap()
   @Prop({ required: false })
-  currentProjectId?: Types.ObjectId;
+  currentCoursesIds?: Types.ObjectId[];
+
+  @AutoMap()
+  @Prop({ required: false })
+  currentProjectsIds?: Types.ObjectId[];
 
   @AutoMap()
   @Prop({ required: false })
