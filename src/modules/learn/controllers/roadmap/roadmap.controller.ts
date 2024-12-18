@@ -122,7 +122,12 @@ export class RoadmapController {
   }
 
   @Patch()
-  @Roles([AllowRoles.admin, AllowRoles.contentManager, AllowRoles.instructor])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
   @ApiResponse({
     description: 'roadmap updated information',
     isArray: false,
