@@ -49,6 +49,23 @@ export class ProgressService {
     );
   }
 
+  async getByUserId(id: string): Promise<ResourceProgressDto> {
+    let entity: Progress;
+
+    try {
+      const progresses = await this._repo.findAll();
+      const progress = progresses?.find((item) => item.userId === id);
+      entity = await this._repo.findOne(progress?._id.toString());
+    } catch (Exception) {
+      const createdEntity = new CreateProgressDto();
+      createdEntity.xp = 0;
+      createdEntity.userId = id;
+      return await this.create(createdEntity);
+    }
+
+    return this.toDto(entity);
+  }
+
   async create(dto: CreateProgressDto): Promise<ResourceProgressDto> {
     const entity = await this._repo.create(new this._progressModel(dto));
     return await this.toDto(entity);
@@ -123,33 +140,35 @@ export class ProgressService {
 
     entityDto.user = await this._userService.getById(entity.userId);
 
-    entityDto.currentRoadmapsIds = entity.currentRoadmapsIds.map((id) => {
+    entityDto.currentRoadmapsIds = entity?.currentRoadmapsIds?.map((id) => {
       return id.toString();
     });
 
-    entityDto.currentCoursesIds = entity.currentCoursesIds.map((id) => {
+    entityDto.currentCoursesIds = entity?.currentCoursesIds?.map((id) => {
       return id.toString();
     });
 
-    entityDto.currentProjectsIds = entity.currentProjectsIds.map((id) => {
+    entityDto.currentProjectsIds = entity?.currentProjectsIds?.map((id) => {
       return id.toString();
     });
 
-    entityDto.completedRoadmapsIds = entity.completedRoadmapsIds.map((id) => {
+    entityDto.completedRoadmapsIds = entity?.completedRoadmapsIds?.map((id) => {
       return id.toString();
     });
 
-    entityDto.completedCoursesIds = entity.completedCoursesIds.map((id) => {
+    entityDto.completedCoursesIds = entity?.completedCoursesIds?.map((id) => {
       return id.toString();
     });
 
-    entityDto.completedProjectsIds = entity.completedProjectsIds.map((id) => {
+    entityDto.completedProjectsIds = entity?.completedProjectsIds?.map((id) => {
       return id.toString();
     });
 
-    entityDto.completedPracticesIds = entity.completedPracticesIds.map((id) => {
-      return id.toString();
-    });
+    entityDto.completedPracticesIds = entity?.completedPracticesIds?.map(
+      (id) => {
+        return id.toString();
+      },
+    );
 
     return entityDto;
   }
