@@ -1,7 +1,6 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { Storage } from '@google-cloud/storage';
 import { UserService } from '../../../core/services/user/user.service';
-import { UserRequested } from '../../../../Infra/system/system.constant';
 
 @Injectable()
 export class ImageService {
@@ -10,7 +9,7 @@ export class ImageService {
 
   constructor(private readonly _userService: UserService) {
     this.storage = new Storage({
-      keyFilename: 'src/config/keys/gcp-storage-key.json',
+      keyFilename: process.env.GCP_KEY_FILE,
     });
   }
 
