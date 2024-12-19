@@ -51,6 +51,10 @@ export class UserProfile extends AutomapperProfile {
           (dest) => dest.address,
           mapFrom((src) => src.address),
         ),
+        forMember(
+          (dest) => dest.image,
+          mapFrom((src) => src.image),
+        ),
       );
 
       createMap(
@@ -80,6 +84,10 @@ export class UserProfile extends AutomapperProfile {
         forMember(
           (dest) => dest.address,
           mapFrom((src) => src.address),
+        ),
+        forMember(
+          (dest) => dest.image,
+          mapFrom((src) => src.image),
         ),
       );
 

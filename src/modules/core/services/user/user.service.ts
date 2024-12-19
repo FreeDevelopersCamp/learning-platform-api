@@ -6,7 +6,7 @@ import { IMongoRepository } from 'src/infra/database/repository/adapter';
 import { MongoRepository } from 'src/Infra/database/repository/mongo-repository';
 import { UserNotFoundException } from 'src/utils/exception';
 import { CreateUserDto } from '../../dto/user/create.user';
-import { ResourceUserDto, ForAuthUserDto } from '../../dto/user/resource.user';
+import { ForAuthUserDto, ResourceUserDto } from '../../dto/user/resource.user';
 import { UpdateUserDto } from '../../dto/user/update.user';
 import { User, UserSchema } from '../../entity/user/user.schema';
 import { MongooseConnectionService } from 'src/Infra/database/Service/mongoose.connection.service';
@@ -37,21 +37,18 @@ export class UserService {
   async list(): Promise<ResourceUserDto[]> {
     const users = await this._userRepo.findAll();
 
-    const usersDto = this._mapper.mapArray(users, User, ResourceUserDto);
-    return usersDto;
+    return this._mapper.mapArray(users, User, ResourceUserDto);
   }
 
   async getById(id: string): Promise<ResourceUserDto> {
     if (!id || id == ',') {
       id = UserRequested.userId;
     }
-
     const user = this._mapper.map(
       await this._userRepo.findOne(id),
       User,
       ResourceUserDto,
     );
-
     if (!user) {
       throw new UserNotFoundException();
     }
@@ -76,11 +73,11 @@ export class UserService {
   }
 
   async create(dto: CreateUserDto): Promise<ResourceUserDto> {
-    const entity = new this._userModel(dto);
-    entity.roles = dto.roles.map((a) => a);
-
-    const result = await this._userRepo.create(new this._userModel(dto));
-    return this._mapper.map(result, User, ResourceUserDto);
+    return this._mapper.map(
+      await this._userRepo.create(new this._userModel(dto)),
+      User,
+      ResourceUserDto,
+    );
   }
 
   async getByUserName(userName: string): Promise<ResourceUserDto>;
@@ -130,11 +127,16 @@ export class UserService {
   }
 
   async update(dto: UpdateUserDto): Promise<ResourceUserDto> {
-    return this._mapper.map(
-      await this._userRepo.update(new this._userModel(dto)),
-      User,
-      ResourceUserDto,
-    );
+    const user = await this._userRepo.findOne(dto._id);
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+
+    user.image = dto.image || user.image;
+
+    const updatedUser = await this._userRepo.update(new this._userModel(user));
+
+    return this._mapper.map(updatedUser, User, ResourceUserDto);
   }
 
   async delete(id: string): Promise<boolean> {

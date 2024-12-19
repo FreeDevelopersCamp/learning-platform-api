@@ -27,6 +27,7 @@ import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.c
 import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
 import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
 import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
+import { ResourceOwnerDto } from '../../dto/owner/resource.owner';
 
 @ApiBearerAuth('authorization')
 @ApiTags('admin')
@@ -132,5 +133,41 @@ export class AdminController {
   })
   delete(@Param('id') id: string) {
     return this._adminService.delete(id);
+  }
+
+  @Delete('/deactivate/:id')
+  @Roles([AllowRoles.admin])
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'Deactivate admin account',
+    isArray: false,
+    type: ResourceOwnerDto,
+  })
+  deactivate(@Param('id') id: string) {
+    return this._adminService.deactivate(id);
+  }
+
+  @Get('/approve/:id')
+  @Roles([AllowRoles.admin])
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'Admin approved information',
+    isArray: false,
+    type: ResourceOwnerDto,
+  })
+  approve(@Param('id') id: string) {
+    return this._adminService.approve(id);
+  }
+
+  @Delete('/reject/:id')
+  @Roles([AllowRoles.admin])
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'Admin approved information',
+    isArray: false,
+    type: ResourceOwnerDto,
+  })
+  reject(@Param('id') id: string) {
+    return this._adminService.reject(id);
   }
 }
