@@ -72,6 +72,15 @@ export class OwnerService {
   }
 
   async deactivate(id: string): Promise<ResourceOwnerDto> {
+    const authorized = await this.isAuthorized(UserRequested.userId);
+    if (!authorized) {
+      throw new OwnerException('You can not deactivate active entities');
+    }
+    if (!authorized) {
+      throw new OwnerException(
+        'You are not authorized to deactivate this user!',
+      );
+    }
     const userRequested = await this._userService.getById(UserRequested.userId);
     const dto = await this.getById(id);
 
@@ -96,6 +105,10 @@ export class OwnerService {
   }
 
   async approve(id: string): Promise<ResourceOwnerDto> {
+    const authorized = await this.isAuthorized(UserRequested.userId);
+    if (!authorized) {
+      throw new OwnerException('You are not authorized to approve this user!');
+    }
     const entity = await this.getById(id);
 
     if (entity.status == '2')
@@ -106,6 +119,10 @@ export class OwnerService {
   }
 
   async reject(id: string): Promise<Boolean> {
+    const authorized = await this.isAuthorized(UserRequested.userId);
+    if (!authorized) {
+      throw new OwnerException('You are not authorized to reject this user!');
+    }
     const entity = await this.getById(id);
 
     if (entity.status != '1') {

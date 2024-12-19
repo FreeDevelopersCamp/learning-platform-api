@@ -64,7 +64,6 @@ export class User extends BaseEntity {
   address: Address;
 
   @AutoMap()
-  @IsString()
   @Prop({ required: false })
   image?: string;
 }

@@ -149,7 +149,7 @@ export class OwnerController {
   @Roles([AllowRoles.admin, AllowRoles.owner])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
-    description: 'Manager approved information',
+    description: 'Owner approved information',
     isArray: false,
     type: ResourceOwnerDto,
   })
@@ -161,7 +161,7 @@ export class OwnerController {
   @Roles([AllowRoles.admin])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
-    description: 'Manager approved information',
+    description: 'Owner approved information',
     isArray: false,
     type: ResourceOwnerDto,
   })
