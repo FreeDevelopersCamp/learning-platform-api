@@ -9,7 +9,7 @@ import { ResourceAdminDto } from '../../dto/admin/resource.admin';
 import { CreateAdminDto } from '../../dto/admin/create.admin';
 import { UpdateAdminDto } from '../../dto/admin/update.admin';
 import { UserService } from '../user/user.service';
-import { AdminException } from 'src/utils/exception';
+import { AdminException, OwnerException } from 'src/utils/exception';
 import { UserRequested } from 'src/infra/system/system.constant';
 
 @Injectable()
@@ -68,6 +68,12 @@ export class AdminService {
   }
 
   async deactivate(id: string): Promise<ResourceAdminDto> {
+    const authorized = await this.isAuthorized(UserRequested.userId);
+    if (!authorized) {
+      throw new OwnerException(
+        'You are not authorized to deactivate this user!',
+      );
+    }
     const userRequested = await this._userService.getById(UserRequested.userId);
     const dto = await this.getById(id);
 
@@ -89,6 +95,48 @@ export class AdminService {
     return await this.update(entity);
   }
 
+  async approve(id: string): Promise<ResourceAdminDto> {
+    const authorized = await this.isAuthorized(UserRequested.userId);
+    if (!authorized) {
+      throw new AdminException(
+        'You are not authorized to deactivate this user!',
+      );
+    }
+    const entity = await this.getById(id);
+
+    if (entity.status == '2')
+      throw new AdminException('This entity is already approved!');
+
+    entity.status = '2';
+    return await this.update(entity);
+  }
+
+  async reject(id: string): Promise<Boolean> {
+    const authorized = await this.isAuthorized(UserRequested.userId);
+    if (!authorized) {
+      throw new AdminException(
+        'You are not authorized to deactivate this user!',
+      );
+    }
+    const entity = await this.getById(id);
+
+    if (entity.status != '1') {
+      throw new AdminException('You can only reject pending entities!');
+    }
+    return await this.delete(id);
+  }
+
+  async getByUserId(id: string): Promise<ResourceAdminDto> {
+    const entities = await this._repo.findAll();
+    const entity = entities.find((entity) => entity.userId.toString() === id);
+
+    if (!entity) {
+      throw new AdminException('Entity not found');
+    }
+
+    return await this.toDto(entity);
+  }
+
   private async isAuthorized(userId: string): Promise<boolean> {
     const user = await this._userService.getById(userId);
     let isAdmin = false;
@@ -101,17 +149,6 @@ export class AdminService {
       }
     }
     return isAdmin;
-  }
-
-  async getByUserId(id: string): Promise<ResourceAdminDto> {
-    const entities = await this._repo.findAll();
-    const entity = entities.find((entity) => entity.userId.toString() === id);
-
-    if (!entity) {
-      throw new AdminException('Entity not found');
-    }
-
-    return await this.toDto(entity);
   }
 
   private async toDto(entity: Admin): Promise<ResourceAdminDto> {

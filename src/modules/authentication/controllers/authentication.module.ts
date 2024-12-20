@@ -1,6 +1,7 @@
+import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
 import { AuthenticationService } from '../service/authentication.service';
 import { AuthController } from './authentication.controller';
-import { Module } from '@nestjs/common';
 import { PasswordService } from '../service/password.service';
 import { GuardsModule } from '../guards/guards.module';
 import { UserModule } from 'src/modules/core/controllers/user/user.module';
@@ -30,9 +31,13 @@ import { ProfileModule } from '../../core/controllers/profile/profile.module';
     ManagerModule,
     AccountManagerModule,
     ContentManagerModule,
+    JwtModule.register({
+      secret: process.env.JWT_SECRET || 'defaultSecret', // Replace 'defaultSecret' with your actual secret key
+      signOptions: { expiresIn: '1h' }, // Optional: Set token expiration
+    }),
   ],
   controllers: [AuthController],
   providers: [AuthenticationService, PasswordService, RoleFactory],
-  exports: [AuthenticationService, PasswordService],
+  exports: [AuthenticationService, PasswordService, JwtModule], // Export JwtModule so it can be used elsewhere
 })
 export class AuthenticationModule {}

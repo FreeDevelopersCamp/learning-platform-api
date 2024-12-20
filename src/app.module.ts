@@ -12,6 +12,7 @@ import { classes } from '@automapper/classes';
 import { AuthenticationModule } from './modules/authentication/controllers/authentication.module';
 import { AppController } from './app.controller';
 import { SchemaValidation } from './common/pipes/schema-validation.pipe';
+import { FilesManagerModule } from './modules/FilesManager/FilesManager.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { SchemaValidation } from './common/pipes/schema-validation.pipe';
     }),
     CoreModule,
     AuthenticationModule,
+    FilesManagerModule,
   ],
   controllers: [AppController],
   providers: [
