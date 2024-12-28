@@ -7,6 +7,10 @@ export class ProgressDto {
   xp: number;
 
   @AutoMap()
+  @ApiProperty({ required: false, default: 0 })
+  progress: number;
+
+  @AutoMap()
   @ApiProperty({ required: false })
   currentRoadmapsIds?: string[];
 

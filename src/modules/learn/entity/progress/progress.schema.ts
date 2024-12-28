@@ -10,6 +10,10 @@ export class Progress extends BaseEntity {
   xp: number;
 
   @AutoMap()
+  @Prop({ required: false, default: 0 })
+  progress: number;
+
+  @AutoMap()
   @Prop({ required: true })
   userId: string;
 

@@ -81,6 +81,7 @@ export class ProgressService {
     } catch (Exception) {
       const createdEntity = new CreateProgressDto();
       createdEntity.xp = dto.xp;
+      createdEntity.progress = dto.progress;
       createdEntity.userId = dto.userId;
       createdEntity.currentRoadmapsIds = dto.currentRoadmapsIds;
       createdEntity.currentCoursesIds = dto.currentCoursesIds;
@@ -92,6 +93,8 @@ export class ProgressService {
 
       return await this.create(createdEntity);
     }
+
+    entity.progress = dto?.progress;
 
     entity.currentRoadmapsIds = dto?.currentRoadmapsIds?.map(
       (id) => new Types.ObjectId(id),
@@ -122,6 +125,7 @@ export class ProgressService {
     );
 
     entity.xp = dto.xp;
+    entity.progress = dto.progress;
     entity.userId = dto.userId;
 
     return await this.toDto(
@@ -137,6 +141,8 @@ export class ProgressService {
     const entityDto = new ResourceProgressDto();
     entityDto._id = entity._id.toString();
     entityDto.xp = entity.xp;
+
+    entityDto.progress = entity.progress;
 
     entityDto.user = await this._userService.getById(entity.userId);
 
