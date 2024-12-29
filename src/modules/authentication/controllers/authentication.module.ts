@@ -16,6 +16,7 @@ import { RoleFactory } from '../guards/roles/roleFactory';
 import { ManagerModule } from 'src/modules/core/controllers/manager/manager.module';
 import { AdminModule } from 'src/modules/core/controllers/admin/admin.module';
 import { ProfileModule } from '../../core/controllers/profile/profile.module';
+import { ProgressModule } from 'src/modules/learn/controllers/progress/progress.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ProfileModule } from '../../core/controllers/profile/profile.module';
     OwnerModule,
     ManagerModule,
     AccountManagerModule,
+    ProgressModule,
     ContentManagerModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'defaultSecret', // Replace 'defaultSecret' with your actual secret key

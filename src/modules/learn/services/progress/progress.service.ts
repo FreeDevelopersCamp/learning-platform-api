@@ -13,6 +13,7 @@ import { RoadmapService } from '../roadmap/roadmap.service';
 import { CourseService } from '../course/course.service';
 import { PracticeService } from '../practice/practice.service';
 import { ProjectService } from '../project/project.service';
+import { CurrentProgress } from '../../dto/progress/progress';
 
 @Injectable()
 export class ProgressService {
@@ -81,10 +82,20 @@ export class ProgressService {
     } catch (Exception) {
       const createdEntity = new CreateProgressDto();
       createdEntity.xp = dto.xp;
-      createdEntity.progress = dto.progress;
+      createdEntity.spentTime = dto.spentTime;
       createdEntity.userId = dto.userId;
-      createdEntity.currentRoadmapsIds = dto.currentRoadmapsIds;
-      createdEntity.currentCoursesIds = dto.currentCoursesIds;
+      createdEntity.currentRoadmapsIds = dto.currentRoadmapsIds?.map((item) => {
+        const progress = new CurrentProgress();
+        progress.itemId = item.itemId.toString();
+        progress.progress = item.progress;
+        return progress;
+      });
+      createdEntity.currentCoursesIds = dto.currentCoursesIds?.map((item) => {
+        const progress = new CurrentProgress();
+        progress.itemId = item.itemId.toString();
+        progress.progress = item.progress;
+        return progress;
+      });
       createdEntity.currentProjectsIds = dto.currentProjectsIds;
       createdEntity.completedRoadmapsIds = dto.completedRoadmapsIds;
       createdEntity.completedCoursesIds = dto.completedCoursesIds;
@@ -94,15 +105,21 @@ export class ProgressService {
       return await this.create(createdEntity);
     }
 
-    entity.progress = dto?.progress;
+    entity.spentTime = dto?.spentTime;
 
-    entity.currentRoadmapsIds = dto?.currentRoadmapsIds?.map(
-      (id) => new Types.ObjectId(id),
-    );
+    entity.currentRoadmapsIds = dto?.currentRoadmapsIds?.map((item) => {
+      const progress = new CurrentProgress();
+      progress.itemId = item?.itemId?.toString();
+      progress.progress = item?.progress || 0;
+      return progress;
+    });
 
-    entity.currentCoursesIds = dto?.currentCoursesIds?.map(
-      (id) => new Types.ObjectId(id),
-    );
+    entity.currentCoursesIds = dto?.currentCoursesIds?.map((item) => {
+      const progress = new CurrentProgress();
+      progress.itemId = item?.itemId?.toString();
+      progress.progress = item?.progress || 0;
+      return progress;
+    });
 
     entity.currentProjectsIds = dto?.currentProjectsIds?.map(
       (id) => new Types.ObjectId(id),
@@ -125,7 +142,7 @@ export class ProgressService {
     );
 
     entity.xp = dto.xp;
-    entity.progress = dto.progress;
+    entity.spentTime = dto.spentTime;
     entity.userId = dto.userId;
 
     return await this.toDto(
@@ -142,16 +159,22 @@ export class ProgressService {
     entityDto._id = entity._id.toString();
     entityDto.xp = entity.xp;
 
-    entityDto.progress = entity.progress;
+    entityDto.spentTime = entity.spentTime;
 
     entityDto.user = await this._userService.getById(entity.userId);
 
-    entityDto.currentRoadmapsIds = entity?.currentRoadmapsIds?.map((id) => {
-      return id.toString();
+    entityDto.currentRoadmapsIds = entity?.currentRoadmapsIds?.map((item) => {
+      const progress = new CurrentProgress();
+      progress.itemId = item.itemId.toString();
+      progress.progress = item.progress;
+      return progress;
     });
 
-    entityDto.currentCoursesIds = entity?.currentCoursesIds?.map((id) => {
-      return id.toString();
+    entityDto.currentCoursesIds = entity?.currentCoursesIds?.map((item) => {
+      const progress = new CurrentProgress();
+      progress.itemId = item.itemId.toString();
+      progress.progress = item.progress;
+      return progress;
     });
 
     entityDto.currentProjectsIds = entity?.currentProjectsIds?.map((id) => {
