@@ -23,6 +23,8 @@ import { LookupService } from 'src/modules/core/services/lookup/lookup.service';
 import { RoleFactory } from '../guards/roles/roleFactory';
 import { CreateProfileDto } from 'src/modules/core/dto/profile/create.profile';
 import { ProfileService } from 'src/modules/core/services/profile/profile.service';
+import { ProgressService } from 'src/modules/learn/services/progress/progress.service';
+import { UpdateProgressDto } from 'src/modules/learn/dto/progress/update.progress';
 
 @Injectable()
 export class AuthenticationService {
@@ -35,6 +37,7 @@ export class AuthenticationService {
     private _lookupService: LookupService,
     private _roleFactory: RoleFactory,
     private _profileService: ProfileService,
+    private _progressService: ProgressService,
   ) {}
 
   async setConnection(model: ResourceTenancyDto) {
@@ -268,6 +271,12 @@ export class AuthenticationService {
     const profileDto = new CreateProfileDto();
     profileDto.userId = user._id;
     await this._profileService.create(profileDto);
+
+    if (user.roles.includes('6')) {
+      const progressDto = new UpdateProgressDto();
+      progressDto.userId = user._id;
+      await this._progressService.update(progressDto);
+    }
 
     return user;
   }
