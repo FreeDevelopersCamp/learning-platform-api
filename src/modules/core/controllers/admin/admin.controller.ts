@@ -28,6 +28,7 @@ import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.d
 import { PaginationInterceptor } from 'src/common/interceptors/pagination/pagination.interceptor';
 import { AuthGuard } from 'src/modules/authentication/guards/auth/auth.guard';
 import { ResourceOwnerDto } from '../../dto/owner/resource.owner';
+import { Manager } from './../../entity/manager/manager.schema';
 
 @ApiBearerAuth('authorization')
 @ApiTags('admin')
@@ -89,7 +90,13 @@ export class AdminController {
   }
 
   @Get('/user/:userId')
-  @Roles([AllowRoles.admin])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+  ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'admin information',

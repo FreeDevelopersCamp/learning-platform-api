@@ -24,5 +24,6 @@ module.exports = {
     'linebreak-style': ['error', 'unix'],
     'prefer-const': 'off',
     '@typescript-eslint/ban-types': 'off',
+    endOfLine: 'lf',
   },
 };
