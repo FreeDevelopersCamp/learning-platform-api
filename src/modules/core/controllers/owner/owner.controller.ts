@@ -88,7 +88,13 @@ export class OwnerController {
   }
 
   @Get('/user/:userId')
-  @Roles([AllowRoles.admin])
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+  ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'owner information',

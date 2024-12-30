@@ -118,7 +118,15 @@ export class UserController {
   }
 
   @Patch()
-  @ApiExcludeEndpoint()
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
   @ApiResponse({
     description: 'user updated information',
     isArray: false,

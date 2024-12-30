@@ -103,7 +103,6 @@ export class InstructorService {
 
   async approve(id: string): Promise<ResourceInstructorDto> {
     const entity = await this.getById(id);
-
     if (entity.status == '2')
       throw new InstructorException('This entity is already approved!');
 
