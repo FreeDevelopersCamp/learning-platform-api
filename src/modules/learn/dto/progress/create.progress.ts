@@ -1,6 +1,16 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 
+export class CurrentProgress {
+  @AutoMap()
+  @ApiProperty({ type: String })
+  itemId: String;
+
+  @AutoMap()
+  @ApiProperty({ type: Number })
+  progress: Number;
+}
+
 export class CreateProgressDto {
   @AutoMap()
   @ApiProperty({ required: true })
@@ -11,12 +21,16 @@ export class CreateProgressDto {
   xp: number;
 
   @AutoMap()
-  @ApiProperty({ required: false })
-  currentRoadmapsIds?: string[];
+  @ApiProperty({ required: false, default: 0 })
+  spentTime: number;
 
   @AutoMap()
-  @ApiProperty({ required: false })
-  currentCoursesIds?: string[];
+  @ApiProperty({ required: false, default: [] })
+  currentRoadmapsIds?: CurrentProgress[];
+
+  @AutoMap()
+  @ApiProperty({ required: false, default: [] })
+  currentCoursesIds?: CurrentProgress[];
 
   @AutoMap()
   @ApiProperty({ required: false })

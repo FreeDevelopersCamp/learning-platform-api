@@ -3,6 +3,16 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { BaseEntity } from 'src/utils/entities/base.entity';
 
+export class CurrentProgress {
+  @AutoMap()
+  @Prop({ type: Types.ObjectId })
+  itemId: Types.ObjectId;
+
+  @AutoMap()
+  @Prop({ type: Number })
+  progress: Number;
+}
+
 @Schema({ autoCreate: false })
 export class Progress extends BaseEntity {
   @AutoMap()
@@ -10,16 +20,20 @@ export class Progress extends BaseEntity {
   xp: number;
 
   @AutoMap()
-  @Prop({ required: true })
+  @Prop({ required: false, default: 0 })
+  spentTime: number;
+
+  @AutoMap()
+  @Prop({ required: true, unique: true })
   userId: string;
 
   @AutoMap()
-  @Prop({ required: false })
-  currentRoadmapsIds?: Types.ObjectId[];
+  @Prop({ required: false, default: [] })
+  currentRoadmapsIds?: CurrentProgress[];
 
   @AutoMap()
-  @Prop({ required: false })
-  currentCoursesIds?: Types.ObjectId[];
+  @Prop({ required: false, default: [] })
+  currentCoursesIds?: CurrentProgress[];
 
   @AutoMap()
   @Prop({ required: false })

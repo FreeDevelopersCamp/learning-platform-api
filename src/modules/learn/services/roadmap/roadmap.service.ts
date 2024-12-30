@@ -92,19 +92,19 @@ export class RoadmapService {
   }
 
   async update(dto: UpdateRoadmapDto): Promise<ResourceRoadmapDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
+    // const authorized = await this.isAuthorized(UserRequested.userId);
 
-    if (!authorized) {
-      throw new RoadmapException('You are not authorized');
-    }
+    // if (!authorized) {
+    //   throw new RoadmapException('You are not authorized');
+    // }
 
-    const instructor = await this._instructorService.getByUserId(
-      UserRequested.userId,
-    );
+    // const instructor = await this._instructorService.getByUserId(
+    //   UserRequested.userId,
+    // );
 
-    if (instructor && !instructor.roadmapsIds.includes(dto._id)) {
-      throw new RoadmapException('Instructor not authorized!');
-    }
+    // if (instructor && !instructor.roadmapsIds.includes(dto._id)) {
+    //   throw new RoadmapException('Instructor not authorized!');
+    // }
 
     const entity = await this._repo.findOne(dto._id);
 
