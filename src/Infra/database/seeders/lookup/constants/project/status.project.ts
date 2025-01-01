@@ -8,18 +8,8 @@ export const roles: any = {
     },
     {
       id: '1',
-      label: 'In Progress',
+      label: 'Verified',
       order: 1,
-    },
-    {
-      id: '2',
-      label: 'Skip',
-      order: 2,
-    },
-    {
-      id: '3',
-      label: 'Done',
-      order: 3,
     },
   ],
 };
