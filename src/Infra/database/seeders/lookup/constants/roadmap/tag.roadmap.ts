@@ -13,7 +13,7 @@ export const roles: any = {
     },
     {
       id: '2',
-      label: 'Instructor Generated',
+      label: 'Verified', // instructor generated and got verified
       order: 2,
     },
   ],
