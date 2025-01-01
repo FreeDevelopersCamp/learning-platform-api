@@ -27,9 +27,6 @@ export class ProjectService {
     @InjectMapper() private readonly _mapper: Mapper,
     private readonly _userService: UserService,
     private readonly _adminService: AdminService,
-    private readonly _ownerService: OwnerService,
-    private readonly _managerService: ManagerService,
-    private readonly _accountManagerService: AccountManagerService,
     private readonly _contentManagerService: ContentManagerService,
     private readonly _instructorService: InstructorService,
   ) {
@@ -80,20 +77,6 @@ export class ProjectService {
   }
 
   async update(dto: UpdateProjectDto): Promise<ResourceProjectDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new ProjectException('You are not authorized');
-    }
-
-    const instructor = await this._instructorService.getByUserId(
-      UserRequested.userId,
-    );
-
-    if (instructor && !instructor.projectsIds.includes(dto._id)) {
-      throw new ProjectException('Instructor not authorized!');
-    }
-
     const entity = await this._repo.findOne(dto._id);
 
     if (dto.category) {
@@ -149,36 +132,13 @@ export class ProjectService {
   private async isAuthorized(userId: string): Promise<boolean> {
     const user = await this._userService.getById(userId);
     let isAdmin = false;
-    let isOwner = false;
-    let isManager = false;
-    let isAccountManager = false;
     let isContentManager = false;
-    let isInstructor = false;
 
     if (user.roles.includes('0')) {
       const admin = await this._adminService.getByUserId(userId);
 
       if (admin && admin.status == '2') {
         isAdmin = true;
-      }
-    } else if (user.roles.includes('1')) {
-      const owner = await this._ownerService.getByUserId(userId);
-
-      if (owner && owner.status == '2') {
-        isOwner = true;
-      }
-    } else if (user.roles.includes('2')) {
-      const manager = await this._managerService.getByUserId(userId);
-
-      if (manager && manager.status == '2') {
-        isManager = true;
-      }
-    } else if (user.roles.includes('3')) {
-      const accountManager =
-        await this._accountManagerService.getByUserId(userId);
-
-      if (accountManager && accountManager.status == '2') {
-        isAccountManager = true;
       }
     } else if (user.roles.includes('4')) {
       const contentManager =
@@ -187,21 +147,8 @@ export class ProjectService {
       if (contentManager && contentManager.status == '2') {
         isContentManager = true;
       }
-    } else if (user.roles.includes('5')) {
-      const instructor = await this._instructorService.getByUserId(userId);
-
-      if (instructor && instructor.status == '2') {
-        isInstructor = true;
-      }
     }
-    return (
-      isAdmin ||
-      isOwner ||
-      isManager ||
-      isAccountManager ||
-      isContentManager ||
-      isInstructor
-    );
+    return isAdmin || isContentManager;
   }
 
   private async toDto(entity: Project): Promise<ResourceProjectDto> {
