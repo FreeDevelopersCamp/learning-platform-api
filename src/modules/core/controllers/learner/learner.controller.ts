@@ -96,6 +96,7 @@ export class LearnerController {
     AllowRoles.manager,
     AllowRoles.accountManager,
     AllowRoles.contentManager,
+    AllowRoles.learner,
   ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({

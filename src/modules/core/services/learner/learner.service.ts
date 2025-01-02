@@ -87,33 +87,11 @@ export class LearnerService {
   }
 
   async deactivate(id: string): Promise<ResourceLearnerDto> {
-    // const authorized = await this.isAuthorized(UserRequested.userId);
-
-    // if (!authorized) {
-    //   throw new LearnerException('You are not authorized');
-    // }
-
-    // const userRequested = await this._userService.getById(UserRequested.userId);
     const dto = await this.getById(id);
 
     if (dto.status == '1') {
       throw new LearnerException('This entity is still pending!');
     }
-
-    // if (
-    //   !userRequested.roles.includes('0') &&
-    //   !userRequested.roles.includes('1') &&
-    //   !userRequested.roles.includes('2') &&
-    //   !userRequested.roles.includes('3') &&
-    //   !userRequested.roles.includes('6')
-    // ) {
-    //   const userEntity = await this.getByUserId(userRequested._id);
-    //   if (userEntity._id != id) {
-    //     throw new LearnerException(
-    //       'You are not authorized to deactivate this entity.',
-    //     );
-    //   }
-    // }
 
     const entity = new UpdateLearnerDto();
     entity._id = dto._id;

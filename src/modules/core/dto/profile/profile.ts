@@ -1,6 +1,8 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  Certificate,
+  Certification,
   Education,
   Experience,
   Work,
@@ -35,13 +37,17 @@ export class CompletedContentDto {
 }
 
 export class CertificationDto {
-  @ApiProperty()
   @AutoMap()
+  @ApiProperty()
   subtitle: string;
 
-  @ApiProperty()
   @AutoMap()
+  @ApiProperty()
   certifications: ResourceCertificationDto[];
+
+  @AutoMap()
+  @ApiProperty()
+  otherCertifications: Certificate[];
 }
 
 export class ProfileDto {
