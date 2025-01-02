@@ -13,14 +13,36 @@ export class Work {
   works: { description: string; name: string; skills: string[] }[];
 }
 
+export class Certificate {
+  @AutoMap()
+  @Prop({ default: '' })
+  name: string;
+
+  @AutoMap()
+  @Prop({ default: '' })
+  institution: string;
+
+  @AutoMap()
+  @Prop({ default: '' })
+  url: string;
+
+  @AutoMap()
+  @Prop({ default: '' })
+  date: string;
+}
+
 export class Certification {
   @AutoMap()
   @Prop()
   subtitle: string;
 
   @AutoMap()
-  @Prop()
+  @Prop({ default: '', required: false })
   certificationsIds: Types.ObjectId[];
+
+  @AutoMap()
+  @Prop({ default: [], required: false })
+  otherCertifications: Certificate[];
 }
 
 export class Completed {
