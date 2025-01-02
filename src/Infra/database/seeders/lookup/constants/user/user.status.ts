@@ -16,5 +16,10 @@ export const status: any = {
       label: 'deactivated',
       order: 3,
     },
+    {
+      id: '4',
+      label: 'verified', // for instructors
+      order: 4,
+    },
   ],
 };

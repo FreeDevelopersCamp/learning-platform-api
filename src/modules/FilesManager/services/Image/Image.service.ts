@@ -26,7 +26,7 @@ export class ImageService {
       await fileObject.save(file.buffer); // Save file to Google Cloud Storage
 
       const user = await this._userService.getById(userId);
-      user.image = fileName;
+      user.image = `https://storage.googleapis.com/${this.bucketName}/${fileName}`;
       await this._userService.update(user);
 
       return `https://storage.googleapis.com/${this.bucketName}/${fileName}`;

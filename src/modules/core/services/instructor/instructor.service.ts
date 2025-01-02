@@ -56,31 +56,28 @@ export class InstructorService {
   async update(dto: UpdateInstructorDto): Promise<ResourceInstructorDto> {
     const entity = new Instructor();
     entity._id = new Types.ObjectId(dto._id);
-    entity.status = dto.status;
-    entity.userId = new Types.ObjectId(dto.user._id);
-    entity.coursesIds = dto.coursesIds?.map((id) => new Types.ObjectId(id));
-    entity.roadmapIds = dto.roadmapsIds?.map((id) => new Types.ObjectId(id));
-    entity.practicesIds = dto.practicesIds?.map((id) => new Types.ObjectId(id));
-    entity.projectsIds = dto.projectsIds?.map((id) => new Types.ObjectId(id));
+    const old = await this.getById(entity?._id.toString());
+
+    if (!old) {
+      throw new InstructorException(`Could not find this entity`);
+    }
+
+    entity.status = dto.status || old?.status;
+    entity.userId = new Types.ObjectId(old?.user._id);
+    entity.coursesIds =
+      dto?.coursesIds?.map((id) => new Types.ObjectId(id)) ||
+      old?.coursesIds?.map((id) => new Types.ObjectId(id));
+    entity.roadmapIds =
+      dto?.roadmapsIds?.map((id) => new Types.ObjectId(id)) ||
+      old?.roadmapsIds?.map((id) => new Types.ObjectId(id));
+    entity.practicesIds =
+      dto?.practicesIds?.map((id) => new Types.ObjectId(id)) ||
+      old?.practicesIds?.map((id) => new Types.ObjectId(id));
+    entity.projectsIds =
+      dto?.projectsIds?.map((id) => new Types.ObjectId(id)) ||
+      old?.projectsIds?.map((id) => new Types.ObjectId(id));
 
     const updated = await this._repo.update(new this._instructorModel(entity));
-
-    if (!updated.userId) {
-      updated.userId = new Types.ObjectId(entity.userId);
-    }
-    if (!updated.coursesIds) {
-      updated.coursesIds = entity.coursesIds;
-    }
-    if (!updated.roadmapIds) {
-      updated.roadmapIds = entity.roadmapIds;
-    }
-    if (!updated.practicesIds) {
-      updated.practicesIds = entity.practicesIds;
-    }
-    if (!updated.projectsIds) {
-      updated.projectsIds = entity.projectsIds;
-    }
-
     return await this.toDto(updated);
   }
 
@@ -103,7 +100,6 @@ export class InstructorService {
 
   async approve(id: string): Promise<ResourceInstructorDto> {
     const entity = await this.getById(id);
-
     if (entity.status == '2')
       throw new InstructorException('This entity is already approved!');
 

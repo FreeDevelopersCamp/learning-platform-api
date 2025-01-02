@@ -131,6 +131,25 @@ export class UserService {
     if (!user) {
       throw new UserNotFoundException();
     }
+    user.contacts.email = dto.contacts.email || user.contacts.email;
+
+    user.roles = dto.roles || user.roles;
+
+    user.contacts.mobile.mobile =
+      dto.contacts.mobile.mobile || user.contacts.mobile.mobile;
+
+    user.personalInformation.name.first =
+      dto.personalInformation.name.first || user.personalInformation.name.first;
+
+    user.personalInformation.name.second =
+      dto.personalInformation.name.second ||
+      user.personalInformation.name.second;
+
+    user.personalInformation.name.third =
+      dto.personalInformation.name.third || user.personalInformation.name.third;
+
+    user.personalInformation.name.last =
+      dto.personalInformation.name.last || user.personalInformation.name.last;
 
     user.image = dto.image || user.image;
 

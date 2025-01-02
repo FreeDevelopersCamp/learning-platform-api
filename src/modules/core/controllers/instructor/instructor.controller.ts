@@ -165,9 +165,8 @@ export class InstructorController {
     AllowRoles.manager,
     AllowRoles.accountManager,
   ])
-  @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
-    description: 'Manager approved information',
+    description: 'Instructor approved information',
     isArray: false,
     type: ResourceInstructorDto,
   })
@@ -184,7 +183,7 @@ export class InstructorController {
   ])
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
-    description: 'Manager approved information',
+    description: 'Instructor reject information',
     isArray: false,
     type: ResourceInstructorDto,
   })
