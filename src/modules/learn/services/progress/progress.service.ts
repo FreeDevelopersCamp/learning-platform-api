@@ -14,6 +14,7 @@ import { CourseService } from '../course/course.service';
 import { PracticeService } from '../practice/practice.service';
 import { ProjectService } from '../project/project.service';
 import { CurrentProgress } from '../../dto/progress/progress';
+import { Bookmarks } from '../../dto/progress/progress';
 
 @Injectable()
 export class ProgressService {
@@ -27,16 +28,12 @@ export class ProgressService {
     private readonly _courseService: CourseService,
     private readonly _practiceService: PracticeService,
     private readonly _projectService: ProjectService,
-    // private readonly _assessmentService: AssessmentService,
-    // private readonly _tutorialService: TutorialService,
-    // private readonly _certificationService: CertificationService,
   ) {
     this._repo = new MongoRepository<Progress>(_progressModel);
   }
 
   async list(): Promise<ResourceProgressDto[]> {
     const entities = await this._repo.findAll();
-
     return await Promise.all(
       entities.map(async (entity) => await this.toDto(entity)),
     );
@@ -73,8 +70,6 @@ export class ProgressService {
   }
 
   async update(dto: UpdateProgressDto): Promise<ResourceProgressDto> {
-    // const entity = await this._repo.update(new this._progressModel(dto));
-
     let entity;
 
     try {
@@ -84,6 +79,12 @@ export class ProgressService {
       createdEntity.xp = dto.xp;
       createdEntity.spentTime = dto.spentTime;
       createdEntity.userId = dto.userId;
+      createdEntity.BookmarksIds = dto.BookmarksIds?.map((item) => {
+        const bookmarks = new Bookmarks();
+        bookmarks.itemId = item.itemId.toString();
+        bookmarks.type = item.type;
+        return bookmarks;
+      });
       createdEntity.currentRoadmapsIds = dto.currentRoadmapsIds?.map((item) => {
         const progress = new CurrentProgress();
         progress.itemId = item.itemId.toString();
@@ -105,39 +106,44 @@ export class ProgressService {
       return await this.create(createdEntity);
     }
 
-    entity.spentTime = dto?.spentTime;
+    entity.BookmarksIds = dto.BookmarksIds?.map((item) => {
+      const bookmarks = new Bookmarks();
+      bookmarks.itemId = item.itemId.toString();
+      bookmarks.type = item.type;
+      return bookmarks;
+    });
 
-    entity.currentRoadmapsIds = dto?.currentRoadmapsIds?.map((item) => {
+    entity.currentRoadmapsIds = dto.currentRoadmapsIds?.map((item) => {
       const progress = new CurrentProgress();
-      progress.itemId = item?.itemId?.toString();
-      progress.progress = item?.progress || 0;
+      progress.itemId = item.itemId.toString();
+      progress.progress = item.progress || 0;
       return progress;
     });
 
-    entity.currentCoursesIds = dto?.currentCoursesIds?.map((item) => {
+    entity.currentCoursesIds = dto.currentCoursesIds?.map((item) => {
       const progress = new CurrentProgress();
-      progress.itemId = item?.itemId?.toString();
-      progress.progress = item?.progress || 0;
+      progress.itemId = item.itemId.toString();
+      progress.progress = item.progress || 0;
       return progress;
     });
 
-    entity.currentProjectsIds = dto?.currentProjectsIds?.map(
+    entity.currentProjectsIds = dto.currentProjectsIds?.map(
       (id) => new Types.ObjectId(id),
     );
 
-    entity.completedRoadmapsIds = dto?.completedRoadmapsIds?.map(
+    entity.completedRoadmapsIds = dto.completedRoadmapsIds?.map(
       (id) => new Types.ObjectId(id),
     );
 
-    entity.completedCoursesIds = dto?.completedCoursesIds?.map(
+    entity.completedCoursesIds = dto.completedCoursesIds?.map(
       (id) => new Types.ObjectId(id),
     );
 
-    entity.completedProjectsIds = dto?.completedProjectsIds?.map(
+    entity.completedProjectsIds = dto.completedProjectsIds?.map(
       (id) => new Types.ObjectId(id),
     );
 
-    entity.completedPracticesIds = dto?.completedPracticesIds?.map(
+    entity.completedPracticesIds = dto.completedPracticesIds?.map(
       (id) => new Types.ObjectId(id),
     );
 
@@ -158,45 +164,48 @@ export class ProgressService {
     const entityDto = new ResourceProgressDto();
     entityDto._id = entity._id.toString();
     entityDto.xp = entity.xp;
-
     entityDto.spentTime = entity.spentTime;
-
     entityDto.user = await this._userService.getById(entity.userId);
 
-    entityDto.currentRoadmapsIds = entity?.currentRoadmapsIds?.map((item) => {
+    entityDto.BookmarksIds = entity.BookmarksIds?.map((item) => {
+      const bookmarks = new Bookmarks();
+      bookmarks.itemId = item.itemId.toString();
+      bookmarks.type = item.type;
+      return bookmarks;
+    });
+
+    entityDto.currentRoadmapsIds = entity.currentRoadmapsIds?.map((item) => {
       const progress = new CurrentProgress();
       progress.itemId = item.itemId.toString();
       progress.progress = item.progress;
       return progress;
     });
 
-    entityDto.currentCoursesIds = entity?.currentCoursesIds?.map((item) => {
+    entityDto.currentCoursesIds = entity.currentCoursesIds?.map((item) => {
       const progress = new CurrentProgress();
       progress.itemId = item.itemId.toString();
       progress.progress = item.progress;
       return progress;
     });
 
-    entityDto.currentProjectsIds = entity?.currentProjectsIds?.map((id) => {
-      return id.toString();
-    });
+    entityDto.currentProjectsIds = entity.currentProjectsIds?.map((id) =>
+      id.toString(),
+    );
 
-    entityDto.completedRoadmapsIds = entity?.completedRoadmapsIds?.map((id) => {
-      return id.toString();
-    });
+    entityDto.completedRoadmapsIds = entity.completedRoadmapsIds?.map((id) =>
+      id.toString(),
+    );
 
-    entityDto.completedCoursesIds = entity?.completedCoursesIds?.map((id) => {
-      return id.toString();
-    });
+    entityDto.completedCoursesIds = entity.completedCoursesIds?.map((id) =>
+      id.toString(),
+    );
 
-    entityDto.completedProjectsIds = entity?.completedProjectsIds?.map((id) => {
-      return id.toString();
-    });
+    entityDto.completedProjectsIds = entity.completedProjectsIds?.map((id) =>
+      id.toString(),
+    );
 
-    entityDto.completedPracticesIds = entity?.completedPracticesIds?.map(
-      (id) => {
-        return id.toString();
-      },
+    entityDto.completedPracticesIds = entity.completedPracticesIds?.map((id) =>
+      id.toString(),
     );
 
     return entityDto;
