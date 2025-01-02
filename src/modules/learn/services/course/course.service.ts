@@ -232,15 +232,15 @@ export class CourseService {
       entityDto.parentId = entity.parentId.toString();
     }
 
-    // if (entity.subCoursesIds) {
-    //   entityDto.subCourses = await Promise.all(
-    //     await Promise.all(
-    //       entity.subCoursesIds.map(
-    //         async (id) => await this.getById(id.toString()),
-    //       ),
-    //     ),
-    //   );
-    // }
+    if (entity.subCoursesIds) {
+      entityDto.subCourses = await Promise.all(
+        await Promise.all(
+          entity.subCoursesIds.map(
+            async (id) => await this.getById(id.toString()),
+          ),
+        ),
+      );
+    }
 
     entityDto.resources = entity.resources;
     entityDto.tips = entity.tips;

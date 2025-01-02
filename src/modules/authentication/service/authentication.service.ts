@@ -125,6 +125,18 @@ export class AuthenticationService {
         'You are not allowed to login with this role',
       );
 
+    const { service, dto: roleDto } = this._roleFactory.getServiceAndDto(
+      login.role,
+      user._id,
+    );
+
+    const roleUser = await service.getByUserId(user._id);
+    if (roleUser.status !== '2') {
+      throw new InvalidLoginException(
+        'Your account has not been activated yet. Please contact with the Account Manager.',
+      );
+    }
+
     if (!user) {
       await this._setSession(
         false,

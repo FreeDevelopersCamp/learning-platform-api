@@ -64,48 +64,47 @@ export class ProfileService {
     const entity = new Profile();
 
     entity._id = new Types.ObjectId(dto._id);
-    entity.position = dto?.position || oldDto?.position || null;
-    entity.state = dto?.state || oldDto?.state || null;
+    entity.position = dto?.position || oldDto?.position;
+    entity.state = dto?.state || oldDto?.state;
 
-    entity.headline = dto?.headline || oldDto?.headline || null;
-    entity.accounts = dto?.accounts || oldDto?.accounts || [];
-    entity.about = dto?.about || oldDto?.about || null;
+    entity.headline = dto?.headline || oldDto?.headline;
+    entity.accounts = dto?.accounts || oldDto?.accounts;
+    entity.about = dto?.about || oldDto?.about;
 
     entity.work = {
-      subtitle: dto?.work?.subtitle || oldDto?.work?.subtitle || '',
-      works: dto?.work?.works || oldDto?.work?.works || [],
+      subtitle: dto?.work?.subtitle || oldDto?.work?.subtitle,
+      works: dto?.work?.works || oldDto?.work?.works,
     };
 
     entity.experience = {
-      subtitle: dto?.experience?.subtitle || oldDto?.experience?.subtitle || '',
+      subtitle: dto?.experience?.subtitle || oldDto?.experience?.subtitle,
       experiences:
-        dto?.experience?.experiences || oldDto?.experience?.experiences || [],
+        dto?.experience?.experiences || oldDto?.experience?.experiences,
     };
 
     entity.education = {
-      subtitle: dto?.education?.subtitle || oldDto?.education?.subtitle || '',
-      educations:
-        dto?.education?.educations || oldDto?.education?.educations || [],
+      subtitle: dto?.education?.subtitle || oldDto?.education?.subtitle,
+      educations: dto?.education?.educations || oldDto?.education?.educations,
     };
 
     entity.certifications = {
       subtitle:
-        dto?.certifications?.subtitle || oldDto?.certifications?.subtitle || '',
+        dto?.certifications?.subtitle || oldDto?.certifications?.subtitle,
       certificationsIds:
         dto?.certifications?.certifications?.map(
           (c) => new Types.ObjectId(c._id),
         ) ||
         oldDto?.certifications?.certifications?.map(
           (c) => new Types.ObjectId(c._id),
-        ) ||
-        [],
+        ),
+      otherCertifications:
+        dto?.certifications?.otherCertifications ||
+        oldDto?.certifications?.otherCertifications,
     };
 
     entity.completedContent = {
       subtitle:
-        dto?.completedContent?.subtitle ||
-        oldDto?.completedContent?.subtitle ||
-        '',
+        dto?.completedContent?.subtitle || oldDto?.completedContent?.subtitle,
       completed: {
         completedCoursesIds: await Promise.all(
           dto?.completedContent?.completed?.completedCourses?.map(
@@ -113,8 +112,7 @@ export class ProfileService {
           ) ||
             oldDto?.completedContent?.completed?.completedCourses?.map(
               (c) => new Types.ObjectId(c._id),
-            ) ||
-            [],
+            ),
         ),
         completedProjectsIds: await Promise.all(
           dto?.completedContent?.completed?.completedProjects?.map(
@@ -122,8 +120,7 @@ export class ProfileService {
           ) ||
             oldDto?.completedContent?.completed?.completedProjects?.map(
               (p) => new Types.ObjectId(p._id),
-            ) ||
-            [],
+            ),
         ),
         completedRoadmapsIds: await Promise.all(
           dto?.completedContent?.completed?.completedRoadmaps?.map(
@@ -131,14 +128,14 @@ export class ProfileService {
           ) ||
             oldDto?.completedContent?.completed?.completedRoadmaps?.map(
               (r) => new Types.ObjectId(r._id),
-            ) ||
-            [],
+            ),
         ),
       },
     };
 
     entity.userId = new Types.ObjectId(oldDto.user._id);
-    const newEntity = await this._repo.update(new this._profileModel(dto));
+    const newEntity = await this._repo.update(new this._profileModel(entity));
+
     return this.getById(newEntity._id.toString());
   }
 
@@ -178,6 +175,7 @@ export class ProfileService {
           this._certificationService.getById(c.toString()),
         ) || [],
       ),
+      otherCertifications: entity?.certifications?.otherCertifications || [],
     };
 
     dto.completedContent = {
