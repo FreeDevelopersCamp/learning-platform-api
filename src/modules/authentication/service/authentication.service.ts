@@ -131,7 +131,7 @@ export class AuthenticationService {
     );
 
     const roleUser = await service.getByUserId(user._id);
-    if (roleUser.status !== '2') {
+    if (roleUser.status !== '2' && roleUser.status !== '4') {
       throw new InvalidLoginException(
         'Your account has not been activated yet. Please contact with the Account Manager.',
       );

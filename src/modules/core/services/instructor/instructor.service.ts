@@ -107,6 +107,15 @@ export class InstructorService {
     return await this.update(entity);
   }
 
+  async verify(id: string): Promise<ResourceInstructorDto> {
+    const entity = await this.getById(id);
+    if (entity.status == '4')
+      throw new InstructorException('This entity is already verified!');
+
+    entity.status = '4';
+    return await this.update(entity);
+  }
+
   async reject(id: string): Promise<Boolean> {
     const entity = await this.getById(id);
 
