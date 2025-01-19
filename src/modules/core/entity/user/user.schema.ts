@@ -45,7 +45,7 @@ export class User extends BaseEntity {
 
   @AutoMap()
   @ValidateNested()
-  @Prop({ required: false, type: Policy, isArray: true })
+  @Prop({ required: false, type: Policy })
   policies?: Policy[];
 
   @IsObject()
@@ -55,12 +55,12 @@ export class User extends BaseEntity {
 
   @IsObject()
   @AutoMap()
-  @Prop({ type: Contact, required: true })
+  @Prop({ type: Contact, required: false })
   contacts: Contact;
 
   @IsObject()
   @AutoMap()
-  @Prop({ type: Address, required: true })
+  @Prop({ type: Address, required: false })
   address: Address;
 
   @AutoMap()

@@ -23,7 +23,7 @@ export class Mobile {
   @IsNotEmpty()
   @ApiProperty({ required: true })
   @Prop({ maxlength: 13, default: '' })
-  mobile: string;
+  mobile?: string;
 }
 
 export class Contact {
@@ -32,15 +32,15 @@ export class Contact {
   @IsNotEmpty()
   @Prop({ maxlength: 25 })
   @ApiProperty({ required: true, default: '' })
-  email: string;
+  email?: string;
 
   @AutoMap()
   @Prop({ default: { Mobile } })
-  @ApiProperty({ required: true, default: Mobile })
-  mobile: Mobile;
+  @ApiProperty({ required: false, default: Mobile })
+  mobile?: Mobile;
 
   @AutoMap()
   @Prop({ default: { Mobile } })
-  @ApiProperty({ required: true, default: Mobile })
-  emergencyMobile: Mobile;
+  @ApiProperty({ required: false, default: Mobile })
+  emergencyMobile?: Mobile;
 }
