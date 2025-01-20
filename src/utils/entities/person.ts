@@ -17,14 +17,14 @@ export class Name {
   @IsNotEmpty()
   @Prop({ maxlength: 10 })
   @ApiProperty({ required: false, default: '' })
-  second: string;
+  second?: string;
 
   @AutoMap()
   @IsString()
   @IsNotEmpty()
   @Prop({ maxlength: 10 })
   @ApiProperty({ required: false, default: '' })
-  third: string;
+  third?: string;
 
   @AutoMap()
   @IsString()
@@ -52,6 +52,6 @@ export class Person {
   @AutoMap()
   @IsNotEmpty()
   @Prop({ type: Date })
-  @ApiProperty({ required: true, default: DateUtils.getJSDate() })
-  dateOfBirth: Date;
+  @ApiProperty({ required: false, default: DateUtils.getJSDate() })
+  dateOfBirth?: Date;
 }

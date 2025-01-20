@@ -31,7 +31,7 @@ export class UserDto {
 
   @AutoMap()
   @ValidateNested()
-  @ApiProperty({ required: false, type: PolicyDto, isArray: true })
+  @ApiProperty({ required: false, type: PolicyDto })
   policies?: PolicyDto[];
 
   @IsObject()
@@ -41,13 +41,13 @@ export class UserDto {
 
   @IsObject()
   @AutoMap()
-  @ApiProperty({ type: Contact, required: true })
-  contacts: Contact;
+  @ApiProperty({ type: Contact, required: false })
+  contacts?: Contact;
 
   @IsObject()
   @AutoMap()
-  @ApiProperty({ type: Address, required: true })
-  address: Address;
+  @ApiProperty({ type: Address, required: false })
+  address?: Address;
 
   @AutoMap()
   @ApiProperty({
