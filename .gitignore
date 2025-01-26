@@ -55,7 +55,7 @@ pids
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # src/config/keys/*
-.env
-
 src/config/keys/serviceAccountKey.json
 src/config/keys/gcp-storage-key.json
+
+.env
