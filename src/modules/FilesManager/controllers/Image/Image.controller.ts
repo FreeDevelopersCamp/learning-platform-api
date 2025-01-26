@@ -15,8 +15,6 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 @ApiTags('image')
 @Controller('image')
 export class ImageController {
-  private readonly logger = new Logger(ImageController.name);
-
   constructor(private readonly imageService: ImageService) {}
 
   @Post('upload/:id') // Define a route parameter `:id`

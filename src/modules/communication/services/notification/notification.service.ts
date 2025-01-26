@@ -8,6 +8,8 @@ import { Notification } from '../../entity/notification/notification.schema';
 import { ResourceNotificationDto } from '../../dto/notification/resource.notification';
 import { CreateNotificationDto } from '../../dto/notification/create.notification';
 import { UpdateNotificationDto } from '../../dto/notification/update.notification';
+// import admin from '../../firebase';
+const path = require('path');
 
 @Injectable()
 export class NotificationService {
@@ -56,4 +58,21 @@ export class NotificationService {
   async delete(id: string): Promise<boolean> {
     return await this._repo.delete(id);
   }
+
+  sendNotification = async (token: string, title: string, body: string) => {
+    const message = {
+      notification: {
+        title,
+        body,
+      },
+    };
+
+    try {
+      // await admin.messaging().send(message);
+      console.log(path.resolve(__dirname, 'serviceAccountKey.json'));
+      console.log('Notification sent successfully!');
+    } catch (error) {
+      console.error('Error sending notification:', error);
+    }
+  };
 }
