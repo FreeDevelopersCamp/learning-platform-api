@@ -20,5 +20,5 @@ export class MessageDto {
 
   @AutoMap()
   @ApiProperty({ required: false })
-  seen?: Boolean;
+  status?: String;
 }

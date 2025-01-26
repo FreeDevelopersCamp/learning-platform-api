@@ -8,7 +8,13 @@ import {
 import { Server, Socket } from 'socket.io';
 import axios from 'axios';
 
-@WebSocketGateway({ cors: true })
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+})
 export class MessageGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
@@ -20,14 +26,25 @@ export class MessageGateway
     const tenantId = client.handshake.auth.tenantId;
 
     if (!token || !tenantId) {
-      console.log('Unauthorized connection attempt');
-      client.disconnect();
+      client.disconnect(true); // Forcefully disconnect the client
       return;
     }
+
+    client.join(client.handshake.auth.userId);
+    setInterval(() => {
+      console.log(
+        'Active rooms:',
+        Array.from(this.server.sockets.adapter.rooms.keys()),
+      );
+    }, 5000);
   }
 
   async handleDisconnect(client: Socket) {
-    console.log(`Client disconnected`);
+    console.log(`Client disconnected: ${client.id}`);
+    console.log(
+      `Remaining clients:`,
+      Array.from(this.server.sockets.sockets.keys()),
+    );
   }
 
   @SubscribeMessage('getMessages')
@@ -35,12 +52,6 @@ export class MessageGateway
     client: Socket,
     payload: { senderId: string; receiverId: string },
   ) {
-    console.log(
-      'Fetching messages between:',
-      payload.senderId,
-      payload.receiverId,
-    );
-
     try {
       const response = await axios.get(
         `http://localhost:3030/api/v1/message/${payload.senderId}/${payload.receiverId}`,
@@ -51,6 +62,7 @@ export class MessageGateway
           },
         },
       );
+      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error('Error fetching messages:', error.message);
@@ -66,7 +78,6 @@ export class MessageGateway
     client: Socket,
     payload: { senderId: string; receiverId: string; content: string },
   ) {
-    console.log('Sending message via REST endpoint');
     try {
       const response = await axios.post(
         'http://localhost:3030/api/v1/message/send',
@@ -78,7 +89,6 @@ export class MessageGateway
           },
         },
       );
-      console.log('Response:', response.data);
 
       const message = response.data;
       this.server.to(payload.receiverId).emit('newMessage', message); // Notify the receiver

@@ -21,8 +21,8 @@ export class Message extends BaseEntity {
   timestamp: Date;
 
   @AutoMap()
-  @Prop({ required: true, default: false })
-  seen: Boolean;
+  @Prop({ required: false, default: '0' })
+  status?: String;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);

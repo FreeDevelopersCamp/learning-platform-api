@@ -37,6 +37,7 @@ export class MessageService {
       receiverId: message.receiverId,
       content: message.content,
       timestamp: message.timestamp,
+      status: message.status,
     }));
   }
 
@@ -72,7 +73,7 @@ export class MessageService {
     dto.receiverId = entity.receiverId;
     dto.content = entity.content;
     dto.timestamp = entity.timestamp;
-    dto.seen = entity?.seen || false;
+    dto.status = entity?.status || '0';
 
     return dto;
   }
