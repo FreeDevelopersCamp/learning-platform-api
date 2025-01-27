@@ -5,12 +5,17 @@ export const corsConfiguration = (app: INestApplication<any>) => {
   const configService = app.get(ConfigService);
   const whitelist = configService.get<string[]>('cors.whitelist');
 
-  if (!whitelist) {
+  // If no whitelist is provided or you want to allow all origins
+  if (!whitelist || whitelist.length === 0) {
     app.enableCors({
-      origin: false, // Disallow all origins
+      origin: true, // Allow all origins
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      credentials: true,
     });
+    return;
   }
 
+  // Apply whitelist-based CORS configuration
   app.enableCors({
     origin: function (origin, callback) {
       // Allow requests with no origin (like mobile apps or curl requests)
