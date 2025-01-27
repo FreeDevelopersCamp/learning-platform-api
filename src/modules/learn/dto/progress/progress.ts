@@ -1,5 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
+import { ResourceProjectDto } from '../project/resource.project';
 
 export class CurrentProgress {
   @AutoMap()
@@ -11,6 +12,24 @@ export class CurrentProgress {
   progress: Number;
 }
 
+<<<<<<< HEAD
+export class CurrentProjectDto {
+  @AutoMap()
+  @ApiProperty({ type: ResourceProjectDto })
+  project: ResourceProjectDto;
+
+  @AutoMap()
+  @ApiProperty({ type: String })
+  url: String; // GitHub Repository link
+
+  @AutoMap()
+  @ApiProperty({ type: String })
+  status: String;
+
+  @AutoMap()
+  @ApiProperty({ type: String })
+  review: String;
+=======
 export class Bookmarks {
   @AutoMap()
   @ApiProperty({ type: String })
@@ -19,6 +38,7 @@ export class Bookmarks {
   @AutoMap()
   @ApiProperty({ type: String })
   type: String;
+>>>>>>> 9268b9b6261be569d3b8e55741399e88fb3f4228
 }
 
 export class ProgressDto {
@@ -44,7 +64,7 @@ export class ProgressDto {
 
   @AutoMap()
   @ApiProperty({ required: false })
-  currentProjectsIds?: string[];
+  currentProjects?: CurrentProjectDto[];
 
   @AutoMap()
   @ApiProperty({ required: false })

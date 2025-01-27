@@ -3,13 +3,24 @@ export const roles: any = {
   items: [
     {
       id: '0',
-      label: 'Pending',
+      label: 'Not Submitted',
       order: 0,
     },
     {
       id: '1',
-      label: 'Verified',
+      label: 'In Progress',
       order: 1,
+    },
+
+    {
+      id: '2',
+      label: 'Submitted',
+      order: 2,
+    },
+    {
+      id: '3',
+      label: 'Passed',
+      order: 3,
     },
   ],
 };
