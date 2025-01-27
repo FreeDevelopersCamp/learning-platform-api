@@ -13,6 +13,7 @@ export class CurrentProgress {
   progress: Number;
 }
 
+<<<<<<< HEAD
 export class CurrentProject {
   @AutoMap()
   @Prop({ type: Types.ObjectId })
@@ -29,6 +30,16 @@ export class CurrentProject {
   @AutoMap()
   @Prop({ type: String, default: '', required: false })
   review: String;
+=======
+export class Bookmarks {
+  @AutoMap()
+  @Prop({ type: Types.ObjectId })
+  itemId: Types.ObjectId;
+
+  @AutoMap()
+  @Prop({ type: String })
+  type: String;
+>>>>>>> 9268b9b6261be569d3b8e55741399e88fb3f4228
 }
 
 @Schema({ autoCreate: false })
@@ -44,6 +55,10 @@ export class Progress extends BaseEntity {
   @AutoMap()
   @Prop({ required: true, unique: true })
   userId: string;
+
+  @AutoMap()
+  @Prop({ required: false, default: [] })
+  BookmarksIds?: Bookmarks[];
 
   @AutoMap()
   @Prop({ required: false, default: [] })

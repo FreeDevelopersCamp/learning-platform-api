@@ -12,6 +12,16 @@ export class CurrentProgress {
   progress: Number;
 }
 
+export class Bookmarks {
+  @AutoMap()
+  @ApiProperty({ type: String })
+  itemId: String;
+
+  @AutoMap()
+  @ApiProperty({ type: String })
+  type: String;
+}
+
 export class UpdateProgressDto {
   @ApiProperty({ default: '' })
   @AutoMap()
@@ -28,6 +38,10 @@ export class UpdateProgressDto {
   @AutoMap()
   @ApiProperty({ required: false, default: 0 })
   spentTime: number;
+
+  @AutoMap()
+  @ApiProperty({ required: false, default: [] })
+  BookmarksIds?: Bookmarks[];
 
   @AutoMap()
   @ApiProperty({ required: false, default: [] })

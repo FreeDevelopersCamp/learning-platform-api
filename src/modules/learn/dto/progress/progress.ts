@@ -12,6 +12,7 @@ export class CurrentProgress {
   progress: Number;
 }
 
+<<<<<<< HEAD
 export class CurrentProjectDto {
   @AutoMap()
   @ApiProperty({ type: ResourceProjectDto })
@@ -28,6 +29,16 @@ export class CurrentProjectDto {
   @AutoMap()
   @ApiProperty({ type: String })
   review: String;
+=======
+export class Bookmarks {
+  @AutoMap()
+  @ApiProperty({ type: String })
+  itemId: String;
+
+  @AutoMap()
+  @ApiProperty({ type: String })
+  type: String;
+>>>>>>> 9268b9b6261be569d3b8e55741399e88fb3f4228
 }
 
 export class ProgressDto {
@@ -38,6 +49,10 @@ export class ProgressDto {
   @AutoMap()
   @ApiProperty({ required: false, default: 0 })
   spentTime: number;
+
+  @AutoMap()
+  @ApiProperty({ required: false, default: [] })
+  BookmarksIds?: Bookmarks[];
 
   @AutoMap()
   @ApiProperty({ required: false, default: [] })
