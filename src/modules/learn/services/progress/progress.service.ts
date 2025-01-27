@@ -106,12 +106,13 @@ export class ProgressService {
       return await this.create(createdEntity);
     }
 
-    entity.BookmarksIds = dto.BookmarksIds?.map((item) => {
-      const bookmarks = new Bookmarks();
-      bookmarks.itemId = item.itemId.toString();
-      bookmarks.type = item.type;
-      return bookmarks;
-    });
+    if (dto.BookmarksIds.length > 0)
+      entity.BookmarksIds = dto.BookmarksIds?.map((item) => {
+        const bookmarks = new Bookmarks();
+        bookmarks.itemId = item.itemId.toString();
+        bookmarks.type = item.type;
+        return bookmarks;
+      });
 
     entity.currentRoadmapsIds = dto.currentRoadmapsIds?.map((item) => {
       const progress = new CurrentProgress();
