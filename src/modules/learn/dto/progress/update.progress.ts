@@ -1,5 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
+import { CurrentProject } from '../../entity/progress/progress.schema';
 
 export class CurrentProgress {
   @AutoMap()
@@ -38,7 +39,7 @@ export class UpdateProgressDto {
 
   @AutoMap()
   @ApiProperty({ required: false })
-  currentProjectsIds?: string[];
+  currentProjectsIds?: CurrentProject[];
 
   @AutoMap()
   @ApiProperty({ required: false })

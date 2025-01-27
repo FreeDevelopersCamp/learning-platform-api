@@ -23,7 +23,6 @@ import { UserModule } from '../../../core/controllers/user/user.module';
     CertificationModule,
     TutorialModule,
   ],
-  // imports: [GuardsModule],  // Uncomment this line if you want to use guards on the controller level.
   controllers: [ProgressController],
   providers: [ProgressService, ProgressModels.progress, ProgressProfile],
   exports: [ProgressService],
