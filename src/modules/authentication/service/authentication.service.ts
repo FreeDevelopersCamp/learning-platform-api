@@ -131,7 +131,7 @@ export class AuthenticationService {
     );
 
     const roleUser = await service.getByUserId(user._id);
-    if (roleUser.status !== '2') {
+    if (roleUser.status !== '2' && roleUser.status !== '4') {
       throw new InvalidLoginException(
         'Your account has not been activated yet. Please contact with the Account Manager.',
       );
@@ -265,6 +265,18 @@ export class AuthenticationService {
     return await this._sessionService.killSession();
   }
 
+  async getAllRoles(): Promise<string[]> {
+    return await this._lookupService.getRoles();
+  }
+
+  async getSessionData(): Promise<Session> {
+    return await this._sessionService.get();
+  }
+
+  async listSession(): Promise<Session[]> {
+    return await this._sessionService.list();
+  }
+
   private async _createUser(dto: CreateUserDto): Promise<ResourceUserDto> {
     dto.password = await this._passwordService.hashPassword(dto.password);
 
@@ -311,13 +323,5 @@ export class AuthenticationService {
     };
 
     return await this._sessionService.set(sessionParams);
-  }
-
-  async getAllRoles(): Promise<string[]> {
-    return await this._lookupService.getRoles();
-  }
-
-  async getSessionData(): Promise<Session> {
-    return await this._sessionService.get();
   }
 }

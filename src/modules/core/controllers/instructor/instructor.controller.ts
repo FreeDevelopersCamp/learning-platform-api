@@ -174,6 +174,22 @@ export class InstructorController {
     return this._instructorService.approve(id);
   }
 
+  @Get('/verify/:id')
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+  ])
+  @ApiResponse({
+    description: 'Instructor verify information',
+    isArray: false,
+    type: ResourceInstructorDto,
+  })
+  verify(@Param('id') id: string) {
+    return this._instructorService.verify(id);
+  }
+
   @Delete('/reject/:id')
   @Roles([
     AllowRoles.admin,

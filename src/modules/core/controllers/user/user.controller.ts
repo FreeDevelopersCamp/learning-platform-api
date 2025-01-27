@@ -67,6 +67,25 @@ export class UserController {
     return this._userService.list();
   }
 
+  @Get('listOthers')
+  @Roles([
+    AllowRoles.admin,
+    AllowRoles.owner,
+    AllowRoles.manager,
+    AllowRoles.accountManager,
+    AllowRoles.contentManager,
+    AllowRoles.instructor,
+    AllowRoles.learner,
+  ])
+  @ApiResponse({
+    description: 'List of user without requested user',
+    isArray: true,
+    type: ResourceUserDto,
+  })
+  listForSidebar() {
+    return this._userService.listForSidebar();
+  }
+
   @Get('/:id')
   @Roles([
     AllowRoles.admin,

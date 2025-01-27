@@ -11,7 +11,6 @@ import {
 import { NotificationService } from '../../services/notification/notification.service';
 import { ObjectIdValidationPipe } from 'src/common/pipes/object-id-validation.pipe';
 import { ApiBearerAuth, ApiTags, ApiResponse } from '@nestjs/swagger';
-import { SchemaValidation } from 'src/common/pipes/schema-validation.pipe';
 import { CreateNotificationDto } from '../../dto/notification/create.notification';
 import { UpdateNotificationDto } from '../../dto/notification/update.notification';
 import { ResourceNotificationDto } from '../../dto/notification/resource.notification';
@@ -44,7 +43,6 @@ export class NotificationController {
   }
 
   @Post()
-  @UsePipes(new SchemaValidation())
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'notification created information',
@@ -56,7 +54,6 @@ export class NotificationController {
   }
 
   @Patch()
-  @UsePipes(new ObjectIdValidationPipe(), new SchemaValidation())
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'notification updated information',
@@ -69,7 +66,6 @@ export class NotificationController {
 
   @Delete('/:id')
   @UsePipes(new ObjectIdValidationPipe())
-  @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'Deleted result',
     isArray: false,
@@ -77,5 +73,14 @@ export class NotificationController {
   })
   delete(@Param('id') id: string) {
     return this._notificationService.delete(id);
+  }
+
+  @Post('send')
+  async sendNotification(
+    @Body() body: { token: string; title: string; message: string },
+  ) {
+    const { token, title, message } = body;
+    await this._notificationService.sendNotification(token, title, message);
+    return { success: true };
   }
 }

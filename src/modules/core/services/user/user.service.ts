@@ -40,6 +40,17 @@ export class UserService {
     return this._mapper.mapArray(users, User, ResourceUserDto);
   }
 
+  async listForSidebar(): Promise<ResourceUserDto[]> {
+    const users = await this._userRepo.findAll();
+
+    console.log(UserRequested?.userId);
+    return this._mapper.mapArray(
+      users.filter((u) => u._id.toString() != UserRequested.userId),
+      User,
+      ResourceUserDto,
+    );
+  }
+
   async getById(id: string): Promise<ResourceUserDto> {
     if (!id || id == ',') {
       id = UserRequested.userId;

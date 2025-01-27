@@ -13,6 +13,7 @@ import { AuthenticationModule } from './modules/authentication/controllers/authe
 import { AppController } from './app.controller';
 import { SchemaValidation } from './common/pipes/schema-validation.pipe';
 import { FilesManagerModule } from './modules/FilesManager/FilesManager.module';
+import { CommunicationModule } from './modules/communication/communication.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { FilesManagerModule } from './modules/FilesManager/FilesManager.module';
     CoreModule,
     AuthenticationModule,
     FilesManagerModule,
+    CommunicationModule,
   ],
   controllers: [AppController],
   providers: [
