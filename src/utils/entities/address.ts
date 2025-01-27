@@ -7,24 +7,24 @@ export class Address {
   @AutoMap()
   @IsNumber()
   @Prop()
-  @ApiProperty({ required: true, default: 0 })
+  @ApiProperty({ required: false, default: 0 })
   country: string; //from lookup
 
   @AutoMap()
   @IsNumber()
   @IsNotEmpty()
   @Prop()
-  @ApiProperty({ required: true, default: 0 })
+  @ApiProperty({ required: false, default: 0 })
   city: string; //from lookup
 
   @AutoMap()
   @IsString()
   @Prop({ maxlength: 30 })
-  @ApiProperty({ required: true, default: '' })
+  @ApiProperty({ required: false, default: '' })
   street?: string;
 
   @AutoMap()
   @Prop()
-  @ApiProperty({ required: true, default: '' })
+  @ApiProperty({ required: false, default: '' })
   postalCode?: string;
 }

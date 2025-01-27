@@ -67,6 +67,16 @@ export class AuthController {
     return this._authService.getSessionData();
   }
 
+  @Get('sessions')
+  @ApiResponse({
+    description: 'Get all Sessions',
+    isArray: true,
+    type: Session,
+  })
+  listSession(): Promise<Session[]> {
+    return this._authService.listSession();
+  }
+
   @Get('roles')
   @ApiResponse({
     description: 'Get All Roles',

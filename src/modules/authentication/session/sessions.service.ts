@@ -26,6 +26,10 @@ export class SessionService {
     );
   }
 
+  async list(): Promise<Session[]> {
+    return (await this._sessionRepo.findAll()).filter((a) => a.active === true);
+  }
+
   async set(params: SessionParams): Promise<Session> {
     const sessionProps = await this.setSessionProperties(params);
     const session = await this.get();

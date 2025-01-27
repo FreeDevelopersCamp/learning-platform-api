@@ -54,6 +54,10 @@ pids
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
+# src/config/keys/*
+src/config/keys/serviceAccountKey.json
 src/config/keys/gcp-storage-key.json
+
 .env
 .codegpt
+
