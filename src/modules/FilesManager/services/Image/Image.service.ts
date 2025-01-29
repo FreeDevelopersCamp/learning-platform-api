@@ -17,7 +17,7 @@ export class ImageService {
     if (!file) {
       throw new BadRequestException('No file provided');
     }
-
+    console.log(process.env.GCP_KEY_FILE);
     const fileName = `uploads/${file.originalname}`;
     const bucket = this.storage.bucket(this.bucketName);
     const fileObject = bucket.file(fileName);
