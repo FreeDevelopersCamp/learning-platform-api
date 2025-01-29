@@ -53,7 +53,7 @@ export class UpdateProgressDto {
 
   @AutoMap()
   @ApiProperty({ required: false })
-  currentProjectsIds?: CurrentProject[];
+  currentProjects?: CurrentProject[];
 
   @AutoMap()
   @ApiProperty({ required: false })
