@@ -203,7 +203,7 @@ export class AuthenticationService {
       await this._profileService.create(profileDto);
     }
 
-    if (user.roles.includes('6')) {
+    if (login.role === '6' && user.roles.includes('6')) {
       const progressDto = new UpdateProgressDto();
       progressDto.userId = user._id;
       await this._progressService.update(progressDto);
