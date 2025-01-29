@@ -90,48 +90,57 @@ export class ProgressService {
         return bookmarks;
       });
 
-    entity.currentRoadmapsIds = dto.currentRoadmapsIds?.map((item) => {
-      const progress = new CurrentProgress();
-      progress.itemId = item.itemId.toString();
-      progress.progress = item.progress || 0;
-      return progress;
-    });
+    if (dto?.currentRoadmapsIds?.length)
+      entity.currentRoadmapsIds = dto.currentRoadmapsIds?.map((item) => {
+        const progress = new CurrentProgress();
+        progress.itemId = item.itemId.toString();
+        progress.progress = item.progress || 0;
+        return progress;
+      });
 
-    entity.currentCoursesIds = dto.currentCoursesIds?.map((item) => {
-      const progress = new CurrentProgress();
-      progress.itemId = item.itemId.toString();
-      progress.progress = item.progress || 0;
-      return progress;
-    });
+    if (dto?.currentCoursesIds?.length)
+      entity.currentCoursesIds = dto.currentCoursesIds?.map((item) => {
+        const progress = new CurrentProgress();
+        progress.itemId = item.itemId.toString();
+        progress.progress = item.progress || 0;
+        return progress;
+      });
 
-    entity.currentProjectsIds = dto?.currentProjects?.map((current) => {
-      const currentProject = new CurrentProject();
-      currentProject.id = new Types.ObjectId(current.id);
-      currentProject.status = current?.status || '0';
-      currentProject.url = current?.url || '';
-      currentProject.review = current?.review || '';
-      return currentProject;
-    });
+    if (dto?.currentProjects?.length)
+      entity.currentProjectsIds = dto?.currentProjects?.map((current) => {
+        const currentProject = new CurrentProject();
+        currentProject.id = new Types.ObjectId(current.id);
+        currentProject.status = current?.status || '0';
+        currentProject.url = current?.url || '';
+        currentProject.review = current?.review || '';
+        return currentProject;
+      });
 
-    entity.completedRoadmapsIds = dto.completedRoadmapsIds?.map(
-      (id) => new Types.ObjectId(id),
-    );
+    if (dto?.completedRoadmapsIds?.length)
+      entity.completedRoadmapsIds = dto.completedRoadmapsIds?.map(
+        (id) => new Types.ObjectId(id),
+      );
 
-    entity.completedCoursesIds = dto.completedCoursesIds?.map(
-      (id) => new Types.ObjectId(id),
-    );
+    if (dto?.completedCoursesIds?.length)
+      entity.completedCoursesIds = dto.completedCoursesIds?.map(
+        (id) => new Types.ObjectId(id),
+      );
 
-    entity.completedProjectsIds = dto.completedProjectsIds?.map(
-      (id) => new Types.ObjectId(id),
-    );
+    if (dto?.completedProjectsIds?.length)
+      entity.completedProjectsIds = dto.completedProjectsIds?.map(
+        (id) => new Types.ObjectId(id),
+      );
 
-    entity.completedPracticesIds = dto.completedPracticesIds?.map(
-      (id) => new Types.ObjectId(id),
-    );
+    if (dto?.completedPracticesIds?.length)
+      entity.completedPracticesIds = dto.completedPracticesIds?.map(
+        (id) => new Types.ObjectId(id),
+      );
 
-    entity.xp = dto.xp;
-    entity.spentTime = dto.spentTime;
-    entity.userId = dto.userId;
+    if (dto?.xp) entity.xp = dto.xp;
+
+    if (dto?.spentTime) entity.spentTime = dto.spentTime;
+
+    if (dto?.userId) entity.userId = dto.userId;
 
     return await this.toDto(
       await this._repo.update(new this._progressModel(entity)),
