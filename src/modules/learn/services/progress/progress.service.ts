@@ -104,7 +104,7 @@ export class ProgressService {
       return progress;
     });
 
-    entity.currentProjectsIds = dto?.currentProjectsIds?.map((current) => {
+    entity.currentProjectsIds = dto?.currentProjects?.map((current) => {
       const currentProject = new CurrentProject();
       currentProject.id = new Types.ObjectId(current.id);
       currentProject.status = current?.status || '0';
