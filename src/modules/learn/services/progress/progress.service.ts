@@ -4,17 +4,22 @@ import { MongoRepository } from 'src/Infra/database/repository/mongo-repository'
 import { IMongoRepository } from 'src/infra/database/repository/adapter';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
-import { Progress } from '../../entity/progress/progress.schema';
+import {
+  CurrentProject,
+  Progress,
+} from '../../entity/progress/progress.schema';
 import { ResourceProgressDto } from '../../dto/progress/resource.progress';
 import { CreateProgressDto } from '../../dto/progress/create.progress';
-import { UpdateProgressDto } from '../../dto/progress/update.progress';
+import {
+  Bookmarks,
+  UpdateProgressDto,
+} from '../../dto/progress/update.progress';
 import { UserService } from 'src/modules/core/services/user/user.service';
-import { RoadmapService } from '../roadmap/roadmap.service';
-import { CourseService } from '../course/course.service';
-import { PracticeService } from '../practice/practice.service';
+import {
+  CurrentProgress,
+  CurrentProjectDto,
+} from '../../dto/progress/progress';
 import { ProjectService } from '../project/project.service';
-import { CurrentProgress } from '../../dto/progress/progress';
-import { Bookmarks } from '../../dto/progress/progress';
 
 @Injectable()
 export class ProgressService {
@@ -24,9 +29,6 @@ export class ProgressService {
     @Inject('PROGRESS_MODEL') private _progressModel: Model<Progress>,
     @InjectMapper() private readonly _mapper: Mapper,
     private readonly _userService: UserService,
-    private readonly _roadmapService: RoadmapService,
-    private readonly _courseService: CourseService,
-    private readonly _practiceService: PracticeService,
     private readonly _projectService: ProjectService,
   ) {
     this._repo = new MongoRepository<Progress>(_progressModel);
@@ -97,7 +99,16 @@ export class ProgressService {
         progress.progress = item.progress;
         return progress;
       });
-      createdEntity.currentProjectsIds = dto.currentProjectsIds;
+      createdEntity.currentProjectsIds = await Promise.all(
+        dto?.currentProjectsIds?.map((current) => {
+          const currentProject = new CurrentProject();
+          currentProject.id = new Types.ObjectId(current.id);
+          currentProject.status = current?.status || '0';
+          currentProject.url = current?.url || '';
+          currentProject.review = current.review || '';
+          return currentProject;
+        }),
+      );
       createdEntity.completedRoadmapsIds = dto.completedRoadmapsIds;
       createdEntity.completedCoursesIds = dto.completedCoursesIds;
       createdEntity.completedProjectsIds = dto.completedProjectsIds;
@@ -128,9 +139,14 @@ export class ProgressService {
       return progress;
     });
 
-    entity.currentProjectsIds = dto.currentProjectsIds?.map(
-      (id) => new Types.ObjectId(id),
-    );
+    entity.currentProjectsIds = dto?.currentProjectsIds?.map((current) => {
+      const currentProject = new CurrentProject();
+      currentProject.id = new Types.ObjectId(current.id);
+      currentProject.status = current?.status || '0';
+      currentProject.url = current?.url || '';
+      currentProject.review = current?.review || '';
+      return currentProject;
+    });
 
     entity.completedRoadmapsIds = dto.completedRoadmapsIds?.map(
       (id) => new Types.ObjectId(id),
@@ -189,8 +205,15 @@ export class ProgressService {
       return progress;
     });
 
-    entityDto.currentProjectsIds = entity.currentProjectsIds?.map((id) =>
-      id.toString(),
+    entityDto.currentProjects = await Promise.all(
+      entity?.currentProjectsIds?.map(async (current) => {
+        const dto = new CurrentProjectDto();
+        dto.status = current.status;
+        dto.url = current.url;
+        dto.review = current.review;
+        dto.project = await this._projectService.getById(current.id.toString());
+        return dto;
+      }),
     );
 
     entityDto.completedRoadmapsIds = entity.completedRoadmapsIds?.map((id) =>
