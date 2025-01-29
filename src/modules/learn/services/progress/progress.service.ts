@@ -78,51 +78,17 @@ export class ProgressService {
       entity = await this._repo.findOne(dto._id);
     } catch (Exception) {
       const createdEntity = new CreateProgressDto();
-      createdEntity.xp = dto.xp;
-      createdEntity.spentTime = dto.spentTime;
       createdEntity.userId = dto.userId;
-      createdEntity.BookmarksIds = dto.BookmarksIds?.map((item) => {
+      return await this.create(createdEntity);
+    }
+
+    if (dto.BookmarksIds.length > 0)
+      entity.BookmarksIds = dto.BookmarksIds?.map((item) => {
         const bookmarks = new Bookmarks();
         bookmarks.itemId = item.itemId.toString();
         bookmarks.type = item.type;
         return bookmarks;
       });
-      createdEntity.currentRoadmapsIds = dto.currentRoadmapsIds?.map((item) => {
-        const progress = new CurrentProgress();
-        progress.itemId = item.itemId.toString();
-        progress.progress = item.progress;
-        return progress;
-      });
-      createdEntity.currentCoursesIds = dto.currentCoursesIds?.map((item) => {
-        const progress = new CurrentProgress();
-        progress.itemId = item.itemId.toString();
-        progress.progress = item.progress;
-        return progress;
-      });
-      createdEntity.currentProjectsIds = await Promise.all(
-        dto?.currentProjectsIds?.map((current) => {
-          const currentProject = new CurrentProject();
-          currentProject.id = new Types.ObjectId(current.id);
-          currentProject.status = current?.status || '0';
-          currentProject.url = current?.url || '';
-          currentProject.review = current.review || '';
-          return currentProject;
-        }),
-      );
-      createdEntity.completedRoadmapsIds = dto.completedRoadmapsIds;
-      createdEntity.completedCoursesIds = dto.completedCoursesIds;
-      createdEntity.completedProjectsIds = dto.completedProjectsIds;
-      createdEntity.completedPracticesIds = dto.completedPracticesIds;
-
-      return await this.create(createdEntity);
-    }
-
-    entity.BookmarksIds = dto.BookmarksIds?.map((item) => {
-      const bookmarks = new Bookmarks();
-      bookmarks.itemId = item.itemId.toString();
-      bookmarks.type = item.type;
-      return bookmarks;
-    });
 
     entity.currentRoadmapsIds = dto.currentRoadmapsIds?.map((item) => {
       const progress = new CurrentProgress();
