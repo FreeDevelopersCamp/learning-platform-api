@@ -75,14 +75,14 @@ export class ProgressService {
     let entity;
 
     try {
-      entity = await this._repo.findOne(dto._id);
+      entity = await this.getByUserId(dto.userId);
     } catch (Exception) {
       const createdEntity = new CreateProgressDto();
       createdEntity.userId = dto.userId;
       return await this.create(createdEntity);
     }
 
-    if (dto.BookmarksIds.length > 0)
+    if (dto?.BookmarksIds?.length > 0)
       entity.BookmarksIds = dto.BookmarksIds?.map((item) => {
         const bookmarks = new Bookmarks();
         bookmarks.itemId = item.itemId.toString();
