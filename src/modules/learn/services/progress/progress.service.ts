@@ -15,10 +15,7 @@ import {
   UpdateProgressDto,
 } from '../../dto/progress/update.progress';
 import { UserService } from 'src/modules/core/services/user/user.service';
-import {
-  CurrentProgress,
-  CurrentProjectDto,
-} from '../../dto/progress/progress';
+import { CurrentProgress } from '../../dto/progress/progress';
 import { ProjectService } from '../project/project.service';
 
 @Injectable()
@@ -71,16 +68,27 @@ export class ProgressService {
     return await this.toDto(entity);
   }
 
-  async update(dto: UpdateProgressDto): Promise<ResourceProgressDto> {
-    let entity;
-
+  async update(dto: UpdateProgressDto, forLogin): Promise<ResourceProgressDto> {
+    let entity = new UpdateProgressDto();
+    let resourceDto: ResourceProgressDto;
     try {
-      entity = await this.getByUserId(dto.userId);
+      resourceDto = await this.getByUserId(dto.userId);
     } catch (Exception) {
       const createdEntity = new CreateProgressDto();
       createdEntity.userId = dto.userId;
       return await this.create(createdEntity);
     }
+
+    if (forLogin) return null;
+
+    entity._id = resourceDto._id;
+    entity.BookmarksIds = resourceDto.BookmarksIds;
+    entity.xp = resourceDto.xp;
+    entity.userId = resourceDto.user._id;
+    entity.spentTime = resourceDto.spentTime;
+    entity.currentRoadmapsIds = resourceDto.currentRoadmapsIds;
+    entity.currentCoursesIds = resourceDto.currentCoursesIds;
+    entity.currentProjectsIds = resourceDto.currentProjectsIds;
 
     if (dto?.BookmarksIds?.length > 0)
       entity.BookmarksIds = dto.BookmarksIds?.map((item) => {
@@ -106,35 +114,20 @@ export class ProgressService {
         return progress;
       });
 
-    if (dto?.currentProjects?.length)
-      entity.currentProjectsIds = dto?.currentProjects?.map((current) => {
-        const currentProject = new CurrentProject();
-        currentProject.id = new Types.ObjectId(current.id);
-        currentProject.status = current?.status || '0';
-        currentProject.url = current?.url || '';
-        currentProject.review = current?.review || '';
-        return currentProject;
-      });
+    if (dto?.currentProjectsIds?.length)
+      entity.currentProjectsIds = dto.currentProjectsIds;
 
     if (dto?.completedRoadmapsIds?.length)
-      entity.completedRoadmapsIds = dto.completedRoadmapsIds?.map(
-        (id) => new Types.ObjectId(id),
-      );
+      entity.completedRoadmapsIds = dto.completedRoadmapsIds;
 
     if (dto?.completedCoursesIds?.length)
-      entity.completedCoursesIds = dto.completedCoursesIds?.map(
-        (id) => new Types.ObjectId(id),
-      );
+      entity.completedCoursesIds = dto.completedCoursesIds;
 
     if (dto?.completedProjectsIds?.length)
-      entity.completedProjectsIds = dto.completedProjectsIds?.map(
-        (id) => new Types.ObjectId(id),
-      );
+      entity.completedProjectsIds = dto.completedProjectsIds;
 
     if (dto?.completedPracticesIds?.length)
-      entity.completedPracticesIds = dto.completedPracticesIds?.map(
-        (id) => new Types.ObjectId(id),
-      );
+      entity.completedPracticesIds = dto.completedPracticesIds;
 
     if (dto?.xp) entity.xp = dto.xp;
 
@@ -142,9 +135,8 @@ export class ProgressService {
 
     if (dto?.userId) entity.userId = dto.userId;
 
-    return await this.toDto(
-      await this._repo.update(new this._progressModel(entity)),
-    );
+    const updated = await this._repo.update(new this._progressModel(entity));
+    return await this.toDto(updated);
   }
 
   async delete(id: string): Promise<boolean> {
@@ -157,6 +149,7 @@ export class ProgressService {
     entityDto.xp = entity.xp;
     entityDto.spentTime = entity.spentTime;
     entityDto.user = await this._userService.getById(entity.userId);
+    entityDto.currentProjectsIds = entity?.currentProjectsIds;
 
     entityDto.BookmarksIds = entity.BookmarksIds?.map((item) => {
       const bookmarks = new Bookmarks();
@@ -178,17 +171,6 @@ export class ProgressService {
       progress.progress = item.progress;
       return progress;
     });
-
-    entityDto.currentProjects = await Promise.all(
-      entity?.currentProjectsIds?.map(async (current) => {
-        const dto = new CurrentProjectDto();
-        dto.status = current.status;
-        dto.url = current.url;
-        dto.review = current.review;
-        dto.project = await this._projectService.getById(current.id.toString());
-        return dto;
-      }),
-    );
 
     entityDto.completedRoadmapsIds = entity.completedRoadmapsIds?.map((id) =>
       id.toString(),
