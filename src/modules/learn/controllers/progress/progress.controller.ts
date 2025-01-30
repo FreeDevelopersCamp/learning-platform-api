@@ -79,7 +79,7 @@ export class ProgressController {
     type: ResourceProgressDto,
   })
   update(@Body() progress: UpdateProgressDto) {
-    return this._progressService.update(progress);
+    return this._progressService.update(progress, false);
   }
 
   @Delete('/:id')

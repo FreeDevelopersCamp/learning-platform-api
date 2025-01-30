@@ -206,7 +206,7 @@ export class AuthenticationService {
     if (login.role === '6' && user.roles.includes('6')) {
       const progressDto = new UpdateProgressDto();
       progressDto.userId = user._id;
-      await this._progressService.update(progressDto);
+      await this._progressService.update(progressDto, true);
     }
 
     return {
@@ -305,7 +305,7 @@ export class AuthenticationService {
     if (user.roles.includes('6')) {
       const progressDto = new UpdateProgressDto();
       progressDto.userId = user._id;
-      await this._progressService.update(progressDto);
+      await this._progressService.update(progressDto, false);
     }
 
     return user;

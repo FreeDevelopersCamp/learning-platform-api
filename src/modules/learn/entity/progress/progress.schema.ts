@@ -15,8 +15,8 @@ export class CurrentProgress {
 
 export class CurrentProject {
   @AutoMap()
-  @Prop({ type: Types.ObjectId })
-  id: Types.ObjectId;
+  @Prop({ type: String })
+  id: String;
 
   @AutoMap()
   @Prop({ type: String, default: '', required: false })
@@ -30,6 +30,7 @@ export class CurrentProject {
   @Prop({ type: String, default: '', required: false })
   review: String;
 }
+
 export class Bookmarks {
   @AutoMap()
   @Prop({ type: Types.ObjectId })
