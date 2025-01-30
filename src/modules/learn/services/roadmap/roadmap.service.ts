@@ -71,13 +71,15 @@ export class RoadmapService {
   }
 
   async create(dto: CreateRoadmapDto): Promise<ResourceRoadmapDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
+    const roadmapData = {
+      ...dto,
+      orderIds: dto.orderIds.map((id) => new Types.ObjectId(id)),
+      coursesIds: dto.coursesIds.map((id) => new Types.ObjectId(id)),
+      practicesIds: dto.practicesIds?.map((id) => new Types.ObjectId(id)),
+      projectsIds: dto.projectsIds?.map((id) => new Types.ObjectId(id)),
+    };
 
-    if (!authorized) {
-      throw new RoadmapException('You are not authorized');
-    }
-
-    const entity = await this._repo.create(new this._roadmapModel(dto));
+    const entity = await this._repo.create(new this._roadmapModel(roadmapData));
 
     const instructor = await this._instructorService.getById(dto.instructorId);
 
@@ -92,20 +94,6 @@ export class RoadmapService {
   }
 
   async update(dto: UpdateRoadmapDto): Promise<ResourceRoadmapDto> {
-    // const authorized = await this.isAuthorized(UserRequested.userId);
-
-    // if (!authorized) {
-    //   throw new RoadmapException('You are not authorized');
-    // }
-
-    // const instructor = await this._instructorService.getByUserId(
-    //   UserRequested.userId,
-    // );
-
-    // if (instructor && !instructor.roadmapsIds.includes(dto._id)) {
-    //   throw new RoadmapException('Instructor not authorized!');
-    // }
-
     const entity = await this._repo.findOne(dto._id);
 
     if (dto.category) {
@@ -307,12 +295,12 @@ export class RoadmapService {
 
     entityDto.order = await Promise.all(
       entity.orderIds.map(async (id) => {
-        if (entityDto.instructor.coursesIds.includes(id)) {
-          return await this._courseService.getById(id);
-        } else if (entityDto.instructor.practicesIds.includes(id)) {
-          return await this._practiceService.getById(id);
-        } else if (entityDto.instructor.projectsIds.includes(id)) {
-          return await this._projectService.getById(id);
+        if (entityDto.instructor.coursesIds.includes(id.toString())) {
+          return await this._courseService.getById(id.toString());
+        } else if (entityDto.instructor.practicesIds.includes(id.toString())) {
+          return await this._practiceService.getById(id.toString());
+        } else if (entityDto.instructor.projectsIds.includes(id.toString())) {
+          return await this._projectService.getById(id.toString());
         }
         // else if (entityDto.instructor.examsIds.includes(id)) {
         // return await this._examService.getById(id);
