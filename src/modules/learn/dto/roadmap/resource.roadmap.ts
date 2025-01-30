@@ -50,5 +50,5 @@ export class ResourceRoadmapDto extends RoadmapDto {
 
   @AutoMap()
   @ApiProperty({ required: true })
-  order: OrderItem[] = [];
+  order: OrderItem[];
 }
