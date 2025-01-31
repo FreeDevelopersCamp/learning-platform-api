@@ -19,12 +19,12 @@ export class CourseResourceDto {
 
   @AutoMap()
   @IsString()
-  @ApiProperty({ required: true })
+  @ApiProperty({ required: false, default: '1' })
   type: string; // article video ...
 
   @AutoMap()
   @IsString()
-  @ApiProperty({ required: true })
+  @ApiProperty({ required: false, default: '0' })
   tag: string; // free or paid resource
 }
 

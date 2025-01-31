@@ -19,6 +19,32 @@ export class ChallengeDto {
   expectedOutput?: string;
 }
 
+export class QuestionsDto {
+  @AutoMap()
+  @ApiProperty({ required: true })
+  question: string;
+
+  @AutoMap()
+  @ApiProperty({ required: true })
+  choice1?: string;
+
+  @AutoMap()
+  @ApiProperty({ required: true })
+  choice2: string;
+
+  @AutoMap()
+  @ApiProperty({ required: false })
+  choice3?: string;
+
+  @AutoMap()
+  @ApiProperty({ required: false })
+  choice4?: string;
+
+  @AutoMap()
+  @ApiProperty({ required: true })
+  correctAnswer: string;
+}
+
 export class PracticeDto {
   @AutoMap()
   @ApiProperty({ required: true })
@@ -57,6 +83,10 @@ export class PracticeDto {
   participants?: number;
 
   @AutoMap()
-  @ApiProperty({ required: true, isArray: true, default: [] })
+  @ApiProperty({ required: false, isArray: true, default: [] })
   challenges: ChallengeDto[];
+
+  @AutoMap()
+  @ApiProperty({ required: true, isArray: true, default: [] })
+  questions: QuestionsDto[];
 }
