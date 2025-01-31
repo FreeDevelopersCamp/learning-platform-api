@@ -43,7 +43,6 @@ export class NotificationController {
   }
 
   @Post()
-  @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'notification created information',
     isArray: false,
@@ -54,7 +53,6 @@ export class NotificationController {
   }
 
   @Patch()
-  @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
     description: 'notification updated information',
     isArray: false,

@@ -55,6 +55,10 @@ export class Practice extends BaseEntity {
   instructorId: Types.ObjectId;
 
   @AutoMap()
+  @Prop({ required: false })
+  courseId?: Types.ObjectId;
+
+  @AutoMap()
   @Prop({ required: false, default: '0' })
   status: string; // lookup
 
