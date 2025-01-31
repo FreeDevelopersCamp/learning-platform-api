@@ -23,18 +23,18 @@ export class NotificationService {
     this._repo = new MongoRepository<Notification>(_notificationModel);
   }
 
-  // async list(): Promise<ResourceNotificationDto[]> {
-  //   const entities = await this._repo.findAll();
-  //   return await Promise.all(entities.map((entity) => this.toDto(entity)));
-  // }
+  async list(): Promise<ResourceNotificationDto[]> {
+    const entities = await this._repo.findAll();
+    return await Promise.all(entities.map((entity) => this.toDto(entity)));
+  }
 
   async getById(id: string): Promise<ResourceNotificationDto> {
     return this.toDto(await this._repo.findOne(id));
   }
 
-  async list(): Promise<NotificationDto[]> {
+  async getUserNotifications(userId: string): Promise<NotificationDto[]> {
     const notifications = await this._notificationModel
-      .find()
+      .find({ userId })
       .sort({ status: 1, createdAt: -1 }) // 🔹 Sorts by status (0 first) and newest notifications first
       .exec();
 
