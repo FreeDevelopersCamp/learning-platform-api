@@ -51,6 +51,10 @@ export class PracticeDto {
   name: string;
 
   @AutoMap()
+  @ApiProperty({ required: false })
+  courseId?: string;
+
+  @AutoMap()
   @ApiProperty({ required: false, default: '0' })
   status: string; // lookup
 

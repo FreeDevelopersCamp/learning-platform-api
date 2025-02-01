@@ -49,6 +49,17 @@ export class ProgressController {
     return this._progressService.getById(id);
   }
 
+  @Get('/details/:userId')
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'progress information',
+    isArray: false,
+    type: ResourceProgressDto,
+  })
+  getDetails(@Param('userId') userId: string) {
+    return this._progressService.getDetails(userId);
+  }
+
   @Get('userId/:userId')
   @UsePipes(new ObjectIdValidationPipe())
   @ApiResponse({
