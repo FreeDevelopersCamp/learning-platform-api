@@ -9,12 +9,12 @@ export const roles: any = {
     {
       id: '1',
       label: 'Submitted',
-      order: 2,
+      order: 1,
     },
     {
       id: '2',
       label: 'Passed',
-      order: 3,
+      order: 2,
     },
   ],
 };

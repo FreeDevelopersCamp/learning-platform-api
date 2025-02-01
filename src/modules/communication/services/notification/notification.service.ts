@@ -7,8 +7,8 @@ import { Mapper } from '@automapper/core';
 import { Notification } from '../../entity/notification/notification.schema';
 import { ResourceNotificationDto } from '../../dto/notification/resource.notification';
 import { CreateNotificationDto } from '../../dto/notification/create.notification';
-import { UpdateNotificationDto } from '../../dto/notification/update.notification';
 import { NotificationDto } from '../../dto/notification/notification';
+import { UpdateNotificationDto } from '../../dto/notification/update.notification';
 const path = require('path');
 
 @Injectable()
@@ -50,9 +50,14 @@ export class NotificationService {
     );
   }
 
-  async update(dto: UpdateNotificationDto): Promise<ResourceNotificationDto> {
+  async update(
+    id: string,
+    body: UpdateNotificationDto,
+  ): Promise<ResourceNotificationDto> {
+    const updated = await this._repo.findOne(id);
+    updated.status = body.status;
     return this.toDto(
-      await this._repo.update(new this._notificationModel(dto)),
+      await this._repo.update(new this._notificationModel(updated)),
     );
   }
 

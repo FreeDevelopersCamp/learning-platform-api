@@ -63,14 +63,14 @@ export class NotificationController {
     return this._notificationService.create(notification);
   }
 
-  @Patch()
+  @Patch('/:id')
   @ApiResponse({
     description: 'notification updated information',
     isArray: false,
     type: ResourceNotificationDto,
   })
-  update(@Body() notification: UpdateNotificationDto) {
-    return this._notificationService.update(notification);
+  update(@Param('id') id: string, @Body() body: UpdateNotificationDto) {
+    return this._notificationService.update(id, body);
   }
 
   @Delete('/:id')
