@@ -10,7 +10,7 @@ export class Notification extends BaseEntity {
   @Prop({ required: true })
   userId: Types.ObjectId;
 
-  @Prop({ required: false })
+  @Prop({ required: false, default: 0 })
   status: string; // 0 not seen, 1 seen
 }
 

@@ -58,7 +58,6 @@ export class RoadmapController {
   }
 
   @Get('/roadmapByInstructor/:id')
-  @UsePipes(new ObjectIdValidationPipe())
   @Roles([
     AllowRoles.admin,
     AllowRoles.owner,

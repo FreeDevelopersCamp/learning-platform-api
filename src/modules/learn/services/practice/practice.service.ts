@@ -204,7 +204,7 @@ export class PracticeService {
     entityDto.topic = entity.topic;
     entityDto.status = entity.status;
     entityDto.duration = entity.duration;
-    entityDto.courseId = entity.courseId.toString();
+    entityDto.courseId = entity?.courseId?.toString();
     entityDto.xp = entity.xp;
     entityDto.participants = entity.participants;
     entityDto.challengesToPass = entity.challengesToPass;

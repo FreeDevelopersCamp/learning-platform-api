@@ -59,8 +59,8 @@ export class RoadmapService {
     const instructor = await this._instructorService.getById(id);
 
     return Promise.all(
-      instructor.roadmapsIds.map(
-        async (roadmapsId) => await this.getById(roadmapsId),
+      instructor?.roadmapsIds?.map(
+        async (roadmapId) => await this.getById(roadmapId),
       ),
     );
   }
@@ -275,37 +275,27 @@ export class RoadmapService {
     entityDto.prerequisites = entity.prerequisites;
 
     entityDto.instructor = await this._instructorService.getById(
-      entity.instructorId.toString(),
+      entity?.instructorId?.toString(),
     );
 
-    entityDto.coursesIds = entity.coursesIds.map((id) => id.toString());
+    entityDto.coursesIds = entity?.coursesIds?.map((id) => id?.toString());
 
-    entityDto.practicesIds = entity.practicesIds?.map((id) => id.toString());
-    entityDto.projectsIds = entity.projectsIds?.map((id) => id.toString());
-    entityDto.examId = entity.examId?.toString();
-    entityDto.certificationId = entity.certificationId?.toString();
+    entityDto.practicesIds = entity?.practicesIds?.map((id) => id?.toString());
+    entityDto.projectsIds = entity?.projectsIds?.map((id) => id?.toString());
+    entityDto.examId = entity?.examId?.toString();
+    entityDto.certificationId = entity?.certificationId?.toString();
 
     if (entity.relatedRoadmapsIds) {
       entityDto.relatedRoadmaps = await Promise.all(
-        entity.relatedRoadmapsIds.map(
-          async (id) => await this.getById(id.toString()),
+        entity?.relatedRoadmapsIds?.map(
+          async (id) => await this.getById(id?.toString()),
         ),
       );
     }
 
-    entityDto.order = await Promise.all(
-      entity.orderIds.map(async (id) => {
-        if (entityDto.instructor.coursesIds.includes(id.toString())) {
-          return await this._courseService.getById(id.toString());
-        } else if (entityDto.instructor.practicesIds.includes(id.toString())) {
-          return await this._practiceService.getById(id.toString());
-        } else if (entityDto.instructor.projectsIds.includes(id.toString())) {
-          return await this._projectService.getById(id.toString());
-        }
-        // else if (entityDto.instructor.examsIds.includes(id)) {
-        // return await this._examService.getById(id);
-        // } else if (entityDto.instructor.certificationsIds.includes(id)) {
-        //   return await this._certificationService.getById(id);
+    entityDto.orderIds = await Promise.all(
+      entity?.orderIds?.map(async (id) => {
+        return id?.toString();
       }),
     );
 

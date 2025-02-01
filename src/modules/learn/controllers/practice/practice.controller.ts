@@ -62,7 +62,6 @@ export class PracticeController {
   }
 
   @Get('/practiceByInstructor/:id')
-  @UsePipes(new ObjectIdValidationPipe())
   @Roles([
     AllowRoles.admin,
     AllowRoles.owner,
