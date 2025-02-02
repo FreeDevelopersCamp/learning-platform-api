@@ -11,6 +11,7 @@ import { ProjectModule } from '../project/project.module';
 import { CertificationModule } from '../certification/certification.module';
 import { TutorialModule } from '../tutorial/tutorial.module';
 import { UserModule } from '../../../core/controllers/user/user.module';
+import { NotificationModule } from 'src/modules/communication/controllers/notification/notification.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UserModule } from '../../../core/controllers/user/user.module';
     ProjectModule,
     CertificationModule,
     TutorialModule,
+    NotificationModule,
   ],
   controllers: [ProgressController],
   providers: [ProgressService, ProgressModels.progress, ProgressProfile],

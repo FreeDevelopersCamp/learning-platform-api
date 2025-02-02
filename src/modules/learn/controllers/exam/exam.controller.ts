@@ -42,6 +42,28 @@ export class ExamController {
     return this._examService.getById(id);
   }
 
+  @Get('/:id')
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'exam information',
+    isArray: false,
+    type: ResourceExamDto,
+  })
+  getByInstructor(@Param('id') id: string) {
+    return this._examService.getById(id);
+  }
+
+  @Get('/:id')
+  @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'exam information',
+    isArray: false,
+    type: ResourceExamDto,
+  })
+  getByRoadmap(@Param('id') id: string) {
+    return this._examService.getById(id);
+  }
+
   @Post()
   @ApiResponse({
     description: 'exam created information',

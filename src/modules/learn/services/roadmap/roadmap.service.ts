@@ -38,12 +38,6 @@ export class RoadmapService {
     private readonly _accountManagerService: AccountManagerService,
     private readonly _contentManagerService: ContentManagerService,
     private readonly _instructorService: InstructorService,
-
-    private readonly _courseService: CourseService,
-    private readonly _practiceService: PracticeService,
-    private readonly _projectService: ProjectService,
-    private readonly _examService: ExamService,
-    private readonly _certificationService: CertificationService,
   ) {
     this._repo = new MongoRepository<Roadmap>(_roadmapModel);
   }

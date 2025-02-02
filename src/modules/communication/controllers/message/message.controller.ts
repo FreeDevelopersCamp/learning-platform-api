@@ -38,7 +38,6 @@ export class MessageController {
       message: { senderId: string; receiverId: string; content: string };
     },
   ) {
-    console.log('Received REST request:', body.message);
     return this._messageService.createMessage(body.message);
   }
 

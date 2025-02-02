@@ -25,6 +25,8 @@ import { CreateProfileDto } from 'src/modules/core/dto/profile/create.profile';
 import { ProfileService } from 'src/modules/core/services/profile/profile.service';
 import { ProgressService } from 'src/modules/learn/services/progress/progress.service';
 import { UpdateProgressDto } from 'src/modules/learn/dto/progress/update.progress';
+import { CreateNotificationDto } from 'src/modules/communication/dto/notification/create.notification';
+import { NotificationService } from 'src/modules/communication/services/notification/notification.service';
 
 @Injectable()
 export class AuthenticationService {
@@ -38,6 +40,7 @@ export class AuthenticationService {
     private _roleFactory: RoleFactory,
     private _profileService: ProfileService,
     private _progressService: ProgressService,
+    private _notificationService: NotificationService,
   ) {}
 
   async setConnection(model: ResourceTenancyDto) {
@@ -86,6 +89,13 @@ export class AuthenticationService {
     );
 
     if (!session) throw new InvalidLoginException('Invalid session');
+
+    // create notification
+    const notification = new CreateNotificationDto();
+
+    notification.userId = user._id;
+    notification.message = `Your account have been created successfully. Please login to continue.`;
+    await this._notificationService.create(notification);
 
     return {
       token: token,

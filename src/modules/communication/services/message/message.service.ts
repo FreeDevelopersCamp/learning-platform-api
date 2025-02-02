@@ -7,6 +7,9 @@ import { Mapper } from '@automapper/core';
 import { Message } from '../../entity/message/message.schema';
 import { ResourceMessageDto } from '../../dto/message/resource.message';
 import { UpdateMessageDto } from '../../dto/message/update.message';
+import { CreateNotificationDto } from '../../dto/notification/create.notification';
+import { NotificationService } from '../notification/notification.service';
+import { UserService } from 'src/modules/core/services/user/user.service';
 
 @Injectable()
 export class MessageService {
@@ -15,6 +18,8 @@ export class MessageService {
   constructor(
     @Inject('MESSAGE_MODEL') private _messageModel: Model<Message>,
     @InjectMapper() private readonly _mapper: Mapper,
+    private readonly _notificationService: NotificationService,
+    private readonly _userService: UserService,
   ) {
     this._repo = new MongoRepository<Message>(_messageModel);
   }
@@ -49,6 +54,15 @@ export class MessageService {
     const created = await this._repo.create(
       new this._messageModel({ ...dto, timestamp: new Date() }),
     );
+
+    const user = await this._userService.getById(dto.senderId);
+
+    // create notification
+    const notification = new CreateNotificationDto();
+
+    notification.userId = dto.receiverId;
+    notification.message = `You have a new message from ${user.personalInformation.name.first} ${user.personalInformation.name.last}`;
+    await this._notificationService.create(notification);
 
     return this.toDto(created);
   }

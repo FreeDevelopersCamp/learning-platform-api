@@ -18,7 +18,10 @@ import {
 } from '@nestjs/swagger';
 import { CreateProgressDto } from '../../dto/progress/create.progress';
 import { UpdateProgressDto } from '../../dto/progress/update.progress';
-import { ResourceProgressDto } from '../../dto/progress/resource.progress';
+import {
+  ResourceProgressDto,
+  UpdateProjectReviewDto,
+} from '../../dto/progress/resource.progress';
 import { AllowRoles } from 'src/modules/authentication/guards/_constants/roles.constants';
 import { Roles } from 'src/modules/authentication/guards/roles/decorator/roles.decorator';
 
@@ -91,6 +94,16 @@ export class ProgressController {
   })
   update(@Body() progress: UpdateProgressDto) {
     return this._progressService.update(progress, false);
+  }
+
+  @Patch('review')
+  @ApiResponse({
+    description: 'progress updated information',
+    isArray: false,
+    type: ResourceProgressDto,
+  })
+  updateProjectsReview(@Body() progress: UpdateProjectReviewDto) {
+    return this._progressService.updateProjectsReview(progress);
   }
 
   @Delete('/:id')

@@ -11,5 +11,6 @@ import { NotificationProfile } from '../../entity/notification/notification.mapp
     NotificationModels.notification,
     NotificationProfile,
   ],
+  exports: [NotificationService],
 })
 export class NotificationModule {}

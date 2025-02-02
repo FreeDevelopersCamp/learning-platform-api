@@ -11,6 +11,7 @@ import {
 import {
   DetailsProgressDto,
   ResourceProgressDto,
+  UpdateProjectReviewDto,
 } from '../../dto/progress/resource.progress';
 import { CreateProgressDto } from '../../dto/progress/create.progress';
 import {
@@ -22,6 +23,9 @@ import { CurrentProgress } from '../../dto/progress/progress';
 import { ProjectService } from '../project/project.service';
 import { RoadmapService } from '../roadmap/roadmap.service';
 import { CourseService } from '../course/course.service';
+import { isNotEmpty } from 'class-validator';
+import { CreateNotificationDto } from 'src/modules/communication/dto/notification/create.notification';
+import { NotificationService } from 'src/modules/communication/services/notification/notification.service';
 // import { CertificationService } from '../certification/certification.service';
 
 @Injectable()
@@ -35,6 +39,7 @@ export class ProgressService {
     private readonly _projectService: ProjectService,
     private readonly _roadmapService: RoadmapService,
     private readonly _courseService: CourseService,
+    private readonly _notificationService: NotificationService,
     // private readonly _certificationService: CertificationService,
   ) {
     this._repo = new MongoRepository<Progress>(_progressModel);
@@ -175,6 +180,57 @@ export class ProgressService {
     if (dto?.userId) entity.userId = dto.userId;
 
     const updated = await this._repo.update(new this._progressModel(entity));
+    return await this.toDto(updated);
+  }
+
+  async updateProjectsReview(
+    dto: UpdateProjectReviewDto,
+  ): Promise<ResourceProgressDto> {
+    let entity = new UpdateProgressDto();
+    let resourceDto: ResourceProgressDto;
+
+    resourceDto = await this.getById(dto.progressId);
+
+    if (!resourceDto) {
+      throw new Error('Progress record not found');
+    }
+
+    entity._id = resourceDto._id;
+    entity.BookmarksIds = resourceDto.BookmarksIds;
+    entity.xp = resourceDto.xp;
+    entity.userId = resourceDto.user._id;
+    entity.spentTime = resourceDto.spentTime;
+    entity.currentRoadmapsIds = resourceDto.currentRoadmapsIds;
+    entity.currentCoursesIds = resourceDto.currentCoursesIds;
+    entity.currentProjectsIds = [...resourceDto.currentProjectsIds]; // Clone the array to ensure immutability
+
+    let projectIndex = entity.currentProjectsIds?.findIndex(
+      (item) => item.id === dto.id,
+    );
+
+    if (projectIndex !== -1 && projectIndex !== undefined) {
+      // Update the project review and status
+      entity.currentProjectsIds[projectIndex] = {
+        ...entity.currentProjectsIds[projectIndex],
+        review: dto.review,
+        url: dto.url,
+        status: '2',
+      };
+    } else {
+      throw new Error(
+        `Project with ID ${dto.id} not found in current projects`,
+      );
+    }
+
+    const updated = await this._repo.update(new this._progressModel(entity));
+
+    // create notification
+    const notification = new CreateNotificationDto();
+
+    notification.userId = updated.userId;
+    notification.message = `Your project has been reviewed`;
+    await this._notificationService.create(notification);
+
     return await this.toDto(updated);
   }
 

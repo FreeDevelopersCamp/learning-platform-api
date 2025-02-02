@@ -17,6 +17,28 @@ export class ResourceProgressDto extends ProgressDto {
   user: ResourceUserDto;
 }
 
+export class UpdateProjectReviewDto {
+  @AutoMap()
+  @ApiProperty()
+  review: string;
+
+  @AutoMap()
+  @ApiProperty()
+  progressId: string;
+
+  @AutoMap()
+  @ApiProperty()
+  id: string;
+
+  @AutoMap()
+  @ApiProperty()
+  url: string;
+
+  @AutoMap()
+  @ApiProperty()
+  status: string;
+}
+
 export class DetailsProgressDto {
   @AutoMap()
   @ApiProperty({ default: '' })
