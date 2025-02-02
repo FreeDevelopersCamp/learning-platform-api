@@ -59,8 +59,8 @@ export class RoadmapService {
     const instructor = await this._instructorService.getById(id);
 
     return Promise.all(
-      instructor.roadmapsIds.map(
-        async (roadmapsId) => await this.getById(roadmapsId),
+      instructor?.roadmapsIds?.map(
+        async (roadmapId) => await this.getById(roadmapId),
       ),
     );
   }
@@ -71,13 +71,15 @@ export class RoadmapService {
   }
 
   async create(dto: CreateRoadmapDto): Promise<ResourceRoadmapDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
+    const roadmapData = {
+      ...dto,
+      orderIds: dto.orderIds.map((id) => new Types.ObjectId(id)),
+      coursesIds: dto.coursesIds.map((id) => new Types.ObjectId(id)),
+      practicesIds: dto.practicesIds?.map((id) => new Types.ObjectId(id)),
+      projectsIds: dto.projectsIds?.map((id) => new Types.ObjectId(id)),
+    };
 
-    if (!authorized) {
-      throw new RoadmapException('You are not authorized');
-    }
-
-    const entity = await this._repo.create(new this._roadmapModel(dto));
+    const entity = await this._repo.create(new this._roadmapModel(roadmapData));
 
     const instructor = await this._instructorService.getById(dto.instructorId);
 
@@ -92,20 +94,6 @@ export class RoadmapService {
   }
 
   async update(dto: UpdateRoadmapDto): Promise<ResourceRoadmapDto> {
-    // const authorized = await this.isAuthorized(UserRequested.userId);
-
-    // if (!authorized) {
-    //   throw new RoadmapException('You are not authorized');
-    // }
-
-    // const instructor = await this._instructorService.getByUserId(
-    //   UserRequested.userId,
-    // );
-
-    // if (instructor && !instructor.roadmapsIds.includes(dto._id)) {
-    //   throw new RoadmapException('Instructor not authorized!');
-    // }
-
     const entity = await this._repo.findOne(dto._id);
 
     if (dto.category) {
@@ -287,37 +275,27 @@ export class RoadmapService {
     entityDto.prerequisites = entity.prerequisites;
 
     entityDto.instructor = await this._instructorService.getById(
-      entity.instructorId.toString(),
+      entity?.instructorId?.toString(),
     );
 
-    entityDto.coursesIds = entity.coursesIds.map((id) => id.toString());
+    entityDto.coursesIds = entity?.coursesIds?.map((id) => id?.toString());
 
-    entityDto.practicesIds = entity.practicesIds?.map((id) => id.toString());
-    entityDto.projectsIds = entity.projectsIds?.map((id) => id.toString());
-    entityDto.examId = entity.examId?.toString();
-    entityDto.certificationId = entity.certificationId?.toString();
+    entityDto.practicesIds = entity?.practicesIds?.map((id) => id?.toString());
+    entityDto.projectsIds = entity?.projectsIds?.map((id) => id?.toString());
+    entityDto.examId = entity?.examId?.toString();
+    entityDto.certificationId = entity?.certificationId?.toString();
 
     if (entity.relatedRoadmapsIds) {
       entityDto.relatedRoadmaps = await Promise.all(
-        entity.relatedRoadmapsIds.map(
-          async (id) => await this.getById(id.toString()),
+        entity?.relatedRoadmapsIds?.map(
+          async (id) => await this.getById(id?.toString()),
         ),
       );
     }
 
-    entityDto.order = await Promise.all(
-      entity.orderIds.map(async (id) => {
-        if (entityDto.instructor.coursesIds.includes(id)) {
-          return await this._courseService.getById(id);
-        } else if (entityDto.instructor.practicesIds.includes(id)) {
-          return await this._practiceService.getById(id);
-        } else if (entityDto.instructor.projectsIds.includes(id)) {
-          return await this._projectService.getById(id);
-        }
-        // else if (entityDto.instructor.examsIds.includes(id)) {
-        // return await this._examService.getById(id);
-        // } else if (entityDto.instructor.certificationsIds.includes(id)) {
-        //   return await this._certificationService.getById(id);
+    entityDto.orderIds = await Promise.all(
+      entity?.orderIds?.map(async (id) => {
+        return id?.toString();
       }),
     );
 

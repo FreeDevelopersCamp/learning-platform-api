@@ -42,8 +42,18 @@ export class NotificationController {
     return this._notificationService.getById(id);
   }
 
-  @Post()
+  @Get('user/:userId')
   @UsePipes(new ObjectIdValidationPipe())
+  @ApiResponse({
+    description: 'notification information',
+    isArray: false,
+    type: ResourceNotificationDto,
+  })
+  getUserNotifications(@Param('userId') userId: string) {
+    return this._notificationService.getUserNotifications(userId);
+  }
+
+  @Post()
   @ApiResponse({
     description: 'notification created information',
     isArray: false,
@@ -53,15 +63,14 @@ export class NotificationController {
     return this._notificationService.create(notification);
   }
 
-  @Patch()
-  @UsePipes(new ObjectIdValidationPipe())
+  @Patch('/:id')
   @ApiResponse({
     description: 'notification updated information',
     isArray: false,
     type: ResourceNotificationDto,
   })
-  update(@Body() notification: UpdateNotificationDto) {
-    return this._notificationService.update(notification);
+  update(@Param('id') id: string, @Body() body: UpdateNotificationDto) {
+    return this._notificationService.update(id, body);
   }
 
   @Delete('/:id')

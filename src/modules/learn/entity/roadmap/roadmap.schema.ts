@@ -1,6 +1,5 @@
 import { AutoMap } from '@automapper/classes';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { IsString } from 'class-validator';
 import { BaseEntity } from 'src/utils/entities/base.entity';
 import { Types } from 'mongoose';
 
@@ -17,27 +16,22 @@ export class FrequentlyAskedQuestions {
 @Schema({ autoCreate: false })
 export class Roadmap extends BaseEntity {
   @AutoMap()
-  @IsString()
-  @Prop({ unique: true, required: true })
+  @Prop({ required: true })
   name: string;
 
   @AutoMap()
-  @IsString()
   @Prop({ required: true })
   description: string;
 
   @AutoMap()
-  @IsString()
   @Prop({ required: true })
   tag: string; // official-roadmap AI-generated ....
 
   @AutoMap()
-  @IsString()
   @Prop({ required: true })
   category: string; // Design Development Marketing IT and Software Business English ....
 
   @AutoMap()
-  @IsString()
   @Prop({ required: true })
   topic: string; // Python Web-Development Machine-Learning ....
 
@@ -66,7 +60,7 @@ export class Roadmap extends BaseEntity {
   rating?: string;
 
   @AutoMap()
-  @Prop({ required: false, default: [], type: [String] })
+  @Prop({ required: false, default: [] })
   raters?: string[];
 
   @AutoMap()
@@ -98,8 +92,8 @@ export class Roadmap extends BaseEntity {
   certificationId?: Types.ObjectId;
 
   @AutoMap()
-  @Prop({ required: true })
-  orderIds: string[];
+  @Prop({ required: true, type: [Types.ObjectId] })
+  orderIds: Types.ObjectId[];
 
   @AutoMap()
   @Prop({ required: false, type: [FrequentlyAskedQuestions], default: [] })

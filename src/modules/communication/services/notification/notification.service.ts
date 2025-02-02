@@ -7,8 +7,8 @@ import { Mapper } from '@automapper/core';
 import { Notification } from '../../entity/notification/notification.schema';
 import { ResourceNotificationDto } from '../../dto/notification/resource.notification';
 import { CreateNotificationDto } from '../../dto/notification/create.notification';
+import { NotificationDto } from '../../dto/notification/notification';
 import { UpdateNotificationDto } from '../../dto/notification/update.notification';
-// import admin from '../../firebase';
 const path = require('path');
 
 @Injectable()
@@ -24,34 +24,40 @@ export class NotificationService {
   }
 
   async list(): Promise<ResourceNotificationDto[]> {
-    return this._mapper.mapArray(
-      await this._repo.findAll(),
-      Notification,
-      ResourceNotificationDto,
-    );
+    const entities = await this._repo.findAll();
+    return await Promise.all(entities.map((entity) => this.toDto(entity)));
   }
 
   async getById(id: string): Promise<ResourceNotificationDto> {
-    return this._mapper.map(
-      await this._repo.findOne(id),
-      Notification,
-      ResourceNotificationDto,
-    );
+    return this.toDto(await this._repo.findOne(id));
+  }
+
+  async getUserNotifications(userId: string): Promise<NotificationDto[]> {
+    const notifications = await this._notificationModel
+      .find({ userId })
+      .sort({ status: 1, createdAt: -1 }) // 🔹 Sorts by status (0 first) and newest notifications first
+      .exec();
+
+    return notifications.map((notification) => ({
+      ...notification.toObject(),
+      userId: notification.userId.toString(),
+    }));
   }
 
   async create(dto: CreateNotificationDto): Promise<ResourceNotificationDto> {
-    return this._mapper.map(
+    return this.toDto(
       await this._repo.create(new this._notificationModel(dto)),
-      Notification,
-      ResourceNotificationDto,
     );
   }
 
-  async update(dto: UpdateNotificationDto): Promise<ResourceNotificationDto> {
-    return this._mapper.map(
-      await this._repo.update(new this._notificationModel(dto)),
-      Notification,
-      ResourceNotificationDto,
+  async update(
+    id: string,
+    body: UpdateNotificationDto,
+  ): Promise<ResourceNotificationDto> {
+    const updated = await this._repo.findOne(id);
+    updated.status = body.status;
+    return this.toDto(
+      await this._repo.update(new this._notificationModel(updated)),
     );
   }
 
@@ -75,4 +81,13 @@ export class NotificationService {
       console.error('Error sending notification:', error);
     }
   };
+
+  private toDto(entity: Notification): ResourceNotificationDto {
+    let dto = new ResourceNotificationDto();
+    dto._id = entity._id.toString();
+    dto.message = entity.message;
+    dto.status = entity.status;
+    dto.userId = entity.userId.toString();
+    return dto;
+  }
 }

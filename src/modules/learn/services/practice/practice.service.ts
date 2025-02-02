@@ -59,12 +59,6 @@ export class PracticeService {
   }
 
   async create(dto: CreatePracticeDto): Promise<ResourcePracticeDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new PracticeException('You are not authorized');
-    }
-
     const entity = await this._repo.create(new this._practiceModel(dto));
 
     const instructor = await this._instructorService.getById(dto.instructorId);
@@ -80,12 +74,6 @@ export class PracticeService {
   }
 
   async update(dto: UpdatePracticeDto): Promise<ResourcePracticeDto> {
-    const authorized = await this.isAuthorized(UserRequested.userId);
-
-    if (!authorized) {
-      throw new PracticeException('You are not authorized');
-    }
-
     const instructor = await this._instructorService.getByUserId(
       UserRequested.userId,
     );
@@ -122,6 +110,12 @@ export class PracticeService {
     }
     if (dto.challenges) {
       entity.challenges = dto.challenges;
+    }
+    if (dto.participants) {
+      entity.participants = dto.participants;
+    }
+    if (dto.questions) {
+      entity.questions = dto.questions;
     }
     return this.toDto(await this._repo.update(new this._practiceModel(entity)));
   }
@@ -210,6 +204,7 @@ export class PracticeService {
     entityDto.topic = entity.topic;
     entityDto.status = entity.status;
     entityDto.duration = entity.duration;
+    entityDto.courseId = entity?.courseId?.toString();
     entityDto.xp = entity.xp;
     entityDto.participants = entity.participants;
     entityDto.challengesToPass = entity.challengesToPass;
@@ -219,6 +214,7 @@ export class PracticeService {
     );
 
     entityDto.challenges = entity.challenges;
+    entityDto.questions = entity.questions;
     return entityDto;
   }
 }

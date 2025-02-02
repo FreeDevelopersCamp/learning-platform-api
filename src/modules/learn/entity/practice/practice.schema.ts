@@ -18,6 +18,32 @@ export class Challenge {
   expectedOutput?: string;
 }
 
+export class Questions {
+  @AutoMap()
+  @Prop({ required: true })
+  question: string;
+
+  @AutoMap()
+  @Prop({ required: true })
+  choice1?: string;
+
+  @AutoMap()
+  @Prop({ required: true })
+  choice2: string;
+
+  @AutoMap()
+  @Prop({ required: false })
+  choice3?: string;
+
+  @AutoMap()
+  @Prop({ required: false })
+  choice4?: string;
+
+  @AutoMap()
+  @Prop({ required: true })
+  correctAnswer: string;
+}
+
 @Schema({ autoCreate: false })
 export class Practice extends BaseEntity {
   @AutoMap()
@@ -27,6 +53,10 @@ export class Practice extends BaseEntity {
   @AutoMap()
   @Prop({ required: true })
   instructorId: Types.ObjectId;
+
+  @AutoMap()
+  @Prop({ required: false })
+  courseId?: Types.ObjectId;
 
   @AutoMap()
   @Prop({ required: false, default: '0' })
@@ -62,8 +92,12 @@ export class Practice extends BaseEntity {
   challengesToPass: number;
 
   @AutoMap()
-  @Prop({ required: true, isArray: true, default: [] })
+  @Prop({ required: false, isArray: true, default: [] })
   challenges: Challenge[];
+
+  @AutoMap()
+  @Prop({ required: false })
+  questions: Questions[];
 }
 
 export const PracticeSchema = SchemaFactory.createForClass(Practice);

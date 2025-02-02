@@ -25,6 +25,19 @@ export class NotificationProfile extends AutomapperProfile {
           (dest) => dest._id,
           mapFrom((src) => new Types.ObjectId(src._id)),
         ),
+        forMember(
+          (dest) => dest.userId,
+          mapFrom((src) => new Types.ObjectId(src.userId)),
+        ),
+
+        forMember(
+          (dest) => dest.message,
+          mapFrom((src) => src.message),
+        ),
+        forMember(
+          (dest) => dest.status,
+          mapFrom((src) => src.status),
+        ),
       );
       createMap(
         mapper,
@@ -33,6 +46,18 @@ export class NotificationProfile extends AutomapperProfile {
         forMember(
           (dest) => dest._id,
           mapFrom((src) => src._id.toString()),
+        ),
+        forMember(
+          (dest) => dest.userId,
+          mapFrom((src) => src.userId.toString()),
+        ),
+        forMember(
+          (dest) => dest.message,
+          mapFrom((src) => src.message),
+        ),
+        forMember(
+          (dest) => dest.status,
+          mapFrom((src) => src.status),
         ),
       );
 

@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { RoadmapDto } from './roadmap';
 import { AutoMap } from '@automapper/classes';
+import { IsMongoId } from 'class-validator';
 
 export class CreateRoadmapDto extends RoadmapDto {
   @AutoMap()
@@ -32,6 +33,7 @@ export class CreateRoadmapDto extends RoadmapDto {
   relatedRoadmapsIds?: string[];
 
   @AutoMap()
-  @ApiProperty({ required: true })
+  @ApiProperty({ required: true, type: [String] })
+  @IsMongoId({ each: true }) // Add validation
   orderIds: string[];
 }

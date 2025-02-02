@@ -8,7 +8,10 @@ import {
   CurrentProject,
   Progress,
 } from '../../entity/progress/progress.schema';
-import { ResourceProgressDto } from '../../dto/progress/resource.progress';
+import {
+  DetailsProgressDto,
+  ResourceProgressDto,
+} from '../../dto/progress/resource.progress';
 import { CreateProgressDto } from '../../dto/progress/create.progress';
 import {
   Bookmarks,
@@ -17,6 +20,9 @@ import {
 import { UserService } from 'src/modules/core/services/user/user.service';
 import { CurrentProgress } from '../../dto/progress/progress';
 import { ProjectService } from '../project/project.service';
+import { RoadmapService } from '../roadmap/roadmap.service';
+import { CourseService } from '../course/course.service';
+// import { CertificationService } from '../certification/certification.service';
 
 @Injectable()
 export class ProgressService {
@@ -27,6 +33,9 @@ export class ProgressService {
     @InjectMapper() private readonly _mapper: Mapper,
     private readonly _userService: UserService,
     private readonly _projectService: ProjectService,
+    private readonly _roadmapService: RoadmapService,
+    private readonly _courseService: CourseService,
+    // private readonly _certificationService: CertificationService,
   ) {
     this._repo = new MongoRepository<Progress>(_progressModel);
   }
@@ -44,6 +53,36 @@ export class ProgressService {
       Progress,
       ResourceProgressDto,
     );
+  }
+
+  async getDetails(userId: string): Promise<DetailsProgressDto> {
+    const entity: ResourceProgressDto = await this.getByUserId(userId);
+
+    const dto = new DetailsProgressDto();
+    dto._id = entity._id.toString();
+    dto.user = entity.user;
+    dto.completedRoadmaps = await Promise.all(
+      entity?.completedRoadmapsIds?.map(
+        async (id) => await this._roadmapService.getById(id),
+      ),
+    );
+    dto.completedCourses = await Promise.all(
+      entity?.completedCoursesIds?.map(
+        async (id) => await this._courseService.getById(id),
+      ),
+    );
+    dto.completedProjects = await Promise.all(
+      entity?.completedProjectsIds?.map(
+        async (id) => await this._projectService.getById(id),
+      ),
+    );
+    // dto.completedCertificates = await Promise.all(
+    //   entity?.completedCertificatesIds?.map(
+    //     async (id) => await this._certificationService.getById(id),
+    //   ),
+    // );
+
+    return dto;
   }
 
   async getByUserId(id: string): Promise<ResourceProgressDto> {
