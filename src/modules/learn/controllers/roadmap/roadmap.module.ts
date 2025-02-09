@@ -12,6 +12,8 @@ import { AccountManagerModule } from 'src/modules/core/controllers/AccountManage
 import { ContentManagerModule } from 'src/modules/core/controllers/ContentManager/ContentManager.module';
 import { InstructorModule } from 'src/modules/core/controllers/instructor/instructor.module';
 import { PaginationService } from 'src/common/interceptors/pagination/pagination.service';
+import { CourseModule } from '../course/course.module';
+import { ProjectModule } from '../project/project.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { PaginationService } from 'src/common/interceptors/pagination/pagination
     OwnerModule,
     ManagerModule,
     AccountManagerModule,
+    CourseModule,
+    ProjectModule,
     ContentManagerModule,
     InstructorModule,
   ],

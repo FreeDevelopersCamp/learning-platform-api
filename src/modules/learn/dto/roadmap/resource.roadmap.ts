@@ -3,6 +3,9 @@ import { AutoMap } from '@automapper/classes';
 import { ApiProperty } from '@nestjs/swagger';
 import { ResourceInstructorDto } from 'src/modules/core/dto/instructor/resource.instructor';
 import { ResourceCourseDto } from '../course/resource.course';
+import { ResourceProjectDto } from '../project/resource.project';
+
+export type OrderType = ResourceCourseDto | ResourceProjectDto;
 export class ResourceRoadmapDto extends RoadmapDto {
   @ApiProperty({ default: '' })
   @AutoMap()
@@ -38,5 +41,5 @@ export class ResourceRoadmapDto extends RoadmapDto {
 
   @AutoMap()
   @ApiProperty({ required: true })
-  orderIds: string[];
+  order: OrderType[];
 }

@@ -15,14 +15,13 @@ import { ManagerService } from 'src/modules/core/services/manager/manager.servic
 import { AccountManagerService } from 'src/modules/core/services/AccountManager/AccountManager.service';
 import { ContentManagerService } from 'src/modules/core/services/ContentManager/ContentManager.service';
 import { InstructorService } from 'src/modules/core/services/instructor/instructor.service';
-import { CourseService } from '../course/course.service';
-import { PracticeService } from '../practice/practice.service';
-import { ProjectService } from '../project/project.service';
-import { ExamService } from '../exam/exam.service';
-import { CertificationService } from '../certification/certification.service';
 import { RoadmapException } from 'src/utils/exception';
 import { UserRequested } from 'src/infra/system/system.constant';
 import { RatingDto } from '../../dto/course/update.course';
+import { ProjectService } from '../project/project.service';
+import { CourseService } from '../course/course.service';
+import { ResourceCourseDto } from '../../dto/course/resource.course';
+import { ResourceProjectDto } from '../../dto/project/resource.project';
 
 @Injectable()
 export class RoadmapService {
@@ -38,6 +37,8 @@ export class RoadmapService {
     private readonly _accountManagerService: AccountManagerService,
     private readonly _contentManagerService: ContentManagerService,
     private readonly _instructorService: InstructorService,
+    private readonly _projectService: ProjectService,
+    private readonly _courseService: CourseService,
   ) {
     this._repo = new MongoRepository<Roadmap>(_roadmapModel);
   }
@@ -287,9 +288,19 @@ export class RoadmapService {
       );
     }
 
-    entityDto.orderIds = await Promise.all(
+    entityDto.order = await Promise.all(
       entity?.orderIds?.map(async (id) => {
-        return id?.toString();
+        let item: ResourceCourseDto | ResourceProjectDto;
+        try {
+          item = await this._projectService.getById(id?.toString());
+        } catch (e) {
+          try {
+            item = await this._courseService.getById(id?.toString());
+          } catch (e) {
+            return null;
+          }
+        }
+        return item;
       }),
     );
 
